@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    tools:ignore="HardcodedText">
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Write a message here or set it in the view binding..."
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/toggle_error_detail"
+        android:layout_marginTop="16dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:textColor="#1E85D6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MOSTRAR DETALLE"/>
+
+    <ScrollView
+        android:id="@+id/error_detail_container"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/error_detail"
+            android:fontFamily="monospace"
+            android:textStyle="italic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Write a message here or set it in the view binding..."
+            tools:ignore="HardcodedText" />
+
+    </ScrollView>
+
+</LinearLayout>
