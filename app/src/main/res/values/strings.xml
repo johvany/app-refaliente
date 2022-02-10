@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">refaliente</string>
     <string name="todo">TODO</string>
+    <string name="textview">A</string>
+    <string name="ingresar">Ingresar</string>
+    <string name="app_version">1.0</string>
+    <string name="button">Button</string>
+    <string name="entrar_con_facebook">Entrar con Facebook</string>
+    <string name="entrar_con_google">Entrar con Google</string>
 </resources>
