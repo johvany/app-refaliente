@@ -14,6 +14,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="LoginTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="boxBackgroundColor">#6C0909</item>
+    </style>
+
     <style name="Theme.Refaliente.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
