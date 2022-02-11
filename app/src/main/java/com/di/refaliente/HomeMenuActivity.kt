@@ -19,7 +19,6 @@ class HomeMenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityHomeMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

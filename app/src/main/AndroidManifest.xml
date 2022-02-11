@@ -15,12 +15,12 @@
         android:theme="@style/Theme.Refaliente"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,DataExtractionRules">
-
-
+        <activity
+            android:name=".PublicationDetailActivity"
+            android:exported="true" />
         <activity
             android:name=".HomeMenuActivity"
-            android:exported="true"/>
-
+            android:exported="true" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -29,7 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

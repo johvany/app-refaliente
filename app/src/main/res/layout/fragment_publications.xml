@@ -21,8 +21,4 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- ... Add pagination here ... -->
-    <!-- ... Add pagination here ... -->
-    <!-- ... Add pagination here ... -->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
