@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="4dp"
-    android:background="@color/white"
+    android:background="@drawable/publication_card_small"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,6 +13,8 @@
         android:layout_width="170dp"
         android:layout_height="170dp"
         android:layout_margin="8dp"
+        android:padding="4dp"
+        android:background="@drawable/publication_img_background"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="ContentDescription" />
@@ -23,6 +25,7 @@
         android:layout_height="wrap_content"
         android:text="FAROS LED DELANTEROS CON PROTECTORES, DE LA MARCA SPYDER AUTO, NEGRO"
         android:layout_margin="8dp"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/publication_img"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +52,7 @@
         android:gravity="center|end"
         android:text="MXN $30.00"
         android:layout_margin="8dp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/publication_img"
         app:layout_constraintTop_toTopOf="@id/buy_product"
         app:layout_constraintBottom_toBottomOf="@id/buy_product"
@@ -58,9 +61,10 @@
 
     <Button
         android:id="@+id/buy_product"
+        android:theme="@style/BuyRedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="COMPRAR"
+        android:text="COMPRAR >>>"
         app:layout_constraintTop_toBottomOf="@id/publication_img"
         app:layout_constraintStart_toStartOf="@id/publication_img"
         app:layout_constraintEnd_toEndOf="@id/publication_img"

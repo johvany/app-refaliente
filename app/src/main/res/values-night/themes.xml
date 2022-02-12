@@ -35,5 +35,9 @@
         <item name="colorPrimary">#4CAF50</item>
         <item name="colorOnPrimary">@color/white</item>
     </style>
+    <style name="BuyRedButton" parent="Widget.MaterialComponents.Button">
+        <item name="colorPrimary">#9B4343</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
     <!-- //////////////////////////////////////////////////////////////////////////////// -->
 </resources>

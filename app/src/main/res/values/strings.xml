@@ -12,6 +12,7 @@
     <string name="api_url_storage">https://api.todomotor.mx/storage/</string>
     <string name="entrar_con_facebook">Entrar con facebook</string>
     <string name="entrar_con_google">Entrar con google</string>
+    <string name="product_sold_out_msg">Producto agotado. <b>¿Buscar otro?</b></string>
 
     <!-- Home menu options -->
     <string name="menu_publications">Publicaciones</string>

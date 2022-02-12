@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/badge_darkgray.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_body.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_body_no_header.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_header.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_favorite_24.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_flash_on_24.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_shopping_cart_24.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_star_24.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/profile_background_small.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/publication_card_small.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/publication_img_background.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/abc.xml" value="0.1765625" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_home_menu.xml" value="0.36666666666666664" />
@@ -21,6 +27,7 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/loading_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/nav_header_home_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/row_item_publication_small.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/row_product_comment.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/menu/home_menu.xml" value="0.36666666666666664" />
       </map>

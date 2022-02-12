@@ -50,6 +50,8 @@ class PublicationsAdapter(
         }
 
         holder.binding.publicationImg.setOnClickListener { onClick(items[position].idPublication) }
+        holder.binding.publicationTitle.setOnClickListener { onClick(items[position].idPublication) }
+        holder.binding.buyProduct.setOnClickListener { onClick(items[position].idPublication) }
     }
 
     override fun getItemCount(): Int { return items.size }

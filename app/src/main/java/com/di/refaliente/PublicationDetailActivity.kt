@@ -11,6 +11,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
+import com.di.refaliente.databinding.RowProductCommentBinding
 import com.di.refaliente.shared.ConnectionHelper
 import com.di.refaliente.shared.CustomAlertDialog
 import com.di.refaliente.shared.NumberFormatHelper
@@ -73,7 +74,14 @@ class PublicationDetailActivity : AppCompatActivity() {
         binding.publicationTitle.text = publicationData.getString("title")
         handleProductCondition(productData.getInt("key_condition"))
         handlePublicationStars(productData.getInt("qualification"))
+        handleProductDiscount(publicationData.getInt("has_discount"))
         binding.productSold.text = productData.getString("sales_accountant") + " vendidos"
+        binding.publicationDescription.text = publicationData.getString("description")
+        binding.productExistence.text = productData.getString("existence")
+
+        if (productData.getInt("existence") <= 0) {
+            binding.productSoldOutMsg.visibility = View.VISIBLE
+        }
 
         if (publicationData.getInt("has_discount") == 1) {
             binding.productPriceOld.visibility = View.VISIBLE
@@ -92,6 +100,121 @@ class PublicationDetailActivity : AppCompatActivity() {
                 // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
                 // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                 .into(binding.publicationImg)
+        }
+
+        getProductComments(publicationData.getString("id_publication"))
+    }
+
+    private fun getProductComments(idPublication: String) {
+        Volley.newRequestQueue(this).add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "publication/comments?page=1&id_publication=" + idPublication,
+            null,
+            { response ->
+                addProductComments(response)
+            },
+            { error ->
+                customAlertDialog.setTitle("Obtención de comentarios fallida")
+                customAlertDialog.setMessage("No se pudieron obtener los comentarios del producto. Por favor intenta de nuevo y si el problema continua contacta a soporte.")
+
+                try {
+                    customAlertDialog.setErrorDetail(error.networkResponse.data.decodeToString())
+                } catch (err: Exception) {
+                    customAlertDialog.setErrorDetail(error.toString())
+                }
+
+                customAlertDialog.show()
+            }
+        ) {
+            // Set request headers here if you need.
+        })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun addProductComments(response: JSONObject) {
+        val comments = response.getJSONArray("comments")
+        val limit = comments.length()
+        var item: JSONObject
+
+        if (limit > 0) {
+            binding.commentsTitle.visibility = View.VISIBLE
+        } else {
+            binding.commentsTitle.visibility = View.GONE
+        }
+
+        for (i in 0 until limit) {
+            item = comments.getJSONObject(i)
+
+            RowProductCommentBinding.inflate(layoutInflater, binding.publicationContainer, false).let { commentItemBinding ->
+                commentItemBinding.productComment.text = item.getString("comment")
+                commentItemBinding.customerName.text = item.getString("customer_name") + " - " + item.getString("created_at")
+                handleCommentStars(commentItemBinding, item.getInt("qualification"))
+
+                Glide.with(this)
+                    .load(resources.getString(R.string.api_url_storage) + item.getString("customer_id") + "/profile/" + item.getString("customer_image"))
+                    // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                    // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                    .into(commentItemBinding.customerImg)
+
+                binding.publicationContainer.addView(commentItemBinding.root)
+            }
+        }
+    }
+
+    private fun handleCommentStars(viewBinding: RowProductCommentBinding, stars: Int) {
+        when (stars) {
+            1 -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+            }
+            2 -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+            }
+            3 -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+            }
+            4 -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+            }
+            5 -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
+            }
+            else -> {
+                viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star3.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star4.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+                viewBinding.star5.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
+            }
+        }
+    }
+
+    private fun handleProductDiscount(hasDiscount: Int) {
+        if (hasDiscount == 1) {
+            binding.ribbonDiscount.visibility = View.VISIBLE
+            binding.ribbonDiscountText.visibility = View.VISIBLE
+        } else {
+            binding.ribbonDiscount.visibility = View.INVISIBLE
+            binding.ribbonDiscountText.visibility = View.INVISIBLE
         }
     }
 
@@ -113,8 +236,8 @@ class PublicationDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun handlePublicationStars(starts: Int) {
-        when (starts) {
+    private fun handlePublicationStars(stars: Int) {
+        when (stars) {
             1 -> {
                 binding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))
                 binding.star2.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#D3D3D3"))
