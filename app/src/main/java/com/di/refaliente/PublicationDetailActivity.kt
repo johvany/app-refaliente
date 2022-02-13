@@ -1,6 +1,7 @@
 package com.di.refaliente
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
@@ -11,7 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
-import com.di.refaliente.databinding.RowProductCommentBinding
+import com.di.refaliente.databinding.RowItemProductCommentBinding
 import com.di.refaliente.shared.ConnectionHelper
 import com.di.refaliente.shared.CustomAlertDialog
 import com.di.refaliente.shared.NumberFormatHelper
@@ -31,6 +32,12 @@ class PublicationDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         customAlertDialog = CustomAlertDialog(this)
+
+        // ... Send parameters here to the launched activity ...
+        binding.buyProduct.setOnClickListener {
+            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java))
+        }
+
         getPublicationById(intent.extras!!.getInt("id_publication").toString())
     }
 
@@ -145,7 +152,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         for (i in 0 until limit) {
             item = comments.getJSONObject(i)
 
-            RowProductCommentBinding.inflate(layoutInflater, binding.publicationContainer, false).let { commentItemBinding ->
+            RowItemProductCommentBinding.inflate(layoutInflater, binding.publicationContainer, false).let { commentItemBinding ->
                 commentItemBinding.productComment.text = item.getString("comment")
                 commentItemBinding.customerName.text = item.getString("customer_name") + " - " + item.getString("created_at")
                 handleCommentStars(commentItemBinding, item.getInt("qualification"))
@@ -161,7 +168,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleCommentStars(viewBinding: RowProductCommentBinding, stars: Int) {
+    private fun handleCommentStars(viewBinding: RowItemProductCommentBinding, stars: Int) {
         when (stars) {
             1 -> {
                 viewBinding.star1.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE000"))

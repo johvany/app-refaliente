@@ -8,3 +8,7 @@ data class PublicationSmall(
     val img: String?,
     val keyUserOwner: String
 )
+
+data class SimpleAddress(
+    val name: String
+)
