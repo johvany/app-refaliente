@@ -15,24 +15,37 @@
         android:theme="@style/Theme.Refaliente"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,DataExtractionRules">
+
         <activity
             android:name=".ProductBuyingPreviewActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" />
+
         <activity
             android:name=".PublicationDetailActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" />
+
         <activity
             android:name=".HomeMenuActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:exported="true" />
+
         <activity
             android:name=".SplashActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

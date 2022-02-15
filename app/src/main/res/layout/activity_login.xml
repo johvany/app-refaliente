@@ -4,76 +4,98 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/redlogin"
+    android:background="@drawable/login_background"
     tools:context=".LoginActivity">
 
-
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="104dp"
-        android:layout_height="76dp"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:id="@+id/login_icon"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/refalientelogin"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.833"
-        app:srcCompat="@drawable/refalientelogin" />
+        tools:ignore="ContentDescription" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="260dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:background="@color/facebook_color"
-        android:text="@string/entrar_con_facebook"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="260dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="68dp"
-        android:background="@color/google_color"
-        android:text="@string/entrar_con_google"
-        android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/filledTextField2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        android:id="@+id/facebook_login_btn"
+        android:theme="@style/FacebookLoginButton"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:text="ENTRAR CON FACEBOOK"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_icon"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/google_login_btn"
+        android:theme="@style/GoogleLoginButton"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:text="ENTRAR CON GOOGLE"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/facebook_login_btn"
+        tools:ignore="HardcodedText" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/filledTextField2"
-        style="@style/LoginTextInputLayout"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="348dp"
-        android:hint="Ingresar Usuario"
+        android:id="@+id/user_email_container"
         android:theme="@style/LoginTextInputLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.44"
+        style="@style/LoginTextInputLayout"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="Correo electrónico"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/google_login_btn"
         tools:ignore="HardcodedText">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/lgn_usuario"
+            android:id="@+id/user_email"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textColorHint="#616161"
-            app:layout_constraintBottom_toTopOf="@+id/filledTextField2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_password_container"
+        android:theme="@style/LoginTextInputLayout"
+        style="@style/LoginTextInputLayout"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Contraseña"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_email_container"
+        tools:ignore="HardcodedText">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:theme="@style/SuccessButton"
+        android:id="@+id/start_session"
+        android:layout_width="280dp"
+        android:layout_height="50dp"
+        android:text="INICIAR SESIÓN"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_password_container"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

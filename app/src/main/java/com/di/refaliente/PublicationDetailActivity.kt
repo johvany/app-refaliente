@@ -8,14 +8,13 @@ import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
 import com.di.refaliente.databinding.RowItemProductCommentBinding
-import com.di.refaliente.shared.ConnectionHelper
-import com.di.refaliente.shared.CustomAlertDialog
-import com.di.refaliente.shared.NumberFormatHelper
+import com.di.refaliente.shared.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.DecimalFormat
@@ -25,6 +24,7 @@ class PublicationDetailActivity : AppCompatActivity() {
     private lateinit var customAlertDialog: CustomAlertDialog
     private val decimalFormat = DecimalFormat("#,###,###,##0.00")
     private val numberFormatHelper = NumberFormatHelper()
+    private var idPublication = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,20 +32,18 @@ class PublicationDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         customAlertDialog = CustomAlertDialog(this)
+        idPublication = intent.extras!!.getInt("id_publication").toString()
 
-        // ... Send parameters here to the launched activity ...
         binding.buyProduct.setOnClickListener {
-            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java))
+            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
         }
 
-        getPublicationById(intent.extras!!.getInt("id_publication").toString())
+        getPublicationById(idPublication)
     }
 
     private fun getPublicationById(idPublication: String) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
-            customAlertDialog.setTitle("Sin conexión")
-            customAlertDialog.setMessage("Por favor revisa tu conexión de internet e intenta de nuevo.")
-            customAlertDialog.show()
+            Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
             Volley.newRequestQueue(this).add(object: JsonObjectRequest(
                 Method.GET,
@@ -55,19 +53,20 @@ class PublicationDetailActivity : AppCompatActivity() {
                     fillViewsWithData(response)
                 },
                 { error ->
-                    customAlertDialog.setTitle("Obtención de publicaciones fallida")
-                    customAlertDialog.setMessage("No se pudieron obtener las publicaciones. Por favor intenta de nuevo y si el problema continua contacta a soporte.")
-
                     try {
-                        customAlertDialog.setErrorDetail(error.networkResponse.data.decodeToString())
+                        Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
                     } catch (err: Exception) {
-                        customAlertDialog.setErrorDetail(error.toString())
+                        Utilities.showRequestError(customAlertDialog, error.toString())
                     }
-
-                    customAlertDialog.show()
                 }
             ) {
                 // Set request headers here if you need.
+            }.apply {
+                retryPolicy = DefaultRetryPolicy(
+                    ConstantValues.REQUEST_TIMEOUT,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
             })
         }
     }
@@ -101,6 +100,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         binding.productPrice.text = "MXN $" + decimalFormat.format(numberFormatHelper.strToDouble(publicationData.getString("product_price")))
         binding.sellerName.text = sellerData.getString("name")
 
+        // Load product image.
         getPublicationImg(productData.getString("images"))?.let { imgStr ->
             Glide.with(this)
                 .load(resources.getString(R.string.api_url_storage) + productData.getString("key_user") + "/products/" + imgStr)
@@ -121,19 +121,20 @@ class PublicationDetailActivity : AppCompatActivity() {
                 addProductComments(response)
             },
             { error ->
-                customAlertDialog.setTitle("Obtención de comentarios fallida")
-                customAlertDialog.setMessage("No se pudieron obtener los comentarios del producto. Por favor intenta de nuevo y si el problema continua contacta a soporte.")
-
                 try {
-                    customAlertDialog.setErrorDetail(error.networkResponse.data.decodeToString())
+                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
                 } catch (err: Exception) {
-                    customAlertDialog.setErrorDetail(error.toString())
+                    Utilities.showRequestError(customAlertDialog, error.toString())
                 }
-
-                customAlertDialog.show()
             }
         ) {
             // Set request headers here if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
         })
     }
 

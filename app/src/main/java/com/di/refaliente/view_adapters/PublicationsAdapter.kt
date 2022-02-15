@@ -1,4 +1,4 @@
-package com.di.refaliente.ui.home_menu.publications
+package com.di.refaliente.view_adapters
 
 import android.annotation.SuppressLint
 import android.content.Context

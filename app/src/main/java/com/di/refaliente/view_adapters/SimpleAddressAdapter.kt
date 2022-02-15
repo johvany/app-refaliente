@@ -1,4 +1,4 @@
-package com.di.refaliente
+package com.di.refaliente.view_adapters
 
 import android.view.LayoutInflater
 import android.view.View

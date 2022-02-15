@@ -1,4 +1,4 @@
-package com.di.refaliente.ui.home_menu.publications
+package com.di.refaliente.home_menu_ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -9,14 +9,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.di.refaliente.PublicationDetailActivity
 import com.di.refaliente.R
 import com.di.refaliente.databinding.FragmentPublicationsBinding
-import com.di.refaliente.shared.ConnectionHelper
-import com.di.refaliente.shared.CustomAlertDialog
-import com.di.refaliente.shared.PublicationSmall
+import com.di.refaliente.shared.*
+import com.di.refaliente.view_adapters.PublicationsAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -70,9 +70,9 @@ class PublicationsFragment : Fragment() {
 
     private fun getPublications(currentPage: String) {
         if (ConnectionHelper.getConnectionType(requireContext()) == ConnectionHelper.NONE) {
-            customAlertDialog.setTitle("Sin conexión")
-            customAlertDialog.setMessage("Por favor revisa tu conexión de internet e intenta de nuevo.")
-            customAlertDialog.show()
+            binding.refresh.isRefreshing = false
+            gettingPublications = false
+            Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
             gettingPublications = true
 
@@ -90,19 +90,21 @@ class PublicationsFragment : Fragment() {
                 { error ->
                     binding.refresh.isRefreshing = false
                     gettingPublications = false
-                    customAlertDialog.setTitle("Obtención de publicaciones fallida")
-                    customAlertDialog.setMessage("No se pudieron obtener las publicaciones. Por favor intenta de nuevo y si el problema continua contacta a soporte.")
 
                     try {
-                        customAlertDialog.setErrorDetail(error.networkResponse.data.decodeToString())
+                        Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
                     } catch (err: Exception) {
-                        customAlertDialog.setErrorDetail(error.toString())
+                        Utilities.showRequestError(customAlertDialog, error.toString())
                     }
-
-                    customAlertDialog.show()
                 }
             ) {
                 // Set request headers here if you need.
+            }.apply {
+                retryPolicy = DefaultRetryPolicy(
+                    ConstantValues.REQUEST_TIMEOUT,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
             })
         }
     }

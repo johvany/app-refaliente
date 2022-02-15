@@ -9,7 +9,12 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_body_bg_gray.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_body_no_header.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_header.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_menu_camera.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/login_background.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/navigation_view_background.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/navigation_view_item.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/navigation_view_item_selected.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_favorite_24.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_flash_on_24.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/outline_shopping_cart_24.xml" value="0.2585" />
@@ -19,6 +24,7 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/publication_img_background.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/abc.xml" value="0.1765625" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_home_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_product_buying_preview.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_publication_detail.xml" value="0.36666666666666664" />
@@ -27,8 +33,11 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/container_row_item_simple_address.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/content_home_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/custom_alert_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_favorites.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_gallery.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_publications.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_purchases.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_shopping_cart.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_slideshow.xml" value="0.18802083333333333" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/loading_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/nav_header_home_menu.xml" value="0.36666666666666664" />
