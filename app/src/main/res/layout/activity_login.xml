@@ -21,7 +21,7 @@
     <Button
         android:id="@+id/facebook_login_btn"
         android:theme="@style/FacebookLoginButton"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:text="ENTRAR CON FACEBOOK"
         android:layout_marginTop="32dp"
@@ -33,7 +33,7 @@
     <Button
         android:id="@+id/google_login_btn"
         android:theme="@style/GoogleLoginButton"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:text="ENTRAR CON GOOGLE"
         android:layout_marginTop="4dp"
@@ -46,10 +46,10 @@
         android:id="@+id/user_email_container"
         android:theme="@style/LoginTextInputLayout"
         style="@style/LoginTextInputLayout"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:hint="Correo electrónico"
+        android:hint="Correo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/google_login_btn"
@@ -68,7 +68,7 @@
         android:id="@+id/user_password_container"
         android:theme="@style/LoginTextInputLayout"
         style="@style/LoginTextInputLayout"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:hint="Contraseña"
@@ -89,7 +89,7 @@
     <Button
         android:theme="@style/SuccessButton"
         android:id="@+id/start_session"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="50dp"
         android:text="INICIAR SESIÓN"
         android:layout_marginTop="32dp"
@@ -97,5 +97,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_password_container"
         tools:ignore="HardcodedText" />
+
+    <View
+        android:id="@+id/loading_background"
+        android:visibility="invisible"
+        android:translationZ="500dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- loading screen example (use visibility to show or hide it) -->
+    <!-- <View
+        android:id="@+id/loading_background"
+        android:translationZ="500dp"
+        android:background="#66000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loading"
+        android:translationZ="500dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:indicatorColor="#CCCCCC"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" /> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

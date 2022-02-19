@@ -5,8 +5,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityProductBuyingPreviewBinding
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.SimpleAddressAdapter
@@ -15,6 +16,8 @@ import org.json.JSONObject
 import java.text.DecimalFormat
 
 class ProductBuyingPreviewActivity : AppCompatActivity() {
+    private val requestTag = "ProductBuyingPreviewActivityRequests"
+
     private lateinit var binding: ActivityProductBuyingPreviewBinding
     private val simpleAddressesItems = ArrayList<SimpleAddress>()
     private lateinit var customAlertDialog: CustomAlertDialog
@@ -26,51 +29,25 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         binding = ActivityProductBuyingPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ... get user addresses and load them in the spinner ...
-        binding.addresses.adapter = SimpleAddressAdapter(simpleAddressesItems, layoutInflater)
         // binding.addresses.selectedItem as SimpleAddress // ... use this to get selected address ...
+
+        binding.productTitle.text = ""
+        binding.productAmount.text = ""
 
         customAlertDialog = CustomAlertDialog(this)
 
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
-            getProductDataBeforeBuyIt(intent.extras!!.getString("id_publication")!!)
-            getUserAddresses("138")
+            if (SessionHelper.user != null) {
+                getProductDataBeforeBuyIt(intent.extras!!.getString("id_publication")!!, true)
+                getUserAddresses(SessionHelper.user!!.sub.toString(), true)
+            }
         }
     }
 
-    private fun getUserAddresses(idUser: String) {
-        Volley.newRequestQueue(this).add(object: JsonObjectRequest(
-            Method.GET,
-            resources.getString(R.string.api_url) + "get-addresses-by-user?key_user=" + idUser,
-            null,
-            { response ->
-                // ...
-            },
-            { error ->
-                try {
-                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
-                } catch (err: Exception) {
-                    Utilities.showRequestError(customAlertDialog, error.toString())
-                }
-            }
-        ) {
-            override fun getHeaders(): MutableMap<String, String> {
-                // TODO: don't forget remove this hardcode
-                return mutableMapOf(Pair("Authorization", "user-token-here"))
-            }
-        }.apply {
-            retryPolicy = DefaultRetryPolicy(
-                ConstantValues.REQUEST_TIMEOUT,
-                0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
-        })
-    }
-
-    private fun getProductDataBeforeBuyIt(idPublication: String) {
-        Volley.newRequestQueue(this).add(object: JsonObjectRequest(
+    private fun getProductDataBeforeBuyIt(idPublication: String, canRepeat: Boolean) {
+        Utilities.queue?.add(object: JsonObjectRequest(
             Method.GET,
             resources.getString(R.string.api_url) + "products/data-before-buy-it?id_publication=" + idPublication,
             null,
@@ -78,16 +55,19 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
                 loadProductData(response)
             },
             { error ->
-                try {
-                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
-                } catch (err: Exception) {
-                    Utilities.showRequestError(customAlertDialog, error.toString())
+                Utilities.queue?.cancelAll(requestTag)
+
+                SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                    if (canRepeat) {
+                        getProductDataBeforeBuyIt(idPublication, false)
+                    } else {
+                        Utilities.showRequestError(customAlertDialog, null)
+                    }
                 }
             }
         ) {
             override fun getHeaders(): MutableMap<String, String> {
-                // TODO: don't forget remove this hardcode
-                return mutableMapOf(Pair("Authorization", "user-token-here"))
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
             }
         }.apply {
             retryPolicy = DefaultRetryPolicy(
@@ -95,6 +75,8 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
                 0,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
+
+            tag = requestTag
         })
     }
 
@@ -113,10 +95,72 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         getPublicationImg(publicationData.getJSONObject("product").getString("images"))?.let { imgName ->
             Glide.with(this)
                 .load(resources.getString(R.string.api_url_storage) + publicationData.getString("key_user") + "/products/" + imgName)
-                // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-                // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                 .into(binding.productImg)
         }
+    }
+
+    private fun getUserAddresses(idUser: String, canRepeat: Boolean) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "get-addresses-by-user?key_user=" + idUser,
+            null,
+            { response ->
+                loadUserAddresses(response)
+            },
+            { error ->
+                Utilities.queue?.cancelAll(requestTag)
+
+                SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                    if (canRepeat) {
+                        getUserAddresses(idUser, false)
+                    } else {
+                        Utilities.showRequestError(customAlertDialog, null)
+                    }
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+            }
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+
+            tag = requestTag
+        })
+    }
+
+    private fun loadUserAddresses(data: JSONObject) {
+        data.getJSONArray("addresses").let { addresses ->
+            val limit = addresses.length()
+            var item: JSONObject
+            var itemPostalCode: JSONObject
+
+            for (i in 0 until limit) {
+                item = addresses.getJSONObject(i)
+                itemPostalCode = item.getJSONObject("zipcode_data")
+
+                simpleAddressesItems.add(SimpleAddress(
+                    item.getInt("id_address"),
+                    getAddressName(item, itemPostalCode)
+                ))
+            }
+
+            binding.addresses.adapter = SimpleAddressAdapter(simpleAddressesItems, layoutInflater)
+        }
+    }
+
+    private fun getAddressName(item: JSONObject, itemPostalCode: JSONObject): String {
+        return "${item.getString("street")} " +
+                "# ${item.getString("outside_number")}, " +
+                "CP ${itemPostalCode.getString("zipcode")}, " +
+                "${itemPostalCode.getString("municipality_name")} " +
+                itemPostalCode.getString("entity_name")
     }
 
     private fun getPublicationImg(imgsStr: String): String? {

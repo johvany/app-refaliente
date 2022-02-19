@@ -1,5 +1,7 @@
 package com.di.refaliente
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.Menu
@@ -7,11 +9,22 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityHomeMenuBinding
+import com.di.refaliente.databinding.NavHeaderHomeMenuBinding
 import com.di.refaliente.home_menu_ui.FavoritesFragment
 import com.di.refaliente.home_menu_ui.PublicationsFragment
 import com.di.refaliente.home_menu_ui.PurchasesFragment
 import com.di.refaliente.home_menu_ui.ShoppingCartFragment
+import com.di.refaliente.local_database.Database
+import com.di.refaliente.local_database.UsersDetailsTable
+import com.di.refaliente.local_database.UsersTable
+import com.di.refaliente.shared.SessionHelper
+import com.di.refaliente.shared.Utilities
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 
 class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -21,13 +34,33 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var shoppingCartFragment: ShoppingCartFragment
     private lateinit var favoritesFragment: FavoritesFragment
     private lateinit var purchasesFragment: PurchasesFragment
+    private var userImageProfile: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupMenus()
 
+        initializeUserData()
+
+        // Initialize main request queue to be used by any component (activity or fragment).
+        Utilities.queue = Volley.newRequestQueue(this)
+
+        setupMenus()
+        initFragmentsAndLoadOne(savedInstanceState)
+        loadUserDataInTheSideMenu()
+    }
+
+    // Initialize user data (if there is a logged user) and user image profile to load it later.
+    private fun initializeUserData() {
+        Database(this).use { db ->
+            SessionHelper.user = UsersTable.find(db, 1)
+            UsersDetailsTable.find(db, 1)?.let { userDetail -> userImageProfile = userDetail.profileImage }
+        }
+    }
+
+    // Check if we can restore all fragments and load the last loaded, otherwise load default.
+    private fun initFragmentsAndLoadOne(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             initFragments()
             binding.navView.setCheckedItem(R.id.nav_publications)
@@ -36,13 +69,25 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             initFragmentsByBundle(savedInstanceState)
             loadFragmentByBundle(savedInstanceState)
         }
+    }
 
-        // ... Change this (get user profile img and setup here) ...
-        /* Glide.with(this)
-            .load("https://uproxx.com/wp-content/uploads/2018/05/john-wick-31.jpg")
-            .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
-            .into(NavHeaderHomeMenuBinding.bind(binding.navView.getHeaderView(0)).userImg) */
+    // Load user profile image if there is a logged user and also load the user name (in the side menu).
+    @SuppressLint("SetTextI18n")
+    private fun loadUserDataInTheSideMenu() {
+        NavHeaderHomeMenuBinding.bind(binding.navView.getHeaderView(0)).let { viewBinding ->
+            if (SessionHelper.userLogged() && userImageProfile != null) {
+                Glide.with(this)
+                    .load(resources.getString(R.string.api_url_storage) + SessionHelper.user!!.sub.toString() + "/profile/" + userImageProfile)
+                    .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                    .into(viewBinding.userImg)
+
+                viewBinding.userName.text = "Bienvenido " + SessionHelper.user!!.name
+            } else {
+                viewBinding.userName.setTextColor(Color.parseColor("#CCCCCC"))
+                viewBinding.userName.text = "Cuenta de invitado"
+            }
+        }
     }
 
     private fun loadFragmentByBundle(bundle: Bundle) {
@@ -84,8 +129,17 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle popup menu (toolbar) item click event.
         binding.appBarHomeMenu.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.action_login -> {
+                    login()
+                }
                 R.id.action_logout -> {
-                    // ... Make somthing here if you need ...
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Cerrar sesión")
+                        .setMessage("Se cerrará la sesión actual...")
+                        .setCancelable(true)
+                        .setNegativeButton("CANCELAR", null)
+                        .setPositiveButton("CONTINUAR") { _, _ -> logout() }
+                        .show()
                 }
             }
 
@@ -108,6 +162,14 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         binding.navView.setNavigationItemSelectedListener(this)
     }
 
+    private fun login() {
+        SessionHelper.login(this)
+    }
+
+    private fun logout() {
+        SessionHelper.logout(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
 
@@ -128,6 +190,16 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu. This adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.home_menu, menu)
+
+        // Check if there is a logged user and hide or show the login and logout menu items.
+        if (SessionHelper.userLogged()) {
+            menu.findItem(R.id.action_login).isVisible = false
+            menu.findItem(R.id.action_logout).isVisible = true
+        } else {
+            menu.findItem(R.id.action_login).isVisible = true
+            menu.findItem(R.id.action_logout).isVisible = false
+        }
+
         return true
     }
 

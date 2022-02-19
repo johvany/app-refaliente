@@ -24,6 +24,9 @@
         <item name="colorPrimary">#FFFFFF</item>
         <item name="colorOnSurface">@color/white</item>
         <item name="boxBackgroundColor">#4D3A0303</item>
+        <item name="boxStrokeErrorColor">@color/login_error</item>
+        <item name="errorIconTint">@color/login_error</item>
+        <item name="errorTextColor">@color/login_error</item>
     </style>
     <style name="Theme.Refaliente.NoActionBar">
         <item name="windowActionBar">false</item>

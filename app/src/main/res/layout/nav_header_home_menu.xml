@@ -31,21 +31,22 @@
 
         <ImageView
             android:id="@+id/user_img"
-            android:paddingTop="8dp"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             android:background="#CCCCCC"
-            android:src="@drawable/user"
+            android:src="@drawable/user_no_img"
             tools:ignore="ContentDescription" />
 
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="@string/nav_header_title"
+        android:textColor="#007BFF"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <!-- <TextView

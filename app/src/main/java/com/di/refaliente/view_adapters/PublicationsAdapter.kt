@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.R
 import com.di.refaliente.databinding.RowItemPublicationSmallBinding
 import com.di.refaliente.shared.NumberFormatHelper
@@ -44,8 +46,8 @@ class PublicationsAdapter(
         if (items[position].img != null) {
             Glide.with(context)
                 .load(context.resources.getString(R.string.api_url_storage) + items[position].keyUserOwner + "/products/" + items[position].img)
-                // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-                // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                 .into(holder.binding.publicationImg)
         }
 

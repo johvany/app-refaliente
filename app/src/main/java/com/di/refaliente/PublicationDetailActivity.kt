@@ -5,13 +5,14 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Paint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
 import com.di.refaliente.databinding.RowItemProductCommentBinding
 import com.di.refaliente.shared.*
@@ -45,19 +46,15 @@ class PublicationDetailActivity : AppCompatActivity() {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
-            Volley.newRequestQueue(this).add(object: JsonObjectRequest(
+            Utilities.queue?.add(object: JsonObjectRequest(
                 Method.GET,
                 resources.getString(R.string.api_url) + "find-publication-by-id?id=" + idPublication,
                 null,
                 { response ->
                     fillViewsWithData(response)
                 },
-                { error ->
-                    try {
-                        Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
-                    } catch (err: Exception) {
-                        Utilities.showRequestError(customAlertDialog, error.toString())
-                    }
+                {
+                    Utilities.showRequestError(customAlertDialog, "no se pudieron obtener los datos para este producto")
                 }
             ) {
                 // Set request headers here if you need.
@@ -104,8 +101,8 @@ class PublicationDetailActivity : AppCompatActivity() {
         getPublicationImg(productData.getString("images"))?.let { imgStr ->
             Glide.with(this)
                 .load(resources.getString(R.string.api_url_storage) + productData.getString("key_user") + "/products/" + imgStr)
-                // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-                // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                 .into(binding.publicationImg)
         }
 
@@ -113,19 +110,15 @@ class PublicationDetailActivity : AppCompatActivity() {
     }
 
     private fun getProductComments(idPublication: String) {
-        Volley.newRequestQueue(this).add(object: JsonObjectRequest(
+        Utilities.queue?.add(object: JsonObjectRequest(
             Method.GET,
             resources.getString(R.string.api_url) + "publication/comments?page=1&id_publication=" + idPublication,
             null,
             { response ->
                 addProductComments(response)
             },
-            { error ->
-                try {
-                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
-                } catch (err: Exception) {
-                    Utilities.showRequestError(customAlertDialog, error.toString())
-                }
+            {
+                Utilities.showRequestError(customAlertDialog, "No se pudieron obtener los comentarios para este producto.")
             }
         ) {
             // Set request headers here if you need.
@@ -160,8 +153,8 @@ class PublicationDetailActivity : AppCompatActivity() {
 
                 Glide.with(this)
                     .load(resources.getString(R.string.api_url_storage) + item.getString("customer_id") + "/profile/" + item.getString("customer_image"))
-                    // .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-                    // .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                    .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                     .into(commentItemBinding.customerImg)
 
                 binding.publicationContainer.addView(commentItemBinding.root)
