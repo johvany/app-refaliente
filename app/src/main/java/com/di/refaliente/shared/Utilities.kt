@@ -18,5 +18,12 @@ class Utilities {
             customAlertDialog.setErrorDetail(errorDetail)
             customAlertDialog.show()
         }
+
+        fun showUnknownError(customAlertDialog: CustomAlertDialog, errorDetail: String?) {
+            customAlertDialog.setTitle("Operación fallida")
+            customAlertDialog.setMessage("Ocurrió un incidente al intentar realizar la operación solicitada. Por favor intenta de nuevo y si el problema continua contacta a soporte.")
+            customAlertDialog.setErrorDetail(errorDetail)
+            customAlertDialog.show()
+        }
     }
 }

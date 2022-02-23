@@ -37,7 +37,8 @@ class LoadingWindow(
     }
 
     /**
-     * Set the message that will be shown in the loading window when this is visible.
+     * @param text
+     * The text of the message that will be shown in the loading window when this is visible.
      */
     fun setMessage(text: String) {
         binding.loadingText.text = text

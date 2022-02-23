@@ -28,6 +28,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/created_at_short"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
@@ -80,6 +81,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/customer_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
@@ -105,6 +107,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/customer_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
@@ -113,7 +116,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -136,6 +139,6 @@
             android:text="Amortiguador trasero motocicleta diferentes modelo..."
             tools:ignore="HardcodedText" />
 
-    </LinearLayout>
+    </LinearLayout> -->
 
 </LinearLayout>

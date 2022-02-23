@@ -22,8 +22,20 @@ class PurchasesHeadersAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.idPurchase.text = "Compra ID: " + items[position].idPurchase
-        holder.binding.customerName.text = HtmlCompat.fromHtml("Alan Thomas Anderson (<span style=\"color: #334FA6;\">Tel. 6666666666</span>)", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        holder.binding.idPurchase.text = "Compra ID: " + items[position].idPurchaseFormatted
+        holder.binding.createdAtShort.text = items[position].createdAtShort
+
+        if (items[position].customerPhone == null) {
+            holder.binding.customerName.text = items[position].customerName
+        } else {
+            holder.binding.customerName.text = HtmlCompat.fromHtml(
+                "${items[position].customerName} (<span style=\"color: #334FA6;\">Tel. ${items[position].customerPhone}</span>)",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        }
+
+        holder.binding.customerEmail.text = items[position].customerEmail
+        holder.binding.customerAddress.text = items[position].customerAddress + ", " + items[position].customerPostalCode
     }
 
     override fun getItemCount(): Int { return items.size }

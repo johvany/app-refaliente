@@ -44,7 +44,8 @@ class LoginActivity : AppCompatActivity() {
         binding.googleLoginBtn.setOnClickListener { loginWithGoogle() }
         binding.startSession.setOnClickListener { startSession() }
 
-        // Set empty click listener to this view, to prevent the user click others views like buttons.
+        // Set empty click listener to this view, to prevent the user click others views like
+        // when the loadingBackground view is visible buttons.
         binding.loadingBackground.setOnClickListener { /* ... */ }
     }
 
@@ -74,22 +75,6 @@ class LoginActivity : AppCompatActivity() {
     private fun hideLoading() {
         binding.loadingBackground.visibility = View.INVISIBLE
     }
-
-    /* private fun disableLoginItems() {
-        binding.facebookLoginBtn.isEnabled = false
-        binding.googleLoginBtn.isEnabled = false
-        binding.startSession.isEnabled = false
-        binding.userEmail.isEnabled = false
-        binding.userPassword.isEnabled = false
-    }
-
-    private fun enableLoginItems() {
-        binding.facebookLoginBtn.isEnabled = true
-        binding.googleLoginBtn.isEnabled = true
-        binding.startSession.isEnabled = true
-        binding.userEmail.isEnabled = true
-        binding.userPassword.isEnabled = true
-    } */
 
     // In this step we get the user information, then call the step 2 function
     // to get the user token.

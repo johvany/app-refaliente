@@ -1,19 +1,30 @@
 package com.di.refaliente
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.toolbox.JsonObjectRequest
 import com.di.refaliente.databinding.ActivityPaymentBinding
-import com.di.refaliente.shared.CardMonth
-import com.di.refaliente.shared.CardYear
-import com.di.refaliente.shared.LoadingWindow
+import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.CardMonthsAdapter
 import com.di.refaliente.view_adapters.CardYearsAdapter
+import mx.openpay.android.Openpay
+import mx.openpay.android.OperationCallBack
+import mx.openpay.android.OperationResult
+import mx.openpay.android.exceptions.OpenpayServiceException
+import mx.openpay.android.exceptions.ServiceUnavailableException
+import mx.openpay.android.model.Card
+import mx.openpay.android.model.Token
+import org.json.JSONObject
 
 class PaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPaymentBinding
     private lateinit var loading: LoadingWindow
+    private lateinit var customAlertDialog: CustomAlertDialog
+    private var idPublication = 0
+    private var idSelectedAddress = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,10 +33,14 @@ class PaymentActivity : AppCompatActivity() {
         initVars()
         loadCardExpMonths()
         loadCardExpYears()
-        binding.performPayment.setOnClickListener { performProductPayment() }
+        binding.performPayment.setOnClickListener { performProductPaymentSetp1() }
     }
 
     private fun initVars() {
+        customAlertDialog = CustomAlertDialog(this)
+        idPublication = intent.extras!!.getInt("id_publication")
+        idSelectedAddress = intent.extras!!.getInt("id_selected_address")
+
         // The views passed here will be disabled when the loading window is showing and will be
         // enabled after hide the loading window.
         loading = LoadingWindow(binding.loading, arrayOf(
@@ -40,20 +55,91 @@ class PaymentActivity : AppCompatActivity() {
         loading.setMessage("Procesando pago...")
     }
 
-    private fun performProductPayment() {
-        loading.show()
+    private fun performProductPaymentSetp1() {
+        if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+            Utilities.showUnconnectedMessage(customAlertDialog)
+        } else {
+            loading.show()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            loading.hide()
-        }, 5000)
+            try {
+                val openpay = Openpay("mnlzf7phddp7tgia3ifp", "pk_985217fa745c4f5da1e88b90f69e9ddf", false)
+                val deviceSessionId = openpay.deviceCollectorDefaultImpl.setup(this)
 
-        /* try {
-            val openpay = Openpay("ajklhsdjkajskd", "alskdjlkasjdkl", false)
-            val deviceId = openpay.deviceCollectorDefaultImpl.setup(this)
-            Toast.makeText(this, "device_session_id: $deviceId", Toast.LENGTH_LONG).show()
-        } catch (err: Exception) {
-            Toast.makeText(this, "ERROR\n\n: $err", Toast.LENGTH_LONG).show()
-        } */
+                val card = Card()
+                card.holderName = binding.cardUserName.text.toString()
+                card.cardNumber = binding.cardNumber.text.toString()
+                card.expirationMonth = (binding.cardExpMonths.selectedItem as CardMonth).value
+                card.expirationYear = (binding.cardExpYears.selectedItem as CardYear).value
+                card.cvv2 = binding.cardCvv.text.toString()
+
+                openpay.createToken(card, object: OperationCallBack<Token> {
+                    override fun onError(error: OpenpayServiceException?) {
+                        loading.hide()
+                        Utilities.showRequestError(customAlertDialog, error?.description)
+                    }
+
+                    override fun onCommunicationError(error: ServiceUnavailableException?) {
+                        loading.hide()
+                        Utilities.showUnconnectedMessage(customAlertDialog)
+                    }
+
+                    override fun onSuccess(operationResult: OperationResult<Token>?) {
+                        operationResult?.result?.id?.let { tokenId ->
+                            performProductPaymentSetp2(
+                                idPublication,
+                                idSelectedAddress,
+                                tokenId,
+                                deviceSessionId,
+                                true
+                            )
+                        }
+                    }
+                })
+            } catch (err: Exception) {
+                loading.hide()
+                Utilities.showUnknownError(customAlertDialog, null)
+            }
+        }
+    }
+
+    private fun performProductPaymentSetp2(
+        idPublication: Int,
+        idCustomerAddress: Int,
+        tokenId: String,
+        deviceSessionId: String,
+        canRepeat: Boolean
+    ) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.POST,
+            resources.getString(R.string.api_url) + "products/buy",
+            JSONObject()
+                .put("id_publication", idPublication)
+                .put("id_customer_address", idCustomerAddress)
+                .put("token_id", tokenId)
+                .put("device_session_id", deviceSessionId),
+            {
+                startActivity(Intent(this, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+            },
+            { error ->
+                SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                    if (canRepeat) {
+                        performProductPaymentSetp2(idPublication, idCustomerAddress, tokenId, deviceSessionId, false)
+                    } else {
+                        Utilities.showRequestError(customAlertDialog, null)
+                    }
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+            }
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
     }
 
     private fun loadCardExpMonths() {

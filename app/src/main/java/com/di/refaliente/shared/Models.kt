@@ -1,7 +1,14 @@
 package com.di.refaliente.shared
 
 data class PurchaseHeader(
-    val idPurchase: String
+    val idPurchase: Int,
+    val idPurchaseFormatted: String,
+    val createdAtShort: String,
+    val customerName: String,
+    val customerPhone: String?,
+    val customerEmail: String,
+    val customerAddress: String,
+    val customerPostalCode: String
 )
 
 data class PublicationSmall(

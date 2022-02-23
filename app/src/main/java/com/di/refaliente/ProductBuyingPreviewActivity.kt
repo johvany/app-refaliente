@@ -27,9 +27,6 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProductBuyingPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // binding.addresses.selectedItem as SimpleAddress // ... use this to get selected address ...
-
         binding.productTitle.text = ""
         binding.productAmount.text = ""
         customAlertDialog = CustomAlertDialog(this)
@@ -38,7 +35,19 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
     }
 
     private fun buyProduct() {
-        startActivity(Intent(this, PaymentActivity::class.java))
+        val selectedAddress = try {
+            binding.addresses.selectedItem as SimpleAddress
+        } catch (err: Exception) {
+            null
+        }
+
+        if (selectedAddress == null) {
+            // ... Show empty address message here ...
+        } else {
+            startActivity(Intent(this, PaymentActivity::class.java)
+                .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())
+                .putExtra("id_selected_address", selectedAddress.idAddress))
+        }
     }
 
     private fun getData() {
