@@ -1,5 +1,6 @@
 package com.di.refaliente
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -26,6 +27,8 @@ class PaymentActivity : AppCompatActivity() {
     private var idPublication = 0
     private var idSelectedAddress = 0
 
+    // ... Delete when finish testing ...
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPaymentBinding.inflate(layoutInflater)
@@ -34,6 +37,13 @@ class PaymentActivity : AppCompatActivity() {
         loadCardExpMonths()
         loadCardExpYears()
         binding.performPayment.setOnClickListener { performProductPaymentSetp1() }
+
+        // ... Delete when finish testing ...
+        binding.title.setOnClickListener {
+            binding.cardUserName.setText("Juan Perez Ramirez")
+            binding.cardNumber.setText("4111111111111111")
+            binding.cardCvv.setText("110")
+        }
     }
 
     private fun initVars() {
