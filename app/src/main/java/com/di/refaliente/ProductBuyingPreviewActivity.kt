@@ -1,6 +1,7 @@
 package com.di.refaliente
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
@@ -13,7 +14,6 @@ import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.SimpleAddressAdapter
 import org.json.JSONArray
 import org.json.JSONObject
-import java.text.DecimalFormat
 
 class ProductBuyingPreviewActivity : AppCompatActivity() {
     private val requestTag = "ProductBuyingPreviewActivityRequests"
@@ -21,7 +21,6 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductBuyingPreviewBinding
     private val simpleAddressesItems = ArrayList<SimpleAddress>()
     private lateinit var customAlertDialog: CustomAlertDialog
-    private val decimalFormat = DecimalFormat("#,###,###,##0.00")
     private val numberFormatHelper = NumberFormatHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +32,16 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
 
         binding.productTitle.text = ""
         binding.productAmount.text = ""
-
         customAlertDialog = CustomAlertDialog(this)
+        binding.buyProduct.setOnClickListener { buyProduct() }
+        getData()
+    }
 
+    private fun buyProduct() {
+        startActivity(Intent(this, PaymentActivity::class.java))
+    }
+
+    private fun getData() {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
@@ -85,11 +91,11 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         val publicationData = data.getJSONObject("publication")
 
         binding.productTitle.text = publicationData.getString("title")
-        binding.productAmount.text = "1 x $" + decimalFormat.format(numberFormatHelper.strToDouble(publicationData.getString("product_price")))
-        binding.subtotal.text = "$" + decimalFormat.format(numberFormatHelper.strToDouble(data.getString("subtotal")))
-        binding.iva.text = "$" + decimalFormat.format(numberFormatHelper.strToDouble(data.getString("iva_amount")))
-        binding.discount.text = "$" + decimalFormat.format(numberFormatHelper.strToDouble(data.getString("discount")))
-        binding.total.text = "$" + decimalFormat.format(numberFormatHelper.strToDouble(data.getString("total")))
+        binding.productAmount.text = "1 x $" + numberFormatHelper.format2Decimals(publicationData.getString("product_price"))
+        binding.subtotal.text = "$" + numberFormatHelper.format2Decimals(data.getString("subtotal"))
+        binding.iva.text = "$" + numberFormatHelper.format2Decimals(data.getString("iva_amount"))
+        binding.discount.text = "$" + numberFormatHelper.format2Decimals(data.getString("discount"))
+        binding.total.text = "$" + numberFormatHelper.format2Decimals(data.getString("total"))
 
         // Load product image
         getPublicationImg(publicationData.getJSONObject("product").getString("images"))?.let { imgName ->

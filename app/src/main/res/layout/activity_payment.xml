@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PaymentActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Tarjeta de crédito o débito"
+        android:gravity="center|start"
+        android:background="#DDDDDD"
+        android:paddingHorizontal="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <ScrollView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/card_credit_cards"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/card_debit_cards"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Nombre del titular"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/card_user_name_container"
+                android:layout_gravity="center"
+                android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:hintEnabled="false"
+                app:helperText="Como aparece en la tarjeta"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/card_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Número de tarjeta"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/card_number_container"
+                android:layout_gravity="center"
+                android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:hintEnabled="false"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/card_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="Expiración"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="146dp"
+                    android:layout_height="wrap_content"
+                    android:text="Mes"
+                    android:layout_marginEnd="4dp"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="146dp"
+                    android:layout_height="wrap_content"
+                    android:text="Año"
+                    android:layout_marginStart="4dp"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/card_exp_months"
+                    android:layout_gravity="center"
+                    android:gravity="center|start"
+                    android:layout_width="146dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@drawable/borders_lightgray" />
+
+                <Spinner
+                    android:id="@+id/card_exp_years"
+                    android:layout_gravity="center"
+                    android:gravity="center|start"
+                    android:layout_width="146dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/borders_lightgray" />
+
+            </LinearLayout>
+
+            <TextView
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="CVV"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/card_cvv_container"
+                    android:layout_gravity="center"
+                    android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    app:hintEnabled="false"
+                    app:helperText="3 dígitos"
+                    tools:ignore="HardcodedText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/card_cvv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/card_cvv"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/black"
+                    android:text="Transacciones realizadas vía:"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/card_openpay_icon"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:text="Tus pagos se realizan de forma segura con encriptación de 256 bits"
+                tools:ignore="HardcodedText"
+                android:drawablePadding="8dp"
+                app:drawableStartCompat="@drawable/card_security_icon" />
+
+            <Button
+                android:id="@+id/perform_payment"
+                android:layout_gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:text="REALIZAR PAGO"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include android:id="@+id/loading" layout="@layout/loading_window" android:visibility="invisible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

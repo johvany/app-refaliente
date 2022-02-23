@@ -12,7 +12,7 @@
 
         <item
             android:id="@+id/nav_shopping_cart"
-            android:icon="@drawable/outline_shopping_cart_24"
+            android:icon="@drawable/baseline_shopping_cart_24"
             android:title="Carrito de compras"
             tools:ignore="HardcodedText" />
 
@@ -24,8 +24,14 @@
 
         <item
             android:id="@+id/nav_purchases"
-            android:icon="@drawable/outline_local_mall_24"
+            android:icon="@drawable/baseline_local_mall_24"
             android:title="Mis compras"
+            tools:ignore="HardcodedText" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/baseline_info_24"
+            android:title="Información"
             tools:ignore="HardcodedText" />
 
     </group>

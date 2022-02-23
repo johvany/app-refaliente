@@ -7,12 +7,12 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/simple_address_name"
+        android:id="@+id/year_value"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Eje 140, AV. Central #445, San Luis Potosí, S.L.P."
+        android:layout_height="34dp"
+        android:text="22"
+        android:gravity="center|start"
         android:layout_margin="8dp"
-        android:paddingVertical="8dp"
         tools:ignore="HardcodedText" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

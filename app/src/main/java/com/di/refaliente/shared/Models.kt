@@ -1,5 +1,9 @@
 package com.di.refaliente.shared
 
+data class PurchaseHeader(
+    val idPurchase: String
+)
+
 data class PublicationSmall(
     val idPublication: Int,
     val title: String,
@@ -40,4 +44,12 @@ data class UserDetail(
     val rfc: String?,
     val socialReason: String?,
     val enterpriseName: String?
+)
+
+data class CardMonth(
+    val value: String
+)
+
+data class CardYear(
+    val value: String
 )

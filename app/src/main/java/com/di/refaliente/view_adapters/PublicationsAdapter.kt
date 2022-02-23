@@ -14,14 +14,12 @@ import com.di.refaliente.R
 import com.di.refaliente.databinding.RowItemPublicationSmallBinding
 import com.di.refaliente.shared.NumberFormatHelper
 import com.di.refaliente.shared.PublicationSmall
-import java.text.DecimalFormat
 
 class PublicationsAdapter(
     private val items: ArrayList<PublicationSmall>,
     private val context: Context,
     private val onClick: (idPublication: Int) -> Unit
 ) : RecyclerView.Adapter<PublicationsAdapter.ViewHolder>() {
-    private val decimalFormat = DecimalFormat("#,###,###,##0.00")
     private val numberFormatHelper = NumberFormatHelper()
 
     class ViewHolder(val binding: RowItemPublicationSmallBinding) : RecyclerView.ViewHolder(binding.root)
@@ -33,13 +31,13 @@ class PublicationsAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.publicationTitle.text = items[position].title
-        holder.binding.publicationPrice.text = "MXN $" + decimalFormat.format(numberFormatHelper.strToDouble(items[position].price))
+        holder.binding.publicationPrice.text = "MXN $" + numberFormatHelper.format2Decimals(items[position].price)
 
         if (items[position].priceOld == null) {
             holder.binding.publicationPriceOld.visibility = View.INVISIBLE
         } else {
             holder.binding.publicationPriceOld.visibility = View.VISIBLE
-            holder.binding.publicationPriceOld.text = "MXN $" + decimalFormat.format(numberFormatHelper.strToDouble(items[position].priceOld!!))
+            holder.binding.publicationPriceOld.text = "MXN $" + numberFormatHelper.format2Decimals(items[position].priceOld!!)
             holder.binding.publicationPriceOld.paintFlags = holder.binding.publicationPriceOld.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 

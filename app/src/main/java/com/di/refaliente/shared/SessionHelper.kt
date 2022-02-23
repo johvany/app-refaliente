@@ -187,5 +187,15 @@ class SessionHelper {
                 Utilities.showRequestError(customAlertDialog, null)
             }
         }
+
+        fun showRequiredSessionMessage(context: Context) {
+            MaterialAlertDialogBuilder(context)
+                .setTitle("Inicio de sesión requerido")
+                .setMessage("Necesita iniciar sesión para poder usar esta funcionalidad.")
+                .setCancelable(true)
+                .setNegativeButton("CANCELAR", null)
+                .setPositiveButton("INICIAR SESIÓN") { _, _ -> login(context) }
+                .show()
+        }
     }
 }

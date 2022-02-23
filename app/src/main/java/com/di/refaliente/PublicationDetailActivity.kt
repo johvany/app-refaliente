@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
@@ -18,12 +19,10 @@ import com.di.refaliente.databinding.RowItemProductCommentBinding
 import com.di.refaliente.shared.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.text.DecimalFormat
 
 class PublicationDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPublicationDetailBinding
     private lateinit var customAlertDialog: CustomAlertDialog
-    private val decimalFormat = DecimalFormat("#,###,###,##0.00")
     private val numberFormatHelper = NumberFormatHelper()
     private var idPublication = ""
 
@@ -34,12 +33,34 @@ class PublicationDetailActivity : AppCompatActivity() {
 
         customAlertDialog = CustomAlertDialog(this)
         idPublication = intent.extras!!.getInt("id_publication").toString()
-
-        binding.buyProduct.setOnClickListener {
-            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
-        }
-
+        binding.buyProduct.setOnClickListener { buyProduct() }
+        binding.addToFavorites.setOnClickListener { addProductToFavorites() }
+        binding.addToShoppingCart.setOnClickListener { addProductToShoppingCart() }
         getPublicationById(idPublication)
+    }
+
+    private fun buyProduct() {
+        if (SessionHelper.userLogged()) {
+            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
+        } else {
+            SessionHelper.showRequiredSessionMessage(this)
+        }
+    }
+
+    private fun addProductToFavorites() {
+        if (SessionHelper.userLogged()) {
+            Toast.makeText(this, "...Agregar a favoritos está en construcción...", Toast.LENGTH_LONG).show()
+        } else {
+            SessionHelper.showRequiredSessionMessage(this)
+        }
+    }
+
+    private fun addProductToShoppingCart() {
+        if (SessionHelper.userLogged()) {
+            Toast.makeText(this, "...Agregar al carrito de compras está en construcción...", Toast.LENGTH_LONG).show()
+        } else {
+            SessionHelper.showRequiredSessionMessage(this)
+        }
     }
 
     private fun getPublicationById(idPublication: String) {
@@ -88,13 +109,13 @@ class PublicationDetailActivity : AppCompatActivity() {
 
         if (publicationData.getInt("has_discount") == 1) {
             binding.productPriceOld.visibility = View.VISIBLE
-            binding.productPriceOld.text = "MXN $" + decimalFormat.format(numberFormatHelper.strToDouble(publicationData.getString("previous_price")))
+            binding.productPriceOld.text = "MXN $" + numberFormatHelper.format2Decimals(publicationData.getString("previous_price"))
             binding.productPriceOld.paintFlags = binding.productPriceOld.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             binding.productPriceOld.visibility = View.INVISIBLE
         }
 
-        binding.productPrice.text = "MXN $" + decimalFormat.format(numberFormatHelper.strToDouble(publicationData.getString("product_price")))
+        binding.productPrice.text = "MXN $" + numberFormatHelper.format2Decimals(publicationData.getString("product_price"))
         binding.sellerName.text = sellerData.getString("name")
 
         // Load product image.

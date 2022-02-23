@@ -22,13 +22,14 @@
     <TextView
         android:id="@+id/publication_title"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:text="FAROS LED DELANTEROS CON PROTECTORES, DE LA MARCA SPYDER AUTO, NEGRO"
         android:layout_margin="8dp"
         android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@id/publication_img"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/publication_price_old"
         tools:ignore="HardcodedText" />
 
     <TextView

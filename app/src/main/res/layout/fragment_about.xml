@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home_menu_ui.FavoritesFragment">
+    tools:context=".home_menu_ui.AboutFragment">
 
     <TextView
         android:id="@+id/textview_1"
@@ -22,7 +22,7 @@
         android:id="@+id/textview_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Favoritos"
+        android:text="Información"
         android:textStyle="bold"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="parent"

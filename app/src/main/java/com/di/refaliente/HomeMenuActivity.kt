@@ -15,10 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityHomeMenuBinding
 import com.di.refaliente.databinding.NavHeaderHomeMenuBinding
-import com.di.refaliente.home_menu_ui.FavoritesFragment
-import com.di.refaliente.home_menu_ui.PublicationsFragment
-import com.di.refaliente.home_menu_ui.PurchasesFragment
-import com.di.refaliente.home_menu_ui.ShoppingCartFragment
+import com.di.refaliente.home_menu_ui.*
 import com.di.refaliente.local_database.Database
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
@@ -34,16 +31,17 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var shoppingCartFragment: ShoppingCartFragment
     private lateinit var favoritesFragment: FavoritesFragment
     private lateinit var purchasesFragment: PurchasesFragment
+    private lateinit var aboutFragment: AboutFragment
     private var userImageProfile: String? = null
+    private var isMenuItemSelected = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         initializeUserData()
 
-        // Initialize main request queue to be used by any component (activity or fragment).
+        // Initialize main request queue to be used by any component (activities or fragments).
         Utilities.queue = Volley.newRequestQueue(this)
 
         setupMenus()
@@ -112,6 +110,10 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         supportFragmentManager.getFragment(bundle, "purchases_fragment").let { fragment ->
             purchasesFragment = if (fragment == null) { PurchasesFragment() } else { fragment as PurchasesFragment }
         }
+
+        supportFragmentManager.getFragment(bundle, "about_fragment").let { fragment ->
+            aboutFragment = if (fragment == null) { AboutFragment() } else { fragment as AboutFragment }
+        }
     }
 
     private fun initFragments() {
@@ -119,6 +121,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         shoppingCartFragment = ShoppingCartFragment()
         favoritesFragment = FavoritesFragment()
         purchasesFragment = PurchasesFragment()
+        aboutFragment = AboutFragment()
     }
 
     private fun setupMenus() {
@@ -158,7 +161,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             toggle.syncState()
         }
 
-        // Add listener to handle item clicks in the menu.
+        // Add listener to handle item clicks in the side menu.
         binding.navView.setNavigationItemSelectedListener(this)
     }
 
@@ -170,6 +173,8 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         SessionHelper.logout(this)
     }
 
+    // This make a backup of the fragments and the checked item in the side menu. Useful to
+    // restore it when the activity is recreated, for example, on screen rotation.
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
 
@@ -177,6 +182,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (shoppingCartFragment.isAdded) { supportFragmentManager.putFragment(outState, "shopping_cart_fragment", shoppingCartFragment) }
         if (favoritesFragment.isAdded) { supportFragmentManager.putFragment(outState, "favorites_fragment", favoritesFragment) }
         if (purchasesFragment.isAdded) { supportFragmentManager.putFragment(outState, "purchases_fragment", purchasesFragment) }
+        if (aboutFragment.isAdded) { supportFragmentManager.putFragment(outState, "about_fragment", aboutFragment) }
 
         binding.navView.checkedItem.let { menuItem ->
             if (menuItem == null) {
@@ -206,10 +212,12 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         loadFragment(item.itemId)
         binding.drawerLayout.closeDrawer(GravityCompat.START, false)
-        return true
+        return isMenuItemSelected
     }
 
     private fun loadFragment(menuItemId: Int) {
+        isMenuItemSelected = true
+
         when (menuItemId) {
             R.id.nav_publications -> {
                 title = "Publicaciones"
@@ -219,24 +227,46 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     .commit()
             }
             R.id.nav_shopping_cart -> {
-                title = "Carrito de compras"
+                if (SessionHelper.userLogged()) {
+                    title = "Carrito de compras"
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_home_menu, shoppingCartFragment)
-                    .commit()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_home_menu, shoppingCartFragment)
+                        .commit()
+                } else {
+                    isMenuItemSelected = false
+                    SessionHelper.showRequiredSessionMessage(this)
+                }
             }
             R.id.nav_favorites -> {
-                title = "Favoritos"
+                if (SessionHelper.userLogged()) {
+                    title = "Favoritos"
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_home_menu, favoritesFragment)
-                    .commit()
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_home_menu, favoritesFragment)
+                        .commit()
+                } else {
+                    isMenuItemSelected = false
+                    SessionHelper.showRequiredSessionMessage(this)
+                }
             }
             R.id.nav_purchases -> {
-                title = "Mis compras"
+                if (SessionHelper.userLogged()) {
+                    title = "Mis compras"
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_home_menu, purchasesFragment)
+                        .commit()
+                } else {
+                    isMenuItemSelected = false
+                    SessionHelper.showRequiredSessionMessage(this)
+                }
+            }
+            R.id.nav_about -> {
+                title = "Información"
 
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_home_menu, purchasesFragment)
+                    .replace(R.id.nav_host_fragment_content_home_menu, aboutFragment)
                     .commit()
             }
         }

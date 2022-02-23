@@ -269,7 +269,7 @@
                 android:text="AGREGAR"
                 android:layout_margin="4dp"
                 android:drawableTint="@color/white"
-                android:drawableLeft="@drawable/outline_shopping_cart_24"
+                android:drawableLeft="@drawable/baseline_shopping_cart_24"
                 tools:ignore="ButtonStyle,HardcodedText,RtlHardcoded" />
 
         </LinearLayout>
