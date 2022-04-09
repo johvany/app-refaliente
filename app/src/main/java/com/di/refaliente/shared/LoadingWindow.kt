@@ -10,7 +10,7 @@ import com.di.refaliente.databinding.LoadingWindowBinding
  * @param viewsToDisable
  * Array of views that will be disabled when the loading window is showing (when calling
  * LoadingWindow.show() function). The views will be enabled after hide loading (when calling
- * "LoadingWindow.show()" function).
+ * LoadingWindow.show() function).
  *
  * @author Spiderman E22.
  */

@@ -1,6 +1,7 @@
 package com.di.refaliente
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -47,6 +48,21 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         setupMenus()
         initFragmentsAndLoadOne(savedInstanceState)
         loadUserDataInTheSideMenu()
+        checkIfShouldLoadPurchases()
+    }
+
+    // This function is used to know if a new purchase was made and the user want to see it.
+    // The function verify a boolean parameter passed to this activity, if the value is true
+    // then the purchases fragmente is loaded and also reset the parameter, to prevent always
+    // load this fragmente, for example, on screen rotation.
+    private fun checkIfShouldLoadPurchases() {
+        intent.extras?.getBoolean("should_load_purchases")?.let { loadPurchases ->
+            if (loadPurchases) {
+                intent = Intent(this, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                binding.navView.setCheckedItem(R.id.nav_purchases)
+                loadFragment(R.id.nav_purchases)
+            }
+        }
     }
 
     // Initialize user data (if there is a logged user) and user image profile to load it later.
@@ -175,8 +191,8 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     // This make a backup of the fragments and the checked item in the side menu. Useful to
     // restore it when the activity is recreated, for example, on screen rotation.
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
         if (publicationsFragment.isAdded) { supportFragmentManager.putFragment(outState, "publications_fragment", publicationsFragment) }
         if (shoppingCartFragment.isAdded) { supportFragmentManager.putFragment(outState, "shopping_cart_fragment", shoppingCartFragment) }

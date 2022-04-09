@@ -9,6 +9,7 @@ class Utilities {
         fun showUnconnectedMessage(customAlertDialog: CustomAlertDialog) {
             customAlertDialog.setTitle("Sin conexión")
             customAlertDialog.setMessage("Por favor asegúrate de tener una conexión a internet e intenta de nuevo.")
+            customAlertDialog.setErrorDetail(null)
             customAlertDialog.show()
         }
 

@@ -3,14 +3,15 @@ package com.di.refaliente
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.di.refaliente.databinding.ActivityPaymentBinding
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.CardMonthsAdapter
 import com.di.refaliente.view_adapters.CardYearsAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import mx.openpay.android.Openpay
 import mx.openpay.android.OperationCallBack
 import mx.openpay.android.OperationResult
@@ -18,6 +19,7 @@ import mx.openpay.android.exceptions.OpenpayServiceException
 import mx.openpay.android.exceptions.ServiceUnavailableException
 import mx.openpay.android.model.Card
 import mx.openpay.android.model.Token
+import org.json.JSONArray
 import org.json.JSONObject
 
 class PaymentActivity : AppCompatActivity() {
@@ -27,15 +29,14 @@ class PaymentActivity : AppCompatActivity() {
     private var idPublication = 0
     private var idSelectedAddress = 0
 
-    // ... Delete when finish testing ...
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n") // ... Delete when finish testing ...
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPaymentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initVars()
         loadCardExpMonths()
-        loadCardExpYears()
+        getCardExpYears()
         binding.performPayment.setOnClickListener { performProductPaymentSetp1() }
 
         // ... Delete when finish testing ...
@@ -75,6 +76,7 @@ class PaymentActivity : AppCompatActivity() {
                 val openpay = Openpay("mnlzf7phddp7tgia3ifp", "pk_985217fa745c4f5da1e88b90f69e9ddf", false)
                 val deviceSessionId = openpay.deviceCollectorDefaultImpl.setup(this)
 
+                // TODO: Validar datos antes de crear el objecto card ...
                 val card = Card()
                 card.holderName = binding.cardUserName.text.toString()
                 card.cardNumber = binding.cardNumber.text.toString()
@@ -85,7 +87,19 @@ class PaymentActivity : AppCompatActivity() {
                 openpay.createToken(card, object: OperationCallBack<Token> {
                     override fun onError(error: OpenpayServiceException?) {
                         loading.hide()
-                        Utilities.showRequestError(customAlertDialog, error?.description)
+
+                        error?.errorCode?.let { code ->
+                            val msg = when (code) {
+                                3001 -> "La tarjeta fue declinada por el banco (código $code)."
+                                3002 -> "La tarjeta ha expirado (código $code)."
+                                3003 -> "La tarjeta no tiene fondos suficientes (código $code)."
+                                3004 -> "La tarjeta ha sido identificada como una tarjeta robada (código $code)."
+                                3005 -> "La tarjeta ha sido rechazada por el sistema antifraude (código $code)."
+                                else -> "Código del incidente: $code (${error.description})"
+                            }
+
+                            Utilities.showRequestError(customAlertDialog, msg)
+                        }
                     }
 
                     override fun onCommunicationError(error: ServiceUnavailableException?) {
@@ -128,7 +142,22 @@ class PaymentActivity : AppCompatActivity() {
                 .put("token_id", tokenId)
                 .put("device_session_id", deviceSessionId),
             {
-                startActivity(Intent(this, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Compra realizada")
+                    .setMessage(HtmlCompat.fromHtml(
+                        "¡Enhorabuena tu compra se realizo correctamente! Puedes encontrarla en el menú <strong>Mis compras</strong>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    ))
+                    .setCancelable(false)
+                    .setNegativeButton("SEGUIR BUSCANDO") { _, _ ->
+                        startActivity(Intent(this, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                    }
+                    .setPositiveButton("VER MIS COMPRAS") { _, _ ->
+                        startActivity(Intent(this, HomeMenuActivity::class.java)
+                            .putExtra("should_load_purchases", true)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                    }
+                    .show()
             },
             { error ->
                 SessionHelper.handleRequestError(error, this, customAlertDialog) {
@@ -169,14 +198,36 @@ class PaymentActivity : AppCompatActivity() {
         binding.cardExpMonths.adapter = CardMonthsAdapter(cardMonthsItems, layoutInflater)
     }
 
-    // ... Get this data from backend ...
-    private fun loadCardExpYears() {
+    private fun getCardExpYears() {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "payments/card-years",
+            null,
+            { response ->
+                loadCardExpYears(response.getJSONArray("card_years"))
+            },
+            { error ->
+                try {
+                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
+                } catch (err: Exception) {
+                    Utilities.showRequestError(customAlertDialog, error.toString())
+                }
+            }
+        ) {
+            // Set request headers here if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
+    }
+
+    private fun loadCardExpYears(data: JSONArray) {
+        val limit = data.length()
         val cardYearsItems = ArrayList<CardYear>()
-        cardYearsItems.add(CardYear("22"))
-        cardYearsItems.add(CardYear("23"))
-        cardYearsItems.add(CardYear("24"))
-        cardYearsItems.add(CardYear("25"))
-        cardYearsItems.add(CardYear("26"))
+        for (i in 0 until limit) { cardYearsItems.add(CardYear(data.getString(i))) }
         binding.cardExpYears.adapter = CardYearsAdapter(cardYearsItems, layoutInflater)
     }
 }
