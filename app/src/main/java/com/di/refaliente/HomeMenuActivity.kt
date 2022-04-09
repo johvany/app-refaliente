@@ -67,7 +67,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
     // Initialize user data (if there is a logged user) and user image profile to load it later.
     private fun initializeUserData() {
-        Database(this).use { db ->
+        Database(this).let { db ->
             SessionHelper.user = UsersTable.find(db, 1)
             UsersDetailsTable.find(db, 1)?.let { userDetail -> userImageProfile = userDetail.profileImage }
         }
