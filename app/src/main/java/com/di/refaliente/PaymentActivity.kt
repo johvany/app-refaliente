@@ -21,6 +21,9 @@ import mx.openpay.android.model.Card
 import mx.openpay.android.model.Token
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPaymentBinding
@@ -39,7 +42,7 @@ class PaymentActivity : AppCompatActivity() {
         getCardExpYears()
         binding.performPayment.setOnClickListener { performProductPaymentSetp1() }
 
-        // ... Delete when finish testing ...
+        // TODO: Delete this when release a version of this app in production.
         binding.title.setOnClickListener {
             binding.cardUserName.setText("Juan Perez Ramirez")
             binding.cardNumber.setText("4111111111111111")
@@ -70,60 +73,120 @@ class PaymentActivity : AppCompatActivity() {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
-            loading.show()
+            when {
+                !requiredFieldsFilled() -> {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Campos requeridos")
+                        .setMessage("Por favor llena todos los campos requeridos.")
+                        .setCancelable(true)
+                        .setPositiveButton("ACEPTAR", null)
+                        .show()
+                }
+                !expirationMonthOk() -> {
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Tarjeta expirada")
+                        .setMessage("La fecha de expiración debe ser mayor o igual a la fecha actual. Por favor revisa el mes y año de expiración.")
+                        .setCancelable(true)
+                        .setPositiveButton("ACEPTAR", null)
+                        .show()
+                }
+                else -> {
+                    loading.show()
 
-            try {
-                val openpay = Openpay("mnlzf7phddp7tgia3ifp", "pk_985217fa745c4f5da1e88b90f69e9ddf", false)
-                val deviceSessionId = openpay.deviceCollectorDefaultImpl.setup(this)
+                    try {
+                        val openpay = Openpay(
+                            "mnlzf7phddp7tgia3ifp",
+                            "pk_985217fa745c4f5da1e88b90f69e9ddf",
+                            false
+                        )
+                        val deviceSessionId = openpay.deviceCollectorDefaultImpl.setup(this)
 
-                // TODO: Validar datos antes de crear el objecto card ...
-                val card = Card()
-                card.holderName = binding.cardUserName.text.toString()
-                card.cardNumber = binding.cardNumber.text.toString()
-                card.expirationMonth = (binding.cardExpMonths.selectedItem as CardMonth).value
-                card.expirationYear = (binding.cardExpYears.selectedItem as CardYear).value
-                card.cvv2 = binding.cardCvv.text.toString()
+                        val card = Card()
+                        card.holderName = binding.cardUserName.text.toString()
+                        card.cardNumber = binding.cardNumber.text.toString()
+                        card.expirationMonth =
+                            (binding.cardExpMonths.selectedItem as CardMonth).value
+                        card.expirationYear = (binding.cardExpYears.selectedItem as CardYear).value
+                        card.cvv2 = binding.cardCvv.text.toString()
 
-                openpay.createToken(card, object: OperationCallBack<Token> {
-                    override fun onError(error: OpenpayServiceException?) {
-                        loading.hide()
+                        openpay.createToken(card, object : OperationCallBack<Token> {
+                            override fun onError(error: OpenpayServiceException?) {
+                                loading.hide()
 
-                        error?.errorCode?.let { code ->
-                            val msg = when (code) {
-                                3001 -> "La tarjeta fue declinada por el banco (código $code)."
-                                3002 -> "La tarjeta ha expirado (código $code)."
-                                3003 -> "La tarjeta no tiene fondos suficientes (código $code)."
-                                3004 -> "La tarjeta ha sido identificada como una tarjeta robada (código $code)."
-                                3005 -> "La tarjeta ha sido rechazada por el sistema antifraude (código $code)."
-                                else -> "Código del incidente: $code (${error.description})"
+                                error?.errorCode?.let { code ->
+                                    val msg = when (code) {
+                                        3001 -> "La tarjeta fue declinada por el banco (código $code)."
+                                        3002 -> "La tarjeta ha expirado (código $code)."
+                                        3003 -> "La tarjeta no tiene fondos suficientes (código $code)."
+                                        3004 -> "La tarjeta ha sido identificada como una tarjeta robada (código $code)."
+                                        3005 -> "La tarjeta ha sido rechazada por el sistema antifraude (código $code)."
+                                        else -> "Código del incidente: $code (${error.description})"
+                                    }
+
+                                    Utilities.showRequestError(customAlertDialog, msg)
+                                }
                             }
 
-                            Utilities.showRequestError(customAlertDialog, msg)
-                        }
-                    }
+                            override fun onCommunicationError(error: ServiceUnavailableException?) {
+                                loading.hide()
+                                Utilities.showUnconnectedMessage(customAlertDialog)
+                            }
 
-                    override fun onCommunicationError(error: ServiceUnavailableException?) {
+                            override fun onSuccess(operationResult: OperationResult<Token>?) {
+                                operationResult?.result?.id?.let { tokenId ->
+                                    performProductPaymentSetp2(
+                                        idPublication,
+                                        idSelectedAddress,
+                                        tokenId,
+                                        deviceSessionId,
+                                        true
+                                    )
+                                }
+                            }
+                        })
+                    } catch (err: Exception) {
                         loading.hide()
-                        Utilities.showUnconnectedMessage(customAlertDialog)
+                        Utilities.showUnknownError(customAlertDialog, null)
                     }
-
-                    override fun onSuccess(operationResult: OperationResult<Token>?) {
-                        operationResult?.result?.id?.let { tokenId ->
-                            performProductPaymentSetp2(
-                                idPublication,
-                                idSelectedAddress,
-                                tokenId,
-                                deviceSessionId,
-                                true
-                            )
-                        }
-                    }
-                })
-            } catch (err: Exception) {
-                loading.hide()
-                Utilities.showUnknownError(customAlertDialog, null)
+                }
             }
         }
+    }
+
+    private fun expirationMonthOk(): Boolean {
+        return (binding.cardExpMonths.selectedItem as CardMonth).value.toInt() >= SimpleDateFormat("MM", Locale.ROOT).format(Date()).toInt()
+    }
+
+    private fun requiredFieldsFilled(): Boolean {
+        var allok = true
+
+        // Reset all errors of all required fields
+        binding.cardUserNameContainer.error = null
+        binding.cardUserNameContainer.isErrorEnabled = false
+        binding.cardNumberContainer.error = null
+        binding.cardNumberContainer.isErrorEnabled = false
+        binding.cardCvvContainer.error = null
+        binding.cardCvvContainer.isErrorEnabled = false
+
+        if (binding.cardUserName.text.toString() == "") {
+            allok = false
+            binding.cardUserNameContainer.error = " "
+            binding.cardUserNameContainer.isErrorEnabled = true
+        }
+
+        if (binding.cardNumber.text.toString() == "") {
+            allok = false
+            binding.cardNumberContainer.error = " "
+            binding.cardNumberContainer.isErrorEnabled = true
+        }
+
+        if (binding.cardCvv.text.toString() == "") {
+            allok = false
+            binding.cardCvvContainer.error = " "
+            binding.cardCvvContainer.isErrorEnabled = true
+        }
+
+        return allok
     }
 
     private fun performProductPaymentSetp2(

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.bumptech.glide.Glide
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityProductBuyingPreviewBinding
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.SimpleAddressAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -30,6 +32,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         binding.productTitle.text = ""
         binding.productAmount.text = ""
         customAlertDialog = CustomAlertDialog(this)
+        binding.comeback.setOnClickListener { finish() }
         binding.buyProduct.setOnClickListener { buyProduct() }
         getData()
     }
@@ -42,7 +45,16 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         }
 
         if (selectedAddress == null) {
-            // ... Show empty address message here ...
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Sin direcciones")
+                .setMessage(HtmlCompat.fromHtml(
+                    "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra. Por favor inicia sesión en <span style=\"color: #1877F2;\">www.refaliente.com</span> y agrega una dirección. Una vez agregada podrás regresar a esta pantalla y continuar con tu compra.",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                ))
+                .setCancelable(false)
+                .setPositiveButton("ACEPTAR", null)
+                .show()
+
         } else {
             startActivity(Intent(this, PaymentActivity::class.java)
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())

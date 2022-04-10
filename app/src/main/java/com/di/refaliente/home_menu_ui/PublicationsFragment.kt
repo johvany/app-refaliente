@@ -2,6 +2,8 @@ package com.di.refaliente.home_menu_ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,7 @@ import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.PublicationsAdapter
 import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URLEncoder
 
 class PublicationsFragment : Fragment() {
     private lateinit var binding: FragmentPublicationsBinding
@@ -27,6 +30,7 @@ class PublicationsFragment : Fragment() {
     private var gettingPublications = false
     private var itemsRemoved = 0
     private var scrollLimitReached = false
+    private var searchText = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPublicationsBinding.inflate(inflater, container, false)
@@ -46,6 +50,29 @@ class PublicationsFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 handlePublicationsScrollEvent()
+            }
+        })
+
+        binding.searchBtn.setOnClickListener {
+            searchText = binding.searchText.text.toString()
+            refreshPublications()
+        }
+
+        binding.searchClear.setOnClickListener {
+            binding.searchClear.visibility = View.INVISIBLE
+            binding.searchText.setText("")
+        }
+
+        binding.searchText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { /* ... */ }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { /* ... */ }
+
+            override fun afterTextChanged(input: Editable?) {
+                if (input.toString() == "") {
+                    binding.searchClear.visibility = View.INVISIBLE
+                } else {
+                    binding.searchClear.visibility = View.VISIBLE
+                }
             }
         })
 
@@ -93,9 +120,18 @@ class PublicationsFragment : Fragment() {
             binding.refresh.isRefreshing = true
             gettingPublications = true
 
+            val url = if (searchText == "") {
+                resources.getString(R.string.api_url) + "get-all-publications?page=" + currentPage
+            } else {
+                resources.getString(R.string.api_url) +
+                        "find-publications-by-title?page=" + currentPage +
+                        "&condition=0&order=1" +
+                        "&title=" + URLEncoder.encode(searchText, "utf-8")
+            }
+
             Utilities.queue?.add(object: JsonObjectRequest(
                 Method.GET,
-                resources.getString(R.string.api_url) + "get-all-publications?page=" + currentPage,
+                url,
                 null,
                 { response ->
                     binding.refresh.isRefreshing = false
@@ -144,9 +180,17 @@ class PublicationsFragment : Fragment() {
             ))
         }
 
-        if (publicationsItems.size > oldSize) {
+        val publicationsItemsCount = publicationsItems.size
+
+        if (publicationsItemsCount > oldSize) {
             binding.publications.adapter?.notifyItemRangeInserted(oldSize, limit)
             if (scrollLimitReached) { binding.publications.scrollToPosition(oldSize) }
+        }
+
+        if (publicationsItemsCount > 0) {
+            binding.resultMsg.visibility = View.INVISIBLE
+        } else {
+            binding.resultMsg.visibility = View.VISIBLE
         }
 
         scrollLimitReached = false

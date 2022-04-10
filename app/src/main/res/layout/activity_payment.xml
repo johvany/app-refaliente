@@ -151,23 +151,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <Spinner
-                    android:id="@+id/card_exp_months"
-                    android:layout_gravity="center"
-                    android:gravity="center|start"
-                    android:layout_width="146dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/borders_lightgray" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/borders_lightgray"
+                    android:layout_marginEnd="4dp">
 
-                <Spinner
-                    android:id="@+id/card_exp_years"
-                    android:layout_gravity="center"
-                    android:gravity="center|start"
-                    android:layout_width="146dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/borders_lightgray" />
+                    <Spinner
+                        android:id="@+id/card_exp_months"
+                        android:layout_gravity="center"
+                        android:gravity="center|start"
+                        android:layout_width="146dp"
+                        android:layout_height="50dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/borders_lightgray"
+                    android:layout_marginStart="4dp">
+
+                    <Spinner
+                        android:id="@+id/card_exp_years"
+                        android:layout_gravity="center"
+                        android:gravity="center|start"
+                        android:layout_width="146dp"
+                        android:layout_height="50dp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

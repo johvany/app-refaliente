@@ -32,13 +32,11 @@ class LoginActivity : AppCompatActivity() {
         customAlertDialog = CustomAlertDialog(this)
         db = Database(this)
 
-        // ------------------------------------------------------------------------------
-        // TODO: Don't forget delete this after finish testing.
+        // TODO: Delete this when release a version of this app in production.
         binding.loginIcon.setOnClickListener {
             binding.userEmail.setText("programadorequis@gmail.com")
             binding.userPassword.setText("123123123")
         }
-        // ------------------------------------------------------------------------------
 
         binding.facebookLoginBtn.setOnClickListener { loginWithFacebook() }
         binding.googleLoginBtn.setOnClickListener { loginWithGoogle() }
