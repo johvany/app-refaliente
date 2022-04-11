@@ -10,9 +10,10 @@
     <ImageView
         android:id="@+id/login_icon"
         android:layout_width="100dp"
-        android:layout_height="70dp"
+        android:layout_height="100dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/refalientelogin"
+        android:scaleType="centerInside"
+        android:src="@drawable/refaliente_app_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
