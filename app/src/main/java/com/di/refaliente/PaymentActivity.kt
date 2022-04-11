@@ -41,6 +41,7 @@ class PaymentActivity : AppCompatActivity() {
         loadCardExpMonths()
         getCardExpYears()
         binding.performPayment.setOnClickListener { performProductPaymentSetp1() }
+        binding.backArrow.setOnClickListener { finish() }
 
         // TODO: Delete this when release a version of this app in production.
         binding.title.setOnClickListener {

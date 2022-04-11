@@ -32,7 +32,8 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         binding.productTitle.text = ""
         binding.productAmount.text = ""
         customAlertDialog = CustomAlertDialog(this)
-        binding.comeback.setOnClickListener { finish() }
+        // binding.comeback.setOnClickListener { finish() }
+        binding.backArrow.setOnClickListener { finish() }
         binding.buyProduct.setOnClickListener { buyProduct() }
         getData()
     }

@@ -65,7 +65,7 @@
         android:theme="@style/BuyRedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="COMPRAR >>>"
+        android:text="COMPRAR"
         app:layout_constraintTop_toBottomOf="@id/publication_img"
         app:layout_constraintStart_toStartOf="@id/publication_img"
         app:layout_constraintEnd_toEndOf="@id/publication_img"

@@ -36,6 +36,8 @@ class PublicationDetailActivity : AppCompatActivity() {
         binding.buyProduct.setOnClickListener { buyProduct() }
         binding.addToFavorites.setOnClickListener { addProductToFavorites() }
         binding.addToShoppingCart.setOnClickListener { addProductToShoppingCart() }
+        binding.backArrow.setOnClickListener { finish() }
+
         getPublicationById(idPublication)
     }
 

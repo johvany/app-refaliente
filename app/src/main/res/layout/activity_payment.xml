@@ -7,7 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".PaymentActivity">
 
+    <View
+        android:id="@+id/header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/red_700" />
+
+    <ImageButton
+        android:id="@+id/back_arrow"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/header_bg"
+        app:layout_constraintTop_toTopOf="@id/header_bg"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:tint="#FFFFFF"
+        android:background="#00FFFFFF"
+        tools:ignore="ContentDescription" />
+
     <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Tarjeta de crédito o débito"
+        android:paddingHorizontal="8dp"
+        android:gravity="center|start"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/back_arrow"
+        app:layout_constraintEnd_toEndOf="@id/header_bg"
+        app:layout_constraintTop_toTopOf="@id/header_bg"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
+        tools:ignore="HardcodedText" />
+
+    <!-- <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -20,7 +57,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText" /> -->
 
     <ScrollView
         android:orientation="vertical"
@@ -28,7 +65,7 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/header_bg"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
