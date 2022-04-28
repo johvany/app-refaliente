@@ -16,7 +16,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
 import com.di.refaliente.databinding.RowItemProductCommentBinding
+import com.di.refaliente.home_menu_ui.PublicationsFragment
 import com.di.refaliente.shared.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -25,6 +27,7 @@ class PublicationDetailActivity : AppCompatActivity() {
     private lateinit var customAlertDialog: CustomAlertDialog
     private val numberFormatHelper = NumberFormatHelper()
     private var idPublication = ""
+    private var publicationKeyUser = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +46,16 @@ class PublicationDetailActivity : AppCompatActivity() {
 
     private fun buyProduct() {
         if (SessionHelper.userLogged()) {
-            startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
+            if (publicationKeyUser == SessionHelper.user!!.sub) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Publicación propia")
+                    .setMessage("No se puede realizar la compra. Usted no puede comprar sus propios productos.")
+                    .setCancelable(true)
+                    .setPositiveButton("ACEPTAR", null)
+                    .show()
+            } else {
+                startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
+            }
         } else {
             SessionHelper.showRequiredSessionMessage(this)
         }
@@ -59,9 +71,65 @@ class PublicationDetailActivity : AppCompatActivity() {
 
     private fun addProductToShoppingCart() {
         if (SessionHelper.userLogged()) {
-            Toast.makeText(this, "...Agregar al carrito de compras está en construcción...", Toast.LENGTH_LONG).show()
+            if (publicationKeyUser == SessionHelper.user!!.sub) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Publicación propia")
+                    .setMessage("No se puede realizar la compra. Usted no puede comprar sus propios productos.")
+                    .setCancelable(true)
+                    .setPositiveButton("ACEPTAR", null)
+                    .show()
+            } else {
+                performAddProductToShoppingCart(true)
+            }
         } else {
             SessionHelper.showRequiredSessionMessage(this)
+        }
+    }
+
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    private fun performAddProductToShoppingCart(canRepeat: Boolean) {
+        if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+            Utilities.showUnconnectedMessage(customAlertDialog)
+        } else {
+            Utilities.queue?.add(object: JsonObjectRequest(
+                Method.PUT,
+                resources.getString(R.string.api_url) + "add-publication-to-shopping-cart",
+                JSONObject()
+                    .put("key_publication", idPublication)
+                    .put("key_user", SessionHelper.user!!.sub)
+                    .put("quantity", 1),
+                { response ->
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle("Producto agregado")
+                        .setMessage("Se agregó el producto a su carrito de compras.")
+                        .setCancelable(false)
+                        .setNegativeButton("SEGUIR BUSCANDO", null)
+                        .setPositiveButton("VER CARRITO") { _, _ ->
+                            setResult(PublicationsFragment.LOAD_SHOPPING_CART)
+                            finish()
+                        }
+                        .show()
+                },
+                { error ->
+                    SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                        if (canRepeat) {
+                            performAddProductToShoppingCart(false)
+                        } else {
+                            Utilities.showRequestError(customAlertDialog, null)
+                        }
+                    }
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+                }
+            }.apply {
+                retryPolicy = DefaultRetryPolicy(
+                    ConstantValues.REQUEST_TIMEOUT,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+            })
         }
     }
 
@@ -97,6 +165,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         val productData = publicationData.getJSONObject("product")
         val sellerData = publicationData.getJSONObject("user")
 
+        publicationKeyUser = publicationData.getInt("key_user")
         binding.publicationTitle.text = publicationData.getString("title")
         handleProductCondition(productData.getInt("key_condition"))
         handlePublicationStars(productData.getInt("qualification"))

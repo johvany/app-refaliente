@@ -53,7 +53,7 @@ class PaymentActivity : AppCompatActivity() {
 
     private fun initVars() {
         customAlertDialog = CustomAlertDialog(this)
-        idPublication = intent.extras!!.getInt("id_publication")
+        idPublication = intent.extras?.getInt("id_publication") ?: 0
         idSelectedAddress = intent.extras!!.getInt("id_selected_address")
 
         // The views passed here will be disabled when the loading window is showing and will be
@@ -140,7 +140,8 @@ class PaymentActivity : AppCompatActivity() {
                                         idSelectedAddress,
                                         tokenId,
                                         deviceSessionId,
-                                        true
+                                        true,
+                                        intent.extras!!.getBoolean("single_purchase")
                                     )
                                 }
                             }
@@ -195,16 +196,34 @@ class PaymentActivity : AppCompatActivity() {
         idCustomerAddress: Int,
         tokenId: String,
         deviceSessionId: String,
-        canRepeat: Boolean
+        canRepeat: Boolean,
+        singlePurchase: Boolean
     ) {
-        Utilities.queue?.add(object: JsonObjectRequest(
-            Method.POST,
-            resources.getString(R.string.api_url) + "products/buy",
-            JSONObject()
+        val endpoint: String
+        val data: JSONObject
+
+        if (singlePurchase) {
+            endpoint = resources.getString(R.string.api_url) + "products/buy"
+
+            data = JSONObject()
                 .put("id_publication", idPublication)
                 .put("id_customer_address", idCustomerAddress)
                 .put("token_id", tokenId)
-                .put("device_session_id", deviceSessionId),
+                .put("device_session_id", deviceSessionId)
+        } else {
+            endpoint = resources.getString(R.string.api_url) + "buy-shopping-cart"
+
+            data = JSONObject()
+                .put("key_customer", intent.extras!!.getInt("key_customer"))
+                .put("key_customer_address", idCustomerAddress)
+                .put("token_id", tokenId)
+                .put("device_session_id", deviceSessionId)
+        }
+
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.POST,
+            endpoint,
+            data,
             {
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Compra realizada")
@@ -226,7 +245,7 @@ class PaymentActivity : AppCompatActivity() {
             { error ->
                 SessionHelper.handleRequestError(error, this, customAlertDialog) {
                     if (canRepeat) {
-                        performProductPaymentSetp2(idPublication, idCustomerAddress, tokenId, deviceSessionId, false)
+                        performProductPaymentSetp2(idPublication, idCustomerAddress, tokenId, deviceSessionId, false, singlePurchase)
                     } else {
                         Utilities.showRequestError(customAlertDialog, null)
                     }

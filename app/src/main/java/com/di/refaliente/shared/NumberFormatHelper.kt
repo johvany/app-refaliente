@@ -4,6 +4,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class NumberFormatHelper {
     private val numberFormat = NumberFormat.getInstance(Locale.US)
     private val decimalFormat2Decimals = DecimalFormat("#,###,###,##0.00")

@@ -7,11 +7,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
+import com.di.refaliente.HomeMenuActivity
 import com.di.refaliente.PublicationDetailActivity
 import com.di.refaliente.R
 import com.di.refaliente.databinding.FragmentPublicationsBinding
@@ -22,6 +25,10 @@ import org.json.JSONObject
 import java.net.URLEncoder
 
 class PublicationsFragment : Fragment() {
+    companion object {
+        const val LOAD_SHOPPING_CART = 1
+    }
+
     private lateinit var binding: FragmentPublicationsBinding
     private val publicationsItems = ArrayList<PublicationSmall>()
     private lateinit var customAlertDialog: CustomAlertDialog
@@ -31,6 +38,8 @@ class PublicationsFragment : Fragment() {
     private var itemsRemoved = 0
     private var scrollLimitReached = false
     private var searchText = ""
+
+    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPublicationsBinding.inflate(inflater, container, false)
@@ -77,6 +86,12 @@ class PublicationsFragment : Fragment() {
         })
 
         getPublications(currentPage.toString())
+
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == LOAD_SHOPPING_CART) {
+                (requireActivity() as HomeMenuActivity).loadShoppingCart()
+            }
+        }
     }
 
     private fun initVars() {
@@ -108,7 +123,7 @@ class PublicationsFragment : Fragment() {
     }
 
     private fun showPublication(idPublication: Int) {
-        startActivity(Intent(requireContext(), PublicationDetailActivity::class.java).putExtra("id_publication", idPublication))
+        launcher.launch(Intent(requireContext(), PublicationDetailActivity::class.java).putExtra("id_publication", idPublication))
     }
 
     private fun getPublications(currentPage: String) {

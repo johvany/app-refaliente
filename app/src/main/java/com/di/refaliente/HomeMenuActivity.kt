@@ -224,6 +224,13 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true
     }
 
+    fun loadShoppingCart() {
+        binding.navView.menu.findItem(R.id.nav_shopping_cart).let { menuItem ->
+            binding.navView.setCheckedItem(menuItem)
+            onNavigationItemSelected(menuItem)
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         loadFragment(item.itemId)
         binding.drawerLayout.closeDrawer(GravityCompat.START, false)

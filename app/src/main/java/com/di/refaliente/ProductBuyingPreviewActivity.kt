@@ -59,6 +59,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         } else {
             startActivity(Intent(this, PaymentActivity::class.java)
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())
+                .putExtra("single_purchase", true)
                 .putExtra("id_selected_address", selectedAddress.idAddress))
         }
     }
@@ -69,7 +70,6 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         } else {
             if (SessionHelper.user != null) {
                 getProductDataBeforeBuyIt(intent.extras!!.getString("id_publication")!!, true)
-                getUserAddresses(SessionHelper.user!!.sub.toString(), true)
             }
         }
     }
@@ -81,6 +81,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             null,
             { response ->
                 loadProductData(response)
+                getUserAddresses(SessionHelper.user!!.sub.toString(), true)
             },
             { error ->
                 Utilities.queue?.cancelAll(requestTag)
