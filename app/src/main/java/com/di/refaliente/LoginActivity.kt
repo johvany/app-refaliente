@@ -4,16 +4,27 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.di.refaliente.databinding.ActivityLoginBinding
+import com.di.refaliente.databinding.DialogSocialNetworkRegisterBinding
 import com.di.refaliente.local_database.Database
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
 import com.di.refaliente.shared.*
+import com.di.refaliente.view_adapters.UserTypesAdapter
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
+import com.google.android.gms.common.api.ApiException
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
 import java.net.URLEncoder
 import java.util.regex.Pattern
@@ -22,22 +33,66 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var customAlertDialog: CustomAlertDialog
     private lateinit var db: Database
+    private lateinit var googleSigninLauncher: ActivityResultLauncher<Intent>
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        customAlertDialog = CustomAlertDialog(this)
-        db = Database(this)
+        googleSigninLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            activityResult.data?.let { data ->
+                try {
+                    val completedTask = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    val account = completedTask.getResult(ApiException::class.java)
+                    val userEmail = account.email
+                    val userPassword = account.idToken
+                    val userName = account.givenName
+                    val userLastName = account.familyName
 
-        // TODO: Delete this when release a version of this app in production.
-        binding.loginIcon.setOnClickListener {
-            binding.userEmail.setText("programadorequis@gmail.com")
-            binding.userPassword.setText("123123123")
+                    if (
+                        userEmail != null &&
+                        userPassword != null &&
+                        userName != null &&
+                        userLastName != null
+                    ) {
+                        // loginStep1(userEmail, userPassword, userName, userLastName, true, "g")
+                    }
+                } catch (e: ApiException) {
+                    // The ApiException status code indicates the detailed failure reason.
+                    // Please refer to the GoogleSignInStatusCodes class reference for more information.
+
+                    // Here we can handle the main status codes.
+                    when (e.statusCode) {
+                        GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.SIGN_IN_REQUIRED -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.NETWORK_ERROR -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.INVALID_ACCOUNT -> {
+                            // ...
+                        }
+                        GoogleSignInStatusCodes.INTERNAL_ERROR -> {
+                            // ...
+                        }
+                    }
+                }
+            }
         }
 
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        customAlertDialog = CustomAlertDialog(this)
+        db = Database(this)
         binding.facebookLoginBtn.setOnClickListener { loginWithFacebook() }
         binding.googleLoginBtn.setOnClickListener { loginWithGoogle() }
         binding.startSession.setOnClickListener { startSession() }
@@ -52,7 +107,27 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithGoogle() {
-        Toast.makeText(this, "...Iniciar sesión con Google esta en construcción...", Toast.LENGTH_LONG).show()
+        if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+            Utilities.showUnconnectedMessage(customAlertDialog)
+        } else {
+            // Configure sign-in to request the user's ID, email address, and basic
+            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+            // Configure sign-in to request the user's ID, email address, and basic
+            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(resources.getString(R.string.google_oauth_client_id))
+                .requestEmail()
+                .build()
+
+            // Build a GoogleSignInClient with the options specified by gso.
+            val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+            // Always logout, this way the google API will show to the user a window
+            // to choose a google account.
+            mGoogleSignInClient.signOut().addOnCompleteListener {
+                googleSigninLauncher.launch(mGoogleSignInClient.signInIntent)
+            }
+        }
     }
 
     private fun startSession() {
@@ -60,7 +135,7 @@ class LoginActivity : AppCompatActivity() {
         resetInputErrors()
 
         if (validCredentials(binding.userEmail.text.toString(), binding.userPassword.text.toString())) {
-            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString())
+            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString(), null, null, false, null)
         } else {
             hideLoading()
         }
@@ -76,7 +151,7 @@ class LoginActivity : AppCompatActivity() {
 
     // In this step we get the user information, then call the step 2 function
     // to get the user token.
-    private fun loginStep1(email: String, password: String) {
+    private fun loginStep1(email: String, password: String, userName: String?, userLastName: String?, tryRegister: Boolean, sessionType: String?) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
@@ -85,13 +160,45 @@ class LoginActivity : AppCompatActivity() {
                 resources.getString(R.string.api_url) + "login",
                 null,
                 { response ->
-                    if (response.has("sub")) {
-                        loginStep2(response, email, password)
+                    if (response.has("status") && response.getString("status") == "error") {
+                        if (response.has("error_code")) {
+                            when (response.getInt("error_code")) {
+                                // User not found
+                                1 -> {
+                                    if (userName != null && userLastName != null && tryRegister && sessionType != null) {
+                                        registerUserStep1(userName, userLastName, email, password, sessionType)
+                                    }
+                                }
+                                // Disabled account
+                                2 -> { //
+                                    customAlertDialog.setTitle("")
+                                    customAlertDialog.setMessage(response.getString("message"))
+                                    customAlertDialog.show()
+                                    hideLoading()
+                                }
+                                // Waiting the user activate their account
+                                3 -> {
+                                    customAlertDialog.setTitle("")
+                                    customAlertDialog.setMessage(response.getString("message"))
+                                    customAlertDialog.show()
+                                    hideLoading()
+                                }
+                            }
+                        } else {
+                            customAlertDialog.setTitle("")
+                            customAlertDialog.setMessage(response.getString("message"))
+                            customAlertDialog.show()
+                            hideLoading()
+                        }
                     } else {
-                        customAlertDialog.setTitle("")
-                        customAlertDialog.setMessage(response.getString("message"))
-                        customAlertDialog.show()
-                        hideLoading()
+                        if (response.has("sub")) {
+                            loginStep2(response, email, password)
+                        } else {
+                            customAlertDialog.setTitle("")
+                            customAlertDialog.setMessage(response.getString("message"))
+                            customAlertDialog.show()
+                            hideLoading()
+                        }
                     }
                 },
                 { error ->
@@ -162,6 +269,207 @@ class LoginActivity : AppCompatActivity() {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
         })
+    }
+
+    // In this step we get user types.
+    private fun registerUserStep1(
+        userName: String,
+        userLastName: String,
+        userEmail: String,
+        userPassword: String,
+        sessionType: String
+    ) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "users/types",
+            null,
+            { response ->
+                registerUserStep2(response, userName, userLastName, userEmail, userPassword, sessionType)
+            },
+            { error ->
+                try {
+                    Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
+                } catch (err: Exception) {
+                    Utilities.showRequestError(customAlertDialog, error.toString())
+                }
+            }
+        ) {
+            // Put here request headers if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
+    }
+
+    // In this step we show to the user for choose a user type and a enterprise name.
+    private fun registerUserStep2(
+        response: JSONObject,
+        userName: String,
+        userLastName: String,
+        userEmail: String,
+        userPassword: String,
+        sessionType: String
+    ) {
+        val userTypesData = response.getJSONArray("user_types")
+        var userTypeJSONItem: JSONObject
+        val limit = userTypesData.length()
+
+        if (limit > 0) {
+            val userTypes = ArrayList<UserTypeItem>()
+
+            for (i in 0 until limit) {
+                userTypeJSONItem = userTypesData.getJSONObject(i)
+
+                userTypes.add(UserTypeItem(
+                    userTypeJSONItem.getInt("id_user_type"),
+                    userTypeJSONItem.getString("name")
+                ))
+            }
+
+            val alertDialog = MaterialAlertDialogBuilder(this)
+                .setTitle("Finalizar registro")
+                .setCancelable(false)
+                .create()
+
+            val dialogBinding = DialogSocialNetworkRegisterBinding.inflate(layoutInflater)
+            dialogBinding.userTypes.adapter = UserTypesAdapter(userTypes, layoutInflater)
+            dialogBinding.enterpriseNameContainer.visibility = if ((dialogBinding.userTypes.selectedItem as UserTypeItem).idUserType == 2) { View.VISIBLE } else { View.GONE }
+
+            dialogBinding.userTypes.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    if ((dialogBinding.userTypes.selectedItem as UserTypeItem).idUserType == 2) {
+                        dialogBinding.enterpriseNameError.visibility = View.GONE
+                        dialogBinding.enterpriseName.setText("")
+                        dialogBinding.enterpriseName.setBackgroundResource(R.drawable.borders_lightgray)
+                        dialogBinding.enterpriseNameContainer.visibility = View.VISIBLE
+                    } else {
+                        dialogBinding.enterpriseNameContainer.visibility = View.GONE
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                    // ...
+                }
+            }
+
+            dialogBinding.successBtn.setOnClickListener {
+                val keyUserType = (dialogBinding.userTypes.selectedItem as UserTypeItem).idUserType
+
+                if (keyUserType == 2) {
+                    val enterpriseName = dialogBinding.enterpriseName.text.toString()
+
+                    if (enterpriseName == "") {
+                        dialogBinding.enterpriseName.setBackgroundResource(R.drawable.borders_error)
+                        dialogBinding.enterpriseNameError.visibility = View.VISIBLE
+                    } else {
+                        // register user (enterprise)
+                        registerUserStep3(
+                            userName,
+                            userLastName,
+                            userEmail,
+                            userPassword,
+                            keyUserType,
+                            enterpriseName,
+                            sessionType,
+                            alertDialog
+                        )
+                    }
+                } else {
+                    // register user (standard)
+                    registerUserStep3(
+                        userName,
+                        userLastName,
+                        userEmail,
+                        userPassword,
+                        keyUserType,
+                        null,
+                        sessionType,
+                        alertDialog
+                    )
+                }
+            }
+
+            dialogBinding.cancelBtn.setOnClickListener {
+                alertDialog.dismiss()
+            }
+
+            alertDialog.setView(dialogBinding.root)
+            alertDialog.show()
+        }
+    }
+
+    // In this step we finally collect all data and register the new user.
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    private fun registerUserStep3(
+        userName: String,
+        userLastName: String,
+        userEmail: String,
+        userPassword: String,
+        keyTypeUser: Int,
+        enterpriseName: String?,
+        sessionType: String,
+        alertDialog: AlertDialog
+    ) {
+        if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+            Utilities.showUnconnectedMessage(customAlertDialog)
+        } else {
+            alertDialog.dismiss()
+            showLoading()
+
+            // name
+            // surname
+            // email
+            // password
+            // key_type_user // 1 = vendedor | 2 = empresa
+            // key_business_type // default 1
+            // enterprise_name // nullable
+            // session_type // e = email | f = facebook | g = google
+
+            val data = JSONObject()
+                .put("name", userName)
+                .put("surname", userLastName)
+                .put("email", userEmail)
+                .put("password", userPassword)
+                .put("key_type_user", keyTypeUser)
+                .put("key_business_type", 1)
+                .put("enterprise_name", enterpriseName ?: JSONObject.NULL)
+                .put("session_type", sessionType)
+
+            Utilities.queue?.add(object: JsonObjectRequest(
+                Method.POST,
+                resources.getString(R.string.api_url) + "register",
+                null,
+                { response ->
+                    loginStep1(userEmail, userPassword, null, null, false, "g")
+                },
+                { error ->
+                    hideLoading()
+
+                    try {
+                        Utilities.showRequestError(customAlertDialog, error.networkResponse.data.decodeToString())
+                    } catch (err: Exception) {
+                        Utilities.showRequestError(customAlertDialog, error.toString())
+                    }
+                }
+            ) {
+                override fun getBodyContentType(): String {
+                    return "application/x-www-form-urlencoded"
+                }
+
+                override fun getBody(): ByteArray {
+                    return "json=${URLEncoder.encode(data.toString(), "utf-8")}".toByteArray()
+                }
+            }.apply {
+                retryPolicy = DefaultRetryPolicy(
+                    ConstantValues.REQUEST_TIMEOUT,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+            })
+        }
     }
 
     private fun saveUserSession(userData: JSONObject, userEmail: String, userPassword: String, userToken: String) {

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">refaliente</string>
     <string name="todo">TODO</string>
     <string name="title_activity_home_menu">HomeMenuActivity</string>
@@ -12,4 +12,5 @@
     <string name="entrar_con_facebook">Entrar con facebook</string>
     <string name="entrar_con_google">Entrar con google</string>
     <string name="product_sold_out_msg">Producto agotado. <b>¿Buscar otro?</b></string>
+    <string name="google_oauth_client_id" tools:ignore="TypographyDashes">738173659796-3ooht9scqlgu95t68113q1mr89egnmmm.apps.googleusercontent.com</string>
 </resources>

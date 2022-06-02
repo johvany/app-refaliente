@@ -1,5 +1,49 @@
 package com.di.refaliente.shared
 
+data class Product(
+    val idProduct: Int,
+    val codeTM: String,
+    val name: String,
+    val description: String?,
+    val price: String,
+    val existence: Int,
+    val quantity: Int,
+    val keyUser: Int,
+    val keyCondition: Int,
+    val keyProductStatus: Int,
+    val keyMeasurementUnits: Int,
+    val images: String?,
+    val salesAccountant: Int,
+    val qualification: Int,
+    val qualificationAvg: String,
+    val hasDiscount: Int?,
+    val discountPercent: Int?,
+    val previousPrice: String?,
+    val createdAt: String?,
+    val updatedAt: String?
+)
+
+data class Publication(
+    val idPublication: Int,
+    val title: String,
+    val description: String?,
+    val productPrice: String,
+    val keyUser: Int,
+    val keyUserAddress: Int,
+    val keyProduct: Int,
+    val keyPublicationStatus: Int,
+    val keyPackingAddress: Int?,
+    val hasDiscount: Int?,
+    val discountPercent: Int?,
+    val previousPrice: String?,
+    val product: Product
+)
+
+data class UserTypeItem(
+    val idUserType: Int,
+    val name: String
+)
+
 data class PurchaseHeader(
     val idPurchase: Int,
     val idPurchaseFormatted: String,

@@ -88,14 +88,16 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     @SuppressLint("SetTextI18n")
     private fun loadUserDataInTheSideMenu() {
         NavHeaderHomeMenuBinding.bind(binding.navView.getHeaderView(0)).let { viewBinding ->
-            if (SessionHelper.userLogged() && userImageProfile != null) {
-                Glide.with(this)
-                    .load(resources.getString(R.string.api_url_storage) + SessionHelper.user!!.sub.toString() + "/profile/" + userImageProfile)
-                    .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
-                    .into(viewBinding.userImg)
-
+            if (SessionHelper.userLogged()) {
                 viewBinding.userName.text = "Bienvenido " + SessionHelper.user!!.name
+
+                if (userImageProfile != null) {
+                    Glide.with(this)
+                        .load(resources.getString(R.string.api_url_storage) + SessionHelper.user!!.sub.toString() + "/profile/" + userImageProfile)
+                        .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                        .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                        .into(viewBinding.userImg)
+                }
             } else {
                 viewBinding.userName.setTextColor(Color.parseColor("#CCCCCC"))
                 viewBinding.userName.text = "Cuenta de invitado"

@@ -7,9 +7,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -28,6 +29,7 @@ class PublicationDetailActivity : AppCompatActivity() {
     private val numberFormatHelper = NumberFormatHelper()
     private var idPublication = ""
     private var publicationKeyUser = 0
+    private var productInFavorites = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         idPublication = intent.extras!!.getInt("id_publication").toString()
         binding.buyProduct.setOnClickListener { buyProduct() }
         binding.addToFavorites.setOnClickListener { addProductToFavorites() }
+        binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
         binding.addToShoppingCart.setOnClickListener { addProductToShoppingCart() }
         binding.backArrow.setOnClickListener { finish() }
 
@@ -63,10 +66,52 @@ class PublicationDetailActivity : AppCompatActivity() {
 
     private fun addProductToFavorites() {
         if (SessionHelper.userLogged()) {
-            Toast.makeText(this, "...Agregar a favoritos está en construcción...", Toast.LENGTH_LONG).show()
+            if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+                Utilities.showUnconnectedMessage(customAlertDialog)
+            } else {
+                performAddProductToFavorites(true)
+            }
         } else {
             SessionHelper.showRequiredSessionMessage(this)
         }
+    }
+
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    private fun performAddProductToFavorites(canRepeat: Boolean) {
+        val requestMethod = Request.Method.POST
+        val requestURL = resources.getString(R.string.api_url) + "user/favorites-list/update"
+        val requestData = JSONObject()
+        requestData.put("id_user", SessionHelper.user!!.sub)
+        requestData.put("id_publication", idPublication)
+
+        val onRequestResponse = Response.Listener<JSONObject> { response ->
+            productInFavorites = !productInFavorites
+
+            if (productInFavorites) {
+                binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+            } else {
+                binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
+            }
+        }
+
+        val onRequestError = Response.ErrorListener { error ->
+            SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                if (canRepeat) {
+                    performAddProductToFavorites(false)
+                } else {
+                    Utilities.showRequestError(customAlertDialog, null)
+                }
+            }
+        }
+
+        val request = object: JsonObjectRequest(requestMethod, requestURL, requestData, onRequestResponse, onRequestError) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+            }
+        }
+
+        request.retryPolicy = DefaultRetryPolicy(ConstantValues.REQUEST_TIMEOUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        Utilities.queue?.add(request)
     }
 
     private fun addProductToShoppingCart() {
@@ -142,6 +187,7 @@ class PublicationDetailActivity : AppCompatActivity() {
                 resources.getString(R.string.api_url) + "find-publication-by-id?id=" + idPublication,
                 null,
                 { response ->
+                    if (SessionHelper.userLogged()) { checkFavoritesList(true) }
                     fillViewsWithData(response)
                 },
                 {
@@ -157,6 +203,46 @@ class PublicationDetailActivity : AppCompatActivity() {
                 )
             })
         }
+    }
+    private fun checkFavoritesList(canRepeat: Boolean) {
+        val requestMethod = Request.Method.GET
+        val requestURL = resources.getString(R.string.api_url) + "user/favorites-list?id_user=${SessionHelper.user!!.sub}"
+        val requestData = null
+
+        val onRequestResponse = Response.Listener<JSONObject> { response ->
+            val favoritesIds = response.getJSONArray("favorites_list")
+            var itemId: String
+            val limit = favoritesIds.length()
+
+            for (i in 0 until limit) {
+                itemId = favoritesIds.getString(i)
+
+                if (itemId == idPublication) {
+                    productInFavorites = true
+                    binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+                    break
+                }
+            }
+        }
+
+        val onRequestError = Response.ErrorListener { error ->
+            SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                if (canRepeat) {
+                    checkFavoritesList(false)
+                } else {
+                    Utilities.showRequestError(customAlertDialog, null)
+                }
+            }
+        }
+
+        val request = object: JsonObjectRequest(requestMethod, requestURL, requestData, onRequestResponse, onRequestError) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+            }
+        }
+
+        request.retryPolicy = DefaultRetryPolicy(ConstantValues.REQUEST_TIMEOUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        Utilities.queue?.add(request)
     }
 
     @SuppressLint("SetTextI18n")
