@@ -27,6 +27,7 @@ import java.net.URLEncoder
 class PublicationsFragment : Fragment() {
     companion object {
         const val LOAD_SHOPPING_CART = 1
+        const val FAVORITES_LIST_CHANGED = 2
     }
 
     private lateinit var binding: FragmentPublicationsBinding

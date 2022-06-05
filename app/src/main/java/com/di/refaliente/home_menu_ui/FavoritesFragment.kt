@@ -43,8 +43,13 @@ class FavoritesFragment : Fragment() {
         favoritesItems = ArrayList()
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == PublicationsFragment.LOAD_SHOPPING_CART) {
-                (requireActivity() as HomeMenuActivity).loadShoppingCart()
+            when (result.resultCode) {
+                PublicationsFragment.LOAD_SHOPPING_CART -> {
+                    (requireActivity() as HomeMenuActivity).loadShoppingCart()
+                }
+                PublicationsFragment.FAVORITES_LIST_CHANGED -> {
+                    refresh()
+                }
             }
         }
 
@@ -99,6 +104,7 @@ class FavoritesFragment : Fragment() {
             favoritesItems.removeAt(itemPosition)
             binding.favoritesContainer.adapter?.notifyItemRemoved(itemPosition)
             binding.favoritesContainer.adapter?.notifyItemRangeChanged(itemPosition, favoritesItems.size)
+            binding.emptyFavoritesMsg.visibility = if (favoritesItems.size > 0) { View.INVISIBLE } else { View.VISIBLE }
         }
 
         val onRequestError = Response.ErrorListener { error ->
@@ -303,6 +309,11 @@ class FavoritesFragment : Fragment() {
             ))
         }
 
-        binding.favoritesContainer.adapter?.notifyItemRangeInserted(0, limit)
+        if (favoritesItems.size > 0) {
+            binding.emptyFavoritesMsg.visibility = View.INVISIBLE
+            binding.favoritesContainer.adapter?.notifyItemRangeInserted(0, limit)
+        } else {
+            binding.emptyFavoritesMsg.visibility = View.VISIBLE
+        }
     }
 }

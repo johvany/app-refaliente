@@ -92,6 +92,8 @@ class PublicationDetailActivity : AppCompatActivity() {
             } else {
                 binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
             }
+
+            setResult(PublicationsFragment.FAVORITES_LIST_CHANGED)
         }
 
         val onRequestError = Response.ErrorListener { error ->
