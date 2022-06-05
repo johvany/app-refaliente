@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.di.refaliente.HomeMenuActivity
@@ -12,6 +13,7 @@ import com.di.refaliente.R
 import com.di.refaliente.local_database.Database
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Runnable
 import org.json.JSONObject
@@ -44,18 +46,7 @@ class SessionHelper {
         // (HomeMenuActivity) and finish all others activitys.
         fun logout(context: Context) {
             Database(context).use { db ->
-                UsersTable.update(db, User(
-                    1,
-                    0,
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ))
-
-                UsersDetailsTable.update(db, UserDetail(
+                val userDetail = UserDetail(
                     1,
                     0,
                     "",
@@ -70,7 +61,21 @@ class SessionHelper {
                     null,
                     null,
                     null
+                )
+
+                UsersTable.update(db, User(
+                    1,
+                    0,
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    userDetail
                 ))
+
+                UsersDetailsTable.update(db, userDetail)
             }
 
             context.startActivity(Intent(context, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
@@ -78,60 +83,125 @@ class SessionHelper {
 
         // This function will try to login again to get a new user token, if all is ok, the new user
         // token will be saved in the local database and the "user" var in this class will be updated too.
+        @Suppress("UNUSED_ANONYMOUS_PARAMETER")
         private fun refreshUserToken(context: Context, success: Runnable, fail: Runnable, userAccountDisabled: Runnable) {
             if (user == null) {
                 fail.run()
             } else {
-                Volley.newRequestQueue(context).add(object: StringRequest(
-                    Method.POST,
-                    context.resources.getString(R.string.api_url) + "login",
-                    { response ->
-                        try {
-                            JSONObject(response).let { resp ->
-                                if (resp.has("error_code") && resp.getInt("error_code") == 2) {
-                                    userAccountDisabled.run()
-                                } else {
+                when (user!!.userDetail!!.sessionType) {
+                    // The user has logged in with email.
+                    "e" -> {
+                        Volley.newRequestQueue(context).add(object: StringRequest(
+                            Method.POST,
+                            context.resources.getString(R.string.api_url) + "login",
+                            { response ->
+                                try {
+                                    JSONObject(response).let { resp ->
+                                        if (resp.has("error_code") && resp.getInt("error_code") == 2) {
+                                            userAccountDisabled.run()
+                                        } else {
+                                            fail.run()
+                                        }
+                                    }
+                                } catch (err: Exception) {
+                                    Database(context).use { db ->
+                                        User(
+                                            user!!.idLocal,
+                                            user!!.sub,
+                                            user!!.email,
+                                            user!!.name,
+                                            user!!.surname,
+                                            user!!.roleUser,
+                                            user!!.password,
+                                            response.substring(1, response.length - 1),
+                                            user!!.userDetail
+                                        ).let { updatedUser ->
+                                            user = updatedUser
+                                            UsersTable.update(db, updatedUser)
+                                        }
+                                    }
+
+                                    success.run()
+                                }
+                            },
+                            {
+                                fail.run()
+                            }
+                        ) {
+                            override fun getBodyContentType(): String {
+                                return "application/x-www-form-urlencoded"
+                            }
+
+                            override fun getBody(): ByteArray {
+                                return "json=${URLEncoder.encode("{\"email\":\"${user!!.email}\",\"password\":\"${user!!.password}\",\"gettoken\":false}", "utf-8")}".toByteArray()
+                            }
+                        }.apply {
+                            retryPolicy = DefaultRetryPolicy(
+                                ConstantValues.REQUEST_TIMEOUT,
+                                0,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                            )
+                        })
+                    }
+                    // The user has logged in with google.
+                    "g" -> {
+                        val account = GoogleSignIn.getLastSignedInAccount(context)!!
+
+                        Volley.newRequestQueue(context).add(object: JsonObjectRequest(
+                            Method.GET,
+                            context.resources.getString(R.string.api_url) + "login-with-google?token=" + account.idToken,
+                            null,
+                            { response ->
+                                Database(context).use { db ->
+                                    User(
+                                        user!!.idLocal,
+                                        user!!.sub,
+                                        user!!.email,
+                                        user!!.name,
+                                        user!!.surname,
+                                        user!!.roleUser,
+                                        user!!.password,
+                                        response.getString("token"),
+                                        user!!.userDetail
+                                    ).let { updatedUser ->
+                                        user = updatedUser
+                                        UsersTable.update(db, updatedUser)
+                                    }
+                                }
+
+                                success.run()
+                            },
+                            { error ->
+                                try {
+                                    val errResp = JSONObject(error.networkResponse.data.decodeToString())
+
+                                    if (errResp.has("disabled_account")) {
+                                        userAccountDisabled.run()
+                                    } else {
+                                        fail.run()
+                                    }
+                                } catch (err: Exception) {
                                     fail.run()
                                 }
                             }
-                        } catch (err: Exception) {
-                            Database(context).use { db ->
-                                User(
-                                    user!!.idLocal,
-                                    user!!.sub,
-                                    user!!.email,
-                                    user!!.name,
-                                    user!!.surname,
-                                    user!!.roleUser,
-                                    user!!.password,
-                                    response.substring(1, response.length - 1)
-                                ).let { updatedUser ->
-                                    user = updatedUser
-                                    UsersTable.update(db, updatedUser)
-                                }
-                            }
-
-                            success.run()
-                        }
-                    },
-                    {
+                        ) {
+                            // Set request headers here if you need.
+                        }.apply {
+                            retryPolicy = DefaultRetryPolicy(
+                                ConstantValues.REQUEST_TIMEOUT,
+                                0,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                            )
+                        })
+                    }
+                    // The user has logged in with facebook.
+                    "f" -> {
+                        // ...
+                    }
+                    else -> {
                         fail.run()
                     }
-                ) {
-                    override fun getBodyContentType(): String {
-                        return "application/x-www-form-urlencoded"
-                    }
-
-                    override fun getBody(): ByteArray {
-                        return "json=${URLEncoder.encode("{\"email\":\"${user!!.email}\",\"password\":\"${user!!.password}\",\"gettoken\":false}", "utf-8")}".toByteArray()
-                    }
-                }.apply {
-                    retryPolicy = DefaultRetryPolicy(
-                        ConstantValues.REQUEST_TIMEOUT,
-                        0,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-                    )
-                })
+                }
             }
         }
 

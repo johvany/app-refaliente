@@ -77,7 +77,8 @@ data class User(
     val surname: String,
     val roleUser: String,
     val password: String,
-    val token: String
+    val token: String,
+    var userDetail: UserDetail?
 )
 
 data class UserDetail(

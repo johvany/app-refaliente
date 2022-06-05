@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import com.di.refaliente.shared.User
+import com.di.refaliente.shared.UserDetail
 
 class UsersTable {
     companion object {
@@ -54,9 +55,14 @@ class UsersTable {
                         cursor.getString(cursor.getColumnIndex(columns.surname)),
                         cursor.getString(cursor.getColumnIndex(columns.roleUser)),
                         cursor.getString(cursor.getColumnIndex(columns.password)),
-                        cursor.getString(cursor.getColumnIndex(columns.token))
+                        cursor.getString(cursor.getColumnIndex(columns.token)),
+                        null
                     )
                 }
+            }
+
+            if (user != null) {
+                user?.userDetail = UsersDetailsTable.find(db, idLocal)
             }
 
             return user

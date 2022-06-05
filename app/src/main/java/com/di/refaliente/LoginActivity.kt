@@ -29,12 +29,14 @@ import org.json.JSONObject
 import java.net.URLEncoder
 import java.util.regex.Pattern
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var customAlertDialog: CustomAlertDialog
     private lateinit var db: Database
     private lateinit var googleSigninLauncher: ActivityResultLauncher<Intent>
 
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,17 +47,17 @@ class LoginActivity : AppCompatActivity() {
                     val completedTask = GoogleSignIn.getSignedInAccountFromIntent(data)
                     val account = completedTask.getResult(ApiException::class.java)
                     val userEmail = account.email
-                    val userPassword = account.idToken
+                    val userGoogleToken = account.idToken
                     val userName = account.givenName
                     val userLastName = account.familyName
 
                     if (
                         userEmail != null &&
-                        userPassword != null &&
+                        userGoogleToken != null &&
                         userName != null &&
                         userLastName != null
                     ) {
-                        // loginStep1(userEmail, userPassword, userName, userLastName, true, "g")
+                        tryToLoginWithGoogle(userGoogleToken, userName, userLastName, userEmail)
                     }
                 } catch (e: ApiException) {
                     // The ApiException status code indicates the detailed failure reason.
@@ -106,6 +108,40 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
     }
 
+    private fun tryToLoginWithGoogle(userGoogleToken: String, userName: String, userLastName: String, userEmail: String) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "login-with-google?token=" + userGoogleToken,
+            null,
+            { response ->
+                saveUserSession(response.getJSONObject("user_data"), userEmail, userGoogleToken, response.getString("token"))
+            },
+            { error ->
+                try {
+                    val responseError = JSONObject(error.networkResponse.data.decodeToString())
+
+                    if (responseError.has("user_missing")) {
+                        registerUserStep1(userName, userLastName, userEmail, userGoogleToken, "g")
+                    } else if (responseError.has("disabled_account")) {
+                        customAlertDialog.setTitle("")
+                        customAlertDialog.setMessage("La cuenta del usuario esta deshabilitada")
+                        customAlertDialog.show()
+                    }
+                } catch (err: Exception) {
+                    Utilities.showRequestError(customAlertDialog, error.toString())
+                }
+            }
+        ) {
+            // Set request headers here if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
+    }
+
     private fun loginWithGoogle() {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
@@ -135,7 +171,7 @@ class LoginActivity : AppCompatActivity() {
         resetInputErrors()
 
         if (validCredentials(binding.userEmail.text.toString(), binding.userPassword.text.toString())) {
-            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString(), null, null, false, null)
+            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString())
         } else {
             hideLoading()
         }
@@ -151,7 +187,8 @@ class LoginActivity : AppCompatActivity() {
 
     // In this step we get the user information, then call the step 2 function
     // to get the user token.
-    private fun loginStep1(email: String, password: String, userName: String?, userLastName: String?, tryRegister: Boolean, sessionType: String?) {
+    @Suppress("SameParameterValue")
+    private fun loginStep1(email: String, password: String) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
@@ -165,9 +202,7 @@ class LoginActivity : AppCompatActivity() {
                             when (response.getInt("error_code")) {
                                 // User not found
                                 1 -> {
-                                    if (userName != null && userLastName != null && tryRegister && sessionType != null) {
-                                        registerUserStep1(userName, userLastName, email, password, sessionType)
-                                    }
+                                    // ...
                                 }
                                 // Disabled account
                                 2 -> { //
@@ -272,6 +307,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // In this step we get user types.
+    @Suppress("SameParameterValue")
     private fun registerUserStep1(
         userName: String,
         userLastName: String,
@@ -443,7 +479,7 @@ class LoginActivity : AppCompatActivity() {
                 resources.getString(R.string.api_url) + "register",
                 null,
                 { response ->
-                    loginStep1(userEmail, userPassword, null, null, false, "g")
+                    tryToLoginWithGoogle(userPassword, userName, userLastName, userEmail)
                 },
                 { error ->
                     hideLoading()
@@ -483,7 +519,8 @@ class LoginActivity : AppCompatActivity() {
                     userData.getString("surname"),
                     userData.getString("role_user"),
                     userPassword,
-                    userToken
+                    userToken,
+                    null
                 ))
             } else {
                 UsersTable.update(db, User(
@@ -494,7 +531,8 @@ class LoginActivity : AppCompatActivity() {
                     userData.getString("surname"),
                     userData.getString("role_user"),
                     userPassword,
-                    userToken
+                    userToken,
+                    null
                 ))
             }
         }
