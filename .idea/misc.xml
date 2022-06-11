@@ -17,6 +17,7 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_header.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/color_cursor.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/disabled_field.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/disabled_field_2.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_menu_camera.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.2585" />
@@ -42,6 +43,7 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_home_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_new_address.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_payment.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_product_buying_preview.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/activity_publication_detail.xml" value="0.36666666666666664" />

@@ -105,3 +105,23 @@ data class CardMonth(
 data class CardYear(
     val value: String
 )
+
+data class Zipcode(
+    val idZipcode: Int,
+    val zipcode: Int,
+    val townshipKey: Int?,
+    val townshipName: String,
+    val townshipType: String?,
+    val townshipTypeCode: Int?,
+    val townshipZone: String?,
+    val municipalityName: String?,
+    val municipalityKey: Int?,
+    val entityName: String?,
+    val entityKey: Int?,
+    val cityName: String?,
+    val cityKey: String?,
+    val pcAdministration: Int?,
+    val pcAdministrationOffice: Int?,
+    val createdAt: String?,
+    val updatedAt: String?
+)

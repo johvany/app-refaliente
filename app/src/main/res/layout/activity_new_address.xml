@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewAddressActivity">
+
+    <View
+        android:id="@+id/header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/red_700" />
+
+    <ImageButton
+        android:id="@+id/back_arrow"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@id/header_bg"
+        app:layout_constraintTop_toTopOf="@id/header_bg"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:tint="#FFFFFF"
+        android:background="#00FFFFFF"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Nueva dirección"
+        android:paddingHorizontal="8dp"
+        android:gravity="center|start"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/back_arrow"
+        app:layout_constraintEnd_toEndOf="@id/header_bg"
+        app:layout_constraintTop_toTopOf="@id/header_bg"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
+        tools:ignore="HardcodedText" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_bg"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_codigo_postal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Código postal"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_baseline_send_24"
+                app:endIconTint="@color/blue_primary"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/codigo_postal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="000000"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Estado"
+                android:background="@drawable/disabled_field_2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/estado"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:enabled="false"
+                    android:textColor="@color/black"
+                    android:text="Sinaloa"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Colonia"
+                    tools:ignore="HardcodedText" />
+
+                <LinearLayout
+                    android:id="@+id/container_colonias"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginVertical="8dp"
+                    android:background="@drawable/borders_lightgray"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/colonias"
+                        android:gravity="center|start"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/colonia_error"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_calle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Calle"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/calle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="Agua del arrollo limpio"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_telefono_contacto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Teléfono de contacto"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/telefono_contacto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="0000000000"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_numero_exterior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Número exterior"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/numero_exterior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_numero_interior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Número interior"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/numero_interior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_entre_calle_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Entre calle 1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entre_calle_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="Piedras de los riñones"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_entre_calle_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Entre calle 2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/entre_calle_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="Piedra de aguacates"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_informacion_adicional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:hint="Información adicional"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/informacion_adicional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:text="Esta direccion es inventada, no existe."/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/save_new_address"
+                android:theme="@style/SuccessButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GUARDAR"
+                android:layout_margin="4dp"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

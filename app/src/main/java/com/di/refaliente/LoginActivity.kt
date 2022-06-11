@@ -20,6 +20,13 @@ import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.UserTypesAdapter
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
@@ -35,11 +42,17 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var customAlertDialog: CustomAlertDialog
     private lateinit var db: Database
     private lateinit var googleSigninLauncher: ActivityResultLauncher<Intent>
+    private lateinit var myCallbackManager: CallbackManager
 
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FacebookSdk.setApplicationId("1163870464433392")
+        FacebookSdk.setClientToken("5b3e009d137fac5f0c02261f85c6bab0")
+        FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(application)
+        myCallbackManager = CallbackManager.Factory.create()
 
         googleSigninLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
             activityResult.data?.let { data ->
@@ -105,7 +118,32 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithFacebook() {
-        Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
+        LoginManager.getInstance().let { loginManager ->
+            loginManager.registerCallback(myCallbackManager, object: FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult?) {
+                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onSuccess", Toast.LENGTH_LONG).show()
+                }
+
+                override fun onCancel() {
+                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onCancel", Toast.LENGTH_LONG).show()
+                }
+
+                override fun onError(error: FacebookException?) {
+                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onError", Toast.LENGTH_LONG).show()
+                }
+            })
+
+            loginManager.logOut()
+            loginManager.logInWithReadPermissions(this, listOf("email"))
+        }
+
+        // Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        myCallbackManager.onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun tryToLoginWithGoogle(userGoogleToken: String, userName: String, userLastName: String, userEmail: String) {

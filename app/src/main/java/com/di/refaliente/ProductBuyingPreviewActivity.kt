@@ -3,6 +3,8 @@ package com.di.refaliente
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
@@ -18,23 +20,35 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class ProductBuyingPreviewActivity : AppCompatActivity() {
+    companion object {
+        const val NEW_ADDRESS_CREATED = 1
+    }
+
     private val requestTag = "ProductBuyingPreviewActivityRequests"
 
     private lateinit var binding: ActivityProductBuyingPreviewBinding
     private val simpleAddressesItems = ArrayList<SimpleAddress>()
     private lateinit var customAlertDialog: CustomAlertDialog
     private val numberFormatHelper = NumberFormatHelper()
+    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductBuyingPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == NEW_ADDRESS_CREATED) {
+                getUserAddresses(SessionHelper.user!!.sub.toString(), true)
+            }
+        }
+
         binding.productTitle.text = ""
         binding.productAmount.text = ""
         customAlertDialog = CustomAlertDialog(this)
-        // binding.comeback.setOnClickListener { finish() }
         binding.backArrow.setOnClickListener { finish() }
         binding.buyProduct.setOnClickListener { buyProduct() }
+
         getData()
     }
 
@@ -46,16 +60,19 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         }
 
         if (selectedAddress == null) {
+            // "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra. Por favor inicia sesión en <span style=\"color: #1877F2;\">www.refaliente.com</span> y agrega una dirección. Una vez agregada podrás regresar a esta pantalla y continuar con tu compra.",
             MaterialAlertDialogBuilder(this)
                 .setTitle("Sin direcciones")
                 .setMessage(HtmlCompat.fromHtml(
-                    "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra. Por favor inicia sesión en <span style=\"color: #1877F2;\">www.refaliente.com</span> y agrega una dirección. Una vez agregada podrás regresar a esta pantalla y continuar con tu compra.",
+                    "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra.",
                     HtmlCompat.FROM_HTML_MODE_LEGACY
                 ))
                 .setCancelable(false)
-                .setPositiveButton("ACEPTAR", null)
+                .setNegativeButton("CANCELAR", null)
+                .setPositiveButton("CREAR DIRECCIÓN") { _, _ ->
+                    launcher.launch(Intent(this, NewAddressActivity::class.java))
+                }
                 .show()
-
         } else {
             startActivity(Intent(this, PaymentActivity::class.java)
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())
