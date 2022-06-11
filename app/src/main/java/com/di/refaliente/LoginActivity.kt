@@ -118,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithFacebook() {
-        LoginManager.getInstance().let { loginManager ->
+        /* LoginManager.getInstance().let { loginManager ->
             loginManager.registerCallback(myCallbackManager, object: FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult?) {
                     Toast.makeText(this@LoginActivity, "loginWithFacebook > onSuccess", Toast.LENGTH_LONG).show()
@@ -135,9 +135,9 @@ class LoginActivity : AppCompatActivity() {
 
             loginManager.logOut()
             loginManager.logInWithReadPermissions(this, listOf("email"))
-        }
+        } */
 
-        // Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
     }
 
     @Deprecated("Deprecated in Java")
