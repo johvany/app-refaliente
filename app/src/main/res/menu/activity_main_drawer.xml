@@ -29,6 +29,12 @@
             tools:ignore="HardcodedText" />
 
         <item
+            android:id="@+id/nav_remates"
+            android:icon="@drawable/ic_baseline_loyalty_24"
+            android:title="Remates"
+            tools:ignore="HardcodedText" />
+
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/baseline_info_24"
             android:title="Información"

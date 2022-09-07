@@ -53,7 +53,7 @@
         android:gravity="center|end"
         android:text="MXN $30.00"
         android:layout_margin="8dp"
-        android:textColor="@color/white"
+        android:textColor="#4CAF50"
         app:layout_constraintStart_toEndOf="@id/publication_img"
         app:layout_constraintTop_toTopOf="@id/buy_product"
         app:layout_constraintBottom_toBottomOf="@id/buy_product"

@@ -225,7 +225,7 @@
                 android:textSize="20sp"
                 android:text="MXN $875.00"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/white"
+                android:textColor="#4CAF50"
                 android:layout_marginHorizontal="8dp"
                 tools:ignore="HardcodedText" />
 

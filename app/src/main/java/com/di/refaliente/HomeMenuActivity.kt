@@ -32,6 +32,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var favoritesFragment: FavoritesFragment
     private lateinit var purchasesFragment: PurchasesFragment
     private lateinit var aboutFragment: AboutFragment
+    private lateinit var rematesFragment: RematesFragment
     private var userImageProfile: String? = null
     private var isMenuItemSelected = true
 
@@ -131,6 +132,10 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         supportFragmentManager.getFragment(bundle, "about_fragment").let { fragment ->
             aboutFragment = if (fragment == null) { AboutFragment() } else { fragment as AboutFragment }
         }
+
+        supportFragmentManager.getFragment(bundle, "remates_fragment").let { fragment ->
+            rematesFragment = if (fragment == null) { RematesFragment() } else { fragment as RematesFragment }
+        }
     }
 
     private fun initFragments() {
@@ -139,6 +144,7 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         favoritesFragment = FavoritesFragment()
         purchasesFragment = PurchasesFragment()
         aboutFragment = AboutFragment()
+        rematesFragment = RematesFragment()
     }
 
     private fun setupMenus() {
@@ -285,6 +291,13 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     isMenuItemSelected = false
                     SessionHelper.showRequiredSessionMessage(this)
                 }
+            }
+            R.id.nav_remates -> {
+                title = "Remates"
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_home_menu, rematesFragment)
+                    .commit()
             }
             R.id.nav_about -> {
                 title = "Información"
