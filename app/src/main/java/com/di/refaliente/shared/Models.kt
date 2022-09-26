@@ -125,3 +125,8 @@ data class Zipcode(
     val createdAt: String?,
     val updatedAt: String?
 )
+
+data class SessionAux(
+    val idUser: Int,
+    val tokenId: Int
+)

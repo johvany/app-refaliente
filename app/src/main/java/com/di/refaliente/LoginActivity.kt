@@ -1,11 +1,9 @@
 package com.di.refaliente
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -15,7 +13,9 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.di.refaliente.databinding.ActivityLoginBinding
 import com.di.refaliente.databinding.DialogSocialNetworkRegisterBinding
+import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.local_database.Database
+import com.di.refaliente.local_database.SessionsAuxTable
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
 import com.di.refaliente.shared.*
@@ -23,8 +23,6 @@ import com.di.refaliente.view_adapters.UserTypesAdapter
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
-import com.facebook.FacebookSdk
-import com.facebook.appevents.AppEventsLogger
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -36,22 +34,16 @@ import org.json.JSONObject
 import java.net.URLEncoder
 import java.util.regex.Pattern
 
-@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var customAlertDialog: CustomAlertDialog
     private lateinit var db: Database
+    private lateinit var customAlertDialog: CustomAlertDialog
     private lateinit var googleSigninLauncher: ActivityResultLauncher<Intent>
     private lateinit var myCallbackManager: CallbackManager
 
-    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FacebookSdk.setApplicationId("1163870464433392")
-        FacebookSdk.setClientToken("5b3e009d137fac5f0c02261f85c6bab0")
-        FacebookSdk.sdkInitialize(applicationContext)
-        AppEventsLogger.activateApp(application)
+
         myCallbackManager = CallbackManager.Factory.create()
 
         googleSigninLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
@@ -70,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                         userName != null &&
                         userLastName != null
                     ) {
-                        tryToLoginWithGoogle(userGoogleToken, userName, userLastName, userEmail)
+                        tryToLoginWithGoogle(userGoogleToken, userName, userLastName, userEmail, "0")
                     }
                 } catch (e: ApiException) {
                     // The ApiException status code indicates the detailed failure reason.
@@ -78,27 +70,13 @@ class LoginActivity : AppCompatActivity() {
 
                     // Here we can handle the main status codes.
                     when (e.statusCode) {
-                        GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.SIGN_IN_FAILED -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.SIGN_IN_REQUIRED -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.NETWORK_ERROR -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.INVALID_ACCOUNT -> {
-                            // ...
-                        }
-                        GoogleSignInStatusCodes.INTERNAL_ERROR -> {
-                            // ...
-                        }
+                        GoogleSignInStatusCodes.SIGN_IN_CANCELLED -> { /* ... */ }
+                        GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS -> { /* ... */ }
+                        GoogleSignInStatusCodes.SIGN_IN_FAILED -> { /* ... */ }
+                        GoogleSignInStatusCodes.SIGN_IN_REQUIRED -> { /* ... */ }
+                        GoogleSignInStatusCodes.NETWORK_ERROR -> { /* ... */ }
+                        GoogleSignInStatusCodes.INVALID_ACCOUNT -> { /* ... */ }
+                        GoogleSignInStatusCodes.INTERNAL_ERROR -> { /* ... */ }
                     }
                 }
             }
@@ -106,8 +84,8 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        customAlertDialog = CustomAlertDialog(this)
         db = Database(this)
+        customAlertDialog = CustomAlertDialog(this)
         binding.facebookLoginBtn.setOnClickListener { loginWithFacebook() }
         binding.googleLoginBtn.setOnClickListener { loginWithGoogle() }
         binding.startSession.setOnClickListener { startSession() }
@@ -118,41 +96,101 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithFacebook() {
-        /* LoginManager.getInstance().let { loginManager ->
+        LoginManager.getInstance().let { loginManager ->
             loginManager.registerCallback(myCallbackManager, object: FacebookCallback<LoginResult> {
                 override fun onSuccess(result: LoginResult?) {
-                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onSuccess", Toast.LENGTH_LONG).show()
+                    if (result != null) {
+                        tryToLoginWithFacebook(result.accessToken.token, "0")
+                    }
                 }
 
-                override fun onCancel() {
-                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onCancel", Toast.LENGTH_LONG).show()
-                }
-
-                override fun onError(error: FacebookException?) {
-                    Toast.makeText(this@LoginActivity, "loginWithFacebook > onError", Toast.LENGTH_LONG).show()
-                }
+                override fun onCancel() { /* ... */ }
+                override fun onError(error: FacebookException?) { /* ... */ }
             })
 
             loginManager.logOut()
-            loginManager.logInWithReadPermissions(this, listOf("email"))
-        } */
-
-        Toast.makeText(this, "...Iniciar sesión con Facebook esta en construcción...", Toast.LENGTH_LONG).show()
+            loginManager.logInWithReadPermissions(this, listOf("email", "public_profile"))
+        }
     }
 
-    @Deprecated("Deprecated in Java")
+    private fun tryToLoginWithFacebook(userFacebookToken: String, closeOtherSessions: String) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "login-with-facebook?token=" + userFacebookToken + "&session_from=app&close_other_sessions=" + closeOtherSessions,
+            null,
+            { response ->
+                val userData = response.getJSONObject("user_data")
+                saveUserSession(userData, userData.getString("email"), userData.getString("password"), response.getString("token"))
+            },
+            { error ->
+                try {
+                    val responseError = JSONObject(error.networkResponse.data.decodeToString())
+
+                    if (responseError.has("user_missing")) {
+                        registerUserStep1(
+                            responseError.getString("user_name"),
+                            responseError.getString("user_last_name"),
+                            responseError.getString("user_email"),
+                            userFacebookToken,
+                            "f"
+                        )
+                    } else if (responseError.has("disabled_account")) {
+                        MaterialAlertDialogBuilder(this).create().also { dialog ->
+                            dialog.setCancelable(false)
+
+                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                viewBinding.title.visibility = View.GONE
+                                viewBinding.message.text = "La cuenta del usuario esta deshabilitada."
+                                viewBinding.negativeButton.visibility = View.GONE
+                                viewBinding.positiveButton.text = "Aceptar"
+                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                            }.root)
+                        }.show()
+                    } else if (responseError.has("missing_confirm_close_other_sessions")) {
+                        val sessionAuxItem = SessionsAuxTable.find(db, responseError.getInt("id_user"))
+
+                        if (sessionAuxItem != null && sessionAuxItem.tokenId == responseError.getInt("token_id")) {
+                            tryToLoginWithFacebook(userFacebookToken, "1")
+                        } else {
+                            MaterialAlertDialogBuilder(this)
+                                .setCancelable(true)
+                                .setTitle(null)
+                                .setMessage("Se cerrará la sesión en otros dispositivos...")
+                                .setNegativeButton("Cancelar", null)
+                                .setPositiveButton("Continuar") { _, _ -> tryToLoginWithFacebook(userFacebookToken, "1") }
+                                .show()
+                        }
+                    }
+                } catch (err: Exception) {
+                    Utilities.showRequestError(customAlertDialog, error.toString())
+                }
+            }
+        ) {
+            // Set request headers here if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION", "DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         myCallbackManager.onActivityResult(requestCode, resultCode, data)
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun tryToLoginWithGoogle(userGoogleToken: String, userName: String, userLastName: String, userEmail: String) {
+    private fun tryToLoginWithGoogle(userGoogleToken: String, userName: String, userLastName: String, userEmail: String, closeOtherSessions: String) {
         Utilities.queue?.add(object: JsonObjectRequest(
             Method.GET,
-            resources.getString(R.string.api_url) + "login-with-google?token=" + userGoogleToken,
+            resources.getString(R.string.api_url) + "login-with-google?token=" + userGoogleToken + "&session_from=app&close_other_sessions=" + closeOtherSessions,
             null,
             { response ->
-                saveUserSession(response.getJSONObject("user_data"), userEmail, userGoogleToken, response.getString("token"))
+                val userData = response.getJSONObject("user_data")
+                saveUserSession(userData, userEmail, userData.getString("password"), response.getString("token"))
             },
             { error ->
                 try {
@@ -161,9 +199,32 @@ class LoginActivity : AppCompatActivity() {
                     if (responseError.has("user_missing")) {
                         registerUserStep1(userName, userLastName, userEmail, userGoogleToken, "g")
                     } else if (responseError.has("disabled_account")) {
-                        customAlertDialog.setTitle("")
-                        customAlertDialog.setMessage("La cuenta del usuario esta deshabilitada")
-                        customAlertDialog.show()
+                        MaterialAlertDialogBuilder(this).create().also { dialog ->
+                            dialog.setCancelable(false)
+
+                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                viewBinding.title.visibility = View.GONE
+                                viewBinding.message.text = "La cuenta del usuario esta deshabilitada."
+                                viewBinding.negativeButton.visibility = View.GONE
+                                viewBinding.positiveButton.text = "Aceptar"
+                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                            }.root)
+                        }.show()
+                    } else if (responseError.has("missing_confirm_close_other_sessions")) {
+                        val sessionAuxItem = SessionsAuxTable.find(db, responseError.getInt("id_user"))
+
+                        if (sessionAuxItem != null && sessionAuxItem.tokenId == responseError.getInt("token_id")) {
+                            tryToLoginWithGoogle(userGoogleToken, userName, userLastName, userEmail, "1")
+                        } else {
+                            MaterialAlertDialogBuilder(this)
+                                .setCancelable(true)
+                                .setTitle(null)
+                                .setMessage("Se cerrará la sesión en otros dispositivos...")
+                                .setNegativeButton("Cancelar", null)
+                                .setPositiveButton("Continuar") { _, _ -> tryToLoginWithGoogle(userGoogleToken, userName, userLastName, userEmail, "1") }
+                                .show()
+                        }
                     }
                 } catch (err: Exception) {
                     Utilities.showRequestError(customAlertDialog, error.toString())
@@ -209,7 +270,7 @@ class LoginActivity : AppCompatActivity() {
         resetInputErrors()
 
         if (validCredentials(binding.userEmail.text.toString(), binding.userPassword.text.toString())) {
-            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString())
+            loginStep1(binding.userEmail.text.toString(), binding.userPassword.text.toString(), "0")
         } else {
             hideLoading()
         }
@@ -226,52 +287,135 @@ class LoginActivity : AppCompatActivity() {
     // In this step we get the user information, then call the step 2 function
     // to get the user token.
     @Suppress("SameParameterValue")
-    private fun loginStep1(email: String, password: String) {
+    private fun loginStep1(email: String, password: String, closeOtherSessions: String) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
-            Utilities.queue?.add(object: JsonObjectRequest(
+            Utilities.queue?.add(object: StringRequest(
                 Method.POST,
                 resources.getString(R.string.api_url) + "login",
-                null,
                 { response ->
-                    if (response.has("status") && response.getString("status") == "error") {
-                        if (response.has("error_code")) {
-                            when (response.getInt("error_code")) {
-                                // User not found
-                                1 -> {
-                                    // ...
+                    try {
+                        val jsonResp = JSONObject(response)
+
+                        if (jsonResp.has("status") && jsonResp.getString("status") == "error") {
+                            if (jsonResp.has("error_code")) {
+                                when (jsonResp.getInt("error_code")) {
+                                    // User not found
+                                    1 -> {
+                                        MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                            dialog.setCancelable(false)
+
+                                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                                viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                                viewBinding.title.visibility = View.GONE
+                                                viewBinding.message.text = jsonResp.getString("message")
+                                                viewBinding.negativeButton.visibility = View.GONE
+                                                viewBinding.positiveButton.text = "Aceptar"
+                                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                            }.root)
+                                        }.show()
+
+                                        hideLoading()
+                                    }
+                                    // Disabled account
+                                    2 -> {
+                                        MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                            dialog.setCancelable(false)
+
+                                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                                viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                                viewBinding.title.visibility = View.GONE
+                                                viewBinding.message.text = jsonResp.getString("message")
+                                                viewBinding.negativeButton.visibility = View.GONE
+                                                viewBinding.positiveButton.text = "Aceptar"
+                                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                            }.root)
+                                        }.show()
+
+                                        hideLoading()
+                                    }
+                                    // Waiting the user activate their account
+                                    3 -> {
+                                        MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                            dialog.setCancelable(false)
+
+                                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                                viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                                viewBinding.title.visibility = View.GONE
+                                                viewBinding.message.text = jsonResp.getString("message")
+                                                viewBinding.negativeButton.visibility = View.GONE
+                                                viewBinding.positiveButton.text = "Aceptar"
+                                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                            }.root)
+                                        }.show()
+
+                                        hideLoading()
+                                    }
+                                    4 -> {
+                                        // The backend is requesting the user authorize close other active sessions.
+                                        val sessionAuxItem = SessionsAuxTable.find(db, jsonResp.getInt("id_user"))
+
+                                        if (sessionAuxItem != null && sessionAuxItem.tokenId == jsonResp.getInt("token_id")) {
+                                            loginStep1(email, password, "1")
+                                        } else {
+                                            MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                                dialog.setCancelable(true)
+
+                                                dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                                    viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                                    viewBinding.title.visibility = View.GONE
+                                                    viewBinding.message.text = "Se cerrará la sesión en otros dispositivos..."
+                                                    viewBinding.positiveButton.text = "Continuar"
+                                                    viewBinding.negativeButton.text = "Cancelar"
+
+                                                    viewBinding.positiveButton.setOnClickListener {
+                                                        dialog.dismiss()
+                                                        loginStep1(email, password, "1")
+                                                    }
+
+                                                    viewBinding.negativeButton.setOnClickListener { dialog.dismiss() }
+                                                }.root)
+                                            }.show()
+                                        }
+
+                                        hideLoading()
+                                    }
                                 }
-                                // Disabled account
-                                2 -> { //
-                                    customAlertDialog.setTitle("")
-                                    customAlertDialog.setMessage(response.getString("message"))
-                                    customAlertDialog.show()
-                                    hideLoading()
-                                }
-                                // Waiting the user activate their account
-                                3 -> {
-                                    customAlertDialog.setTitle("")
-                                    customAlertDialog.setMessage(response.getString("message"))
-                                    customAlertDialog.show()
-                                    hideLoading()
-                                }
+                            } else {
+                                MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                    dialog.setCancelable(false)
+
+                                    dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                        viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                        viewBinding.title.visibility = View.GONE
+                                        viewBinding.message.text = jsonResp.getString("message")
+                                        viewBinding.negativeButton.visibility = View.GONE
+                                        viewBinding.positiveButton.text = "Aceptar"
+                                        viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                    }.root)
+                                }.show()
+
+                                hideLoading()
                             }
                         } else {
-                            customAlertDialog.setTitle("")
-                            customAlertDialog.setMessage(response.getString("message"))
-                            customAlertDialog.show()
+                            MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                dialog.setCancelable(false)
+
+                                dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                    viewBinding.icon.setImageResource(R.drawable.warning_dialog)
+                                    viewBinding.title.visibility = View.GONE
+                                    viewBinding.message.text = jsonResp.getString("message")
+                                    viewBinding.negativeButton.visibility = View.GONE
+                                    viewBinding.positiveButton.text = "Aceptar"
+                                    viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                }.root)
+                            }.show()
+
                             hideLoading()
                         }
-                    } else {
-                        if (response.has("sub")) {
-                            loginStep2(response, email, password)
-                        } else {
-                            customAlertDialog.setTitle("")
-                            customAlertDialog.setMessage(response.getString("message"))
-                            customAlertDialog.show()
-                            hideLoading()
-                        }
+                    } catch (err: Exception) {
+                        loginStep2(email, password, response.substring(1, response.length - 1))
                     }
                 },
                 { error ->
@@ -289,7 +433,17 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun getBody(): ByteArray {
-                    return "json=${URLEncoder.encode("{\"email\":\"$email\",\"password\":\"$password\",\"gettoken\":true}", "utf-8")}".toByteArray()
+                    return (
+                            "json=" + URLEncoder.encode(
+                                JSONObject()
+                                    .put("email", email)
+                                    .put("password", password)
+                                    .put("gettoken", false)
+                                    .put("session_from", "app")
+                                    .put("close_other_sessions", closeOtherSessions)
+                                    .toString(),
+                                "UTF-8"
+                            )).toByteArray()
                 }
             }.apply {
                 retryPolicy = DefaultRetryPolicy(
@@ -302,21 +456,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // In this step we get the user token (after step 1 finish).
-    private fun loginStep2(userData: JSONObject, email: String, password: String) {
-        Utilities.queue?.add(object: StringRequest(
+    private fun loginStep2(email: String, password: String, token: String) {
+        Utilities.queue?.add(object: JsonObjectRequest(
             Method.POST,
             resources.getString(R.string.api_url) + "login",
+            null,
             { response ->
-                try {
-                    JSONObject(response).let { jsonObj ->
-                        customAlertDialog.setTitle("")
-                        customAlertDialog.setMessage(jsonObj.getString("message"))
-                        customAlertDialog.show()
-                        hideLoading()
-                    }
-                } catch (err: Exception) {
-                    saveUserSession(userData, email, password, response.substring(1, response.length - 1))
-                }
+                saveUserSession(response, email, password, token)
             },
             { error ->
                 try {
@@ -333,7 +479,17 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun getBody(): ByteArray {
-                return "json=${URLEncoder.encode("{\"email\":\"$email\",\"password\":\"$password\",\"gettoken\":false}", "utf-8")}".toByteArray()
+                return (
+                        "json=" + URLEncoder.encode(
+                            JSONObject()
+                                .put("email", email)
+                                .put("password", password)
+                                .put("gettoken", true)
+                                .put("session_from", "app")
+                                .put("close_other_sessions", "1")
+                                .toString(),
+                            "UTF-8"
+                        )).toByteArray()
             }
         }.apply {
             retryPolicy = DefaultRetryPolicy(
@@ -517,7 +673,11 @@ class LoginActivity : AppCompatActivity() {
                 resources.getString(R.string.api_url) + "register",
                 null,
                 { response ->
-                    tryToLoginWithGoogle(userPassword, userName, userLastName, userEmail)
+                    if (sessionType == "g") {
+                        tryToLoginWithGoogle(userPassword, userName, userLastName, userEmail, "1")
+                    } else {
+                        tryToLoginWithFacebook(userPassword, "1")
+                    }
                 },
                 { error ->
                     hideLoading()
@@ -613,6 +773,14 @@ class LoginActivity : AppCompatActivity() {
                     if (userDetailData.getString("enterprise_name") == "null") { null } else { userDetailData.getString("enterprise_name") }
                 ))
             }
+        }
+
+        val sessionAuxItem = SessionsAuxTable.find(db, userData.getInt("sub"))
+
+        if (sessionAuxItem == null) {
+            SessionsAuxTable.insert(db, SessionAux(userData.getInt("sub"), userData.getInt("token_id")))
+        } else {
+            SessionsAuxTable.update(db, SessionAux(userData.getInt("sub"), userData.getInt("token_id")))
         }
 
         startActivity(Intent(this, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))

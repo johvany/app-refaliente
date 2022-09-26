@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Programmer/.gradle/caches/transforms-3/b8ecf7d854b39e6562f205de0768d2f1/transformed/jetified-facebook-common-8.2.0/res/drawable/com_facebook_button_icon.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/badge_darkgray.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/badge_new.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/badge_remate.xml" value="0.2585" />
@@ -16,6 +17,8 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_body_no_header.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/card_header.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/color_cursor.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/dialog_negative_button.xml" value="0.2585" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/dialog_positive_button.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/disabled_field.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/disabled_field_2.xml" value="0.2585" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2585" />
@@ -63,6 +66,7 @@
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/fragment_slideshow.xml" value="0.18802083333333333" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/loading_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/loading_window.xml" value="0.36666666666666664" />
+        <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/my_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/nav_header_home_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/row_item_card_month.xml" value="0.36666666666666664" />
         <entry key="..\:/android_development/app-refaliente/app/src/main/res/layout/row_item_card_year.xml" value="0.36666666666666664" />

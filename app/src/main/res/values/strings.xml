@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">refaliente</string>
+    <string name="app_name">Refaliente</string>
     <string name="todo">TODO</string>
     <string name="title_activity_home_menu">HomeMenuActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -14,5 +14,6 @@
     <string name="product_sold_out_msg">Producto agotado. <b>¿Buscar otro?</b></string>
     <string name="google_oauth_client_id" tools:ignore="TypographyDashes">738173659796-3ooht9scqlgu95t68113q1mr89egnmmm.apps.googleusercontent.com</string>
     <string name="facebook_app_id">1163870464433392</string>
+    <string name="fb_login_protocol_scheme">fb1163870464433392</string>
     <string name="facebook_client_token">5b3e009d137fac5f0c02261f85c6bab0</string>
 </resources>

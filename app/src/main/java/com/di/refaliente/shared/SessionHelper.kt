@@ -2,6 +2,8 @@ package com.di.refaliente.shared
 
 import android.content.Context
 import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
@@ -10,10 +12,11 @@ import com.android.volley.toolbox.Volley
 import com.di.refaliente.HomeMenuActivity
 import com.di.refaliente.LoginActivity
 import com.di.refaliente.R
+import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.local_database.Database
+import com.di.refaliente.local_database.SessionsAuxTable
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Runnable
 import org.json.JSONObject
@@ -25,6 +28,7 @@ class SessionHelper {
         // Don't change this values unless the backend change.
         private const val TOKEN_EXPIRED = 1
         private const val ACCOUNT_DISABLED = 2
+        private const val SESSION_NOT_VALID = 3
 
         var user: User? = null
 
@@ -45,6 +49,8 @@ class SessionHelper {
         // This will update "users" and "users_details" tables. Then will launch the main activity
         // (HomeMenuActivity) and finish all others activitys.
         fun logout(context: Context) {
+            val sessionAuxItem: SessionAux?
+
             Database(context).use { db ->
                 val userDetail = UserDetail(
                     1,
@@ -76,133 +82,169 @@ class SessionHelper {
                 ))
 
                 UsersDetailsTable.update(db, userDetail)
+                sessionAuxItem = SessionsAuxTable.find(db, user!!.sub)
             }
 
-            context.startActivity(Intent(context, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+            if (sessionAuxItem == null) {
+                context.startActivity(Intent(context, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+            } else {
+                Volley.newRequestQueue(context).add(object: JsonObjectRequest(
+                    Method.GET,
+                    context.resources.getString(R.string.api_url) + "logout?id_user=" + sessionAuxItem.idUser + "&token_id=" + sessionAuxItem.tokenId,
+                    null,
+                    { response ->
+                        Database(context).use { db -> SessionsAuxTable.update(db, SessionAux(response.getInt("id_user"), response.getInt("token_id"))) }
+                        context.startActivity(Intent(context, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+                    },
+                    { context.startActivity(Intent(context, HomeMenuActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)) }
+                ) { /* ... */ }.apply {
+                    retryPolicy = DefaultRetryPolicy(
+                        ConstantValues.REQUEST_TIMEOUT,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
+                })
+            }
         }
 
         // This function will try to login again to get a new user token, if all is ok, the new user
         // token will be saved in the local database and the "user" var in this class will be updated too.
         @Suppress("UNUSED_ANONYMOUS_PARAMETER")
-        private fun refreshUserToken(context: Context, success: Runnable, fail: Runnable, userAccountDisabled: Runnable) {
+        private fun refreshUserTokenStep1(context: Context, success: Runnable, fail: Runnable, userAccountDisabled: Runnable, sessionNotValid: Runnable, closeOtherSessions: String) {
             if (user == null) {
                 fail.run()
             } else {
-                when (user!!.userDetail!!.sessionType) {
-                    // The user has logged in with email.
-                    "e" -> {
-                        Volley.newRequestQueue(context).add(object: StringRequest(
-                            Method.POST,
-                            context.resources.getString(R.string.api_url) + "login",
-                            { response ->
-                                try {
-                                    JSONObject(response).let { resp ->
-                                        if (resp.has("error_code") && resp.getInt("error_code") == 2) {
+                Volley.newRequestQueue(context).add(object: StringRequest(
+                    Method.POST,
+                    context.resources.getString(R.string.api_url) + "login",
+                    { response ->
+                        try {
+                            JSONObject(response).let { resp ->
+                                if (resp.has("error_code")) {
+                                    when (resp.getInt("error_code")) {
+                                        1 -> {
+                                            // May be the password is wrong (because the user login in another device by
+                                            // using social network, which means the password was changed automatically by the backend).
+                                            sessionNotValid.run()
+                                        }
+                                        2 -> {
+                                            // Disabled account
                                             userAccountDisabled.run()
-                                        } else {
-                                            fail.run()
+                                        }
+                                        4 -> {
+                                            // The backend is requesting the user authorize close other active sessions.
+                                            Database(context).use { db ->
+                                                val sessionAuxItem = SessionsAuxTable.find(db, resp.getInt("id_user"))
+
+                                                if (sessionAuxItem != null && sessionAuxItem.tokenId == resp.getInt("token_id")) {
+                                                    refreshUserTokenStep1(context, success, fail, userAccountDisabled, sessionNotValid, "1")
+                                                } else {
+                                                    sessionNotValid.run()
+                                                }
+                                            }
                                         }
                                     }
-                                } catch (err: Exception) {
-                                    Database(context).use { db ->
-                                        User(
-                                            user!!.idLocal,
-                                            user!!.sub,
-                                            user!!.email,
-                                            user!!.name,
-                                            user!!.surname,
-                                            user!!.roleUser,
-                                            user!!.password,
-                                            response.substring(1, response.length - 1),
-                                            user!!.userDetail
-                                        ).let { updatedUser ->
-                                            user = updatedUser
-                                            UsersTable.update(db, updatedUser)
-                                        }
-                                    }
-
-                                    success.run()
-                                }
-                            },
-                            {
-                                fail.run()
-                            }
-                        ) {
-                            override fun getBodyContentType(): String {
-                                return "application/x-www-form-urlencoded"
-                            }
-
-                            override fun getBody(): ByteArray {
-                                return "json=${URLEncoder.encode("{\"email\":\"${user!!.email}\",\"password\":\"${user!!.password}\",\"gettoken\":false}", "utf-8")}".toByteArray()
-                            }
-                        }.apply {
-                            retryPolicy = DefaultRetryPolicy(
-                                ConstantValues.REQUEST_TIMEOUT,
-                                0,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-                            )
-                        })
-                    }
-                    // The user has logged in with google.
-                    "g" -> {
-                        val account = GoogleSignIn.getLastSignedInAccount(context)!!
-
-                        Volley.newRequestQueue(context).add(object: JsonObjectRequest(
-                            Method.GET,
-                            context.resources.getString(R.string.api_url) + "login-with-google?token=" + account.idToken,
-                            null,
-                            { response ->
-                                Database(context).use { db ->
-                                    User(
-                                        user!!.idLocal,
-                                        user!!.sub,
-                                        user!!.email,
-                                        user!!.name,
-                                        user!!.surname,
-                                        user!!.roleUser,
-                                        user!!.password,
-                                        response.getString("token"),
-                                        user!!.userDetail
-                                    ).let { updatedUser ->
-                                        user = updatedUser
-                                        UsersTable.update(db, updatedUser)
-                                    }
-                                }
-
-                                success.run()
-                            },
-                            { error ->
-                                try {
-                                    val errResp = JSONObject(error.networkResponse.data.decodeToString())
-
-                                    if (errResp.has("disabled_account")) {
-                                        userAccountDisabled.run()
-                                    } else {
-                                        fail.run()
-                                    }
-                                } catch (err: Exception) {
+                                } else {
                                     fail.run()
                                 }
                             }
-                        ) {
-                            // Set request headers here if you need.
-                        }.apply {
-                            retryPolicy = DefaultRetryPolicy(
-                                ConstantValues.REQUEST_TIMEOUT,
-                                0,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-                            )
-                        })
-                    }
-                    // The user has logged in with facebook.
-                    "f" -> {
-                        // ...
-                    }
-                    else -> {
+                        } catch (err: Exception) {
+                            refreshUserTokenStep2(context, success, fail, response.substring(1, response.length - 1))
+                        }
+                    },
+                    {
                         fail.run()
                     }
-                }
+                ) {
+                    override fun getBodyContentType(): String {
+                        return "application/x-www-form-urlencoded"
+                    }
+
+                    override fun getBody(): ByteArray {
+                        return (
+                                "json=" + URLEncoder.encode(
+                                    JSONObject()
+                                        .put("email", user!!.email)
+                                        .put("password", user!!.password)
+                                        .put("gettoken", false)
+                                        .put("session_from", "app")
+                                        .put("close_other_sessions", closeOtherSessions)
+                                        .toString(),
+                                    "UTF-8"
+                                )).toByteArray()
+                    }
+                }.apply {
+                    retryPolicy = DefaultRetryPolicy(
+                        ConstantValues.REQUEST_TIMEOUT,
+                        0,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
+                })
             }
+        }
+
+        @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+        private fun refreshUserTokenStep2(context: Context, success: Runnable, fail: Runnable, newToken: String) {
+            Volley.newRequestQueue(context).add(object: JsonObjectRequest(
+                Method.POST,
+                context.resources.getString(R.string.api_url) + "login",
+                null,
+                { response ->
+                    Database(context).use { db ->
+                        User(
+                            user!!.idLocal,
+                            user!!.sub,
+                            user!!.email,
+                            user!!.name,
+                            user!!.surname,
+                            user!!.roleUser,
+                            user!!.password,
+                            newToken,
+                            user!!.userDetail
+                        ).let { updatedUser ->
+                            user = updatedUser
+                            UsersTable.update(db, updatedUser)
+                        }
+
+                        val sessionAuxItem = SessionsAuxTable.find(db, response.getInt("sub"))
+
+                        if (sessionAuxItem == null) {
+                            SessionsAuxTable.insert(db, SessionAux(response.getInt("sub"), response.getInt("token_id")))
+                        } else {
+                            SessionsAuxTable.update(db, SessionAux(response.getInt("sub"), response.getInt("token_id")))
+                        }
+                    }
+
+                    success.run()
+                },
+                { error ->
+                    fail.run()
+                }
+            ) {
+                override fun getBodyContentType(): String {
+                    return "application/x-www-form-urlencoded"
+                }
+
+                override fun getBody(): ByteArray {
+                    return (
+                            "json=" + URLEncoder.encode(
+                                JSONObject()
+                                    .put("email", user!!.email)
+                                    .put("password", user!!.password)
+                                    .put("gettoken", true)
+                                    .put("session_from", "app")
+                                    .put("close_other_sessions", "1")
+                                    .toString(),
+                                "UTF-8"
+                            )).toByteArray()
+                }
+            }.apply {
+                retryPolicy = DefaultRetryPolicy(
+                    ConstantValues.REQUEST_TIMEOUT,
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+            })
         }
 
         // The main purpose of this function is check if there is a token or account status error.
@@ -214,7 +256,7 @@ class SessionHelper {
                     if (errorResponse.has("error_token")) {
                         when (errorResponse.getInt("error_token")) {
                             TOKEN_EXPIRED -> {
-                                refreshUserToken(
+                                refreshUserTokenStep1(
                                     context,
                                     {
                                         // At this point the token was successfully refreshed.
@@ -232,23 +274,85 @@ class SessionHelper {
                                         // At this point the token couldn't refreshed because the user account was disabled.
                                         // The active session will close.
 
-                                        MaterialAlertDialogBuilder(context)
-                                            .setTitle("Cuenta deshabilitada")
-                                            .setMessage("Su cuenta ha sido deshabilitada y actualmente no puede usarla.")
-                                            .setCancelable(false)
-                                            .setPositiveButton("ACEPTAR") { _, _ -> logout(context) }
-                                            .show()
-                                    }
+                                        MaterialAlertDialogBuilder(context).create().also { dialog ->
+                                            dialog.setCancelable(false)
+
+                                            dialog.setView(MyDialogBinding.inflate(LayoutInflater.from(context)).also { viewBinding ->
+                                                viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                                viewBinding.title.text = "¡Cuenta deshabilitada!"
+                                                viewBinding.message.text = "Su cuenta ha sido deshabilitada y actualmente no puede usarla"
+                                                viewBinding.negativeButton.visibility = View.GONE
+                                                viewBinding.positiveButton.text = "Aceptar"
+
+                                                viewBinding.positiveButton.setOnClickListener {
+                                                    dialog.dismiss()
+                                                    logout(context)
+                                                }
+                                            }.root)
+                                        }.show()
+                                    },
+                                    {
+                                        // At this point, the current user session is not available because the user login
+                                        // in another device, and only one session per user is permitted.
+                                        // The active session will close.
+
+                                        MaterialAlertDialogBuilder(context).create().also { dialog ->
+                                            dialog.setCancelable(false)
+
+                                            dialog.setView(MyDialogBinding.inflate(LayoutInflater.from(context)).also { viewBinding ->
+                                                viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                                viewBinding.title.text = "¡Sesión no valida!"
+                                                viewBinding.message.text = "Ya tiene una sesión activa en otro dispositivo por lo que esta sesión ya no es válida"
+                                                viewBinding.negativeButton.visibility = View.GONE
+                                                viewBinding.positiveButton.text = "Aceptar"
+
+                                                viewBinding.positiveButton.setOnClickListener {
+                                                    dialog.dismiss()
+                                                    logout(context)
+                                                }
+                                            }.root)
+                                        }.show()
+                                    },
+                                    "0"
                                 )
                             }
                             ACCOUNT_DISABLED -> {
                                 // The active session will be closed.
-                                MaterialAlertDialogBuilder(context)
-                                    .setTitle("Cuenta deshabilitada")
-                                    .setMessage("Su cuenta ha sido deshabilitada y actualmente no puede usarla.")
-                                    .setCancelable(false)
-                                    .setPositiveButton("ACEPTAR") { _, _ -> logout(context) }
-                                    .show()
+
+                                MaterialAlertDialogBuilder(context).create().also { dialog ->
+                                    dialog.setCancelable(false)
+
+                                    dialog.setView(MyDialogBinding.inflate(LayoutInflater.from(context)).also { viewBinding ->
+                                        viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                        viewBinding.title.text = "¡Cuenta deshabilitada!"
+                                        viewBinding.message.text = "Su cuenta ha sido deshabilitada y actualmente no puede usarla"
+                                        viewBinding.negativeButton.visibility = View.GONE
+                                        viewBinding.positiveButton.text = "Aceptar"
+
+                                        viewBinding.positiveButton.setOnClickListener {
+                                            dialog.dismiss()
+                                            logout(context)
+                                        }
+                                    }.root)
+                                }.show()
+                            }
+                            SESSION_NOT_VALID -> {
+                                MaterialAlertDialogBuilder(context).create().also { dialog ->
+                                    dialog.setCancelable(false)
+
+                                    dialog.setView(MyDialogBinding.inflate(LayoutInflater.from(context)).also { viewBinding ->
+                                        viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                                        viewBinding.title.text = "¡Sesión no valida!"
+                                        viewBinding.message.text = "Ya tiene una sesión activa en otro dispositivo por lo que esta sesión ya no es válida"
+                                        viewBinding.negativeButton.visibility = View.GONE
+                                        viewBinding.positiveButton.text = "Aceptar"
+
+                                        viewBinding.positiveButton.setOnClickListener {
+                                            dialog.dismiss()
+                                            logout(context)
+                                        }
+                                    }.root)
+                                }.show()
                             }
                         }
                     }

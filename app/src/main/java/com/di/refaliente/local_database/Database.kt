@@ -48,6 +48,10 @@ class Database(context: Context) : SQLiteOpenHelper(context, "main_database.db",
         values.put("table_name", "users_details")
         values.put("available_id", 1)
         db?.insert("local_ids", null, values)
+
+        db?.execSQL("CREATE TABLE IF NOT EXISTS sessions_aux(" +
+                "id_user INTEGER," +
+                "token_id INTEGER)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

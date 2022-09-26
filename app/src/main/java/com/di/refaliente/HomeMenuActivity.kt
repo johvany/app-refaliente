@@ -21,6 +21,8 @@ import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
 import com.di.refaliente.shared.SessionHelper
 import com.di.refaliente.shared.Utilities
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 
@@ -36,8 +38,16 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private var userImageProfile: String? = null
     private var isMenuItemSelected = true
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Here we initialize Facebook SDK to use login with facebook feature.
+        FacebookSdk.setApplicationId(resources.getString(R.string.facebook_app_id))
+        FacebookSdk.setClientToken(resources.getString(R.string.facebook_client_token))
+        FacebookSdk.sdkInitialize(applicationContext)
+        AppEventsLogger.activateApp(this)
+
         binding = ActivityHomeMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initializeUserData()
@@ -92,16 +102,19 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             if (SessionHelper.userLogged()) {
                 viewBinding.userName.text = "Bienvenido " + SessionHelper.user!!.name
 
-                if (userImageProfile != null) {
+                if (userImageProfile != null && userImageProfile != "null") {
                     Glide.with(this)
                         .load(resources.getString(R.string.api_url_storage) + SessionHelper.user!!.sub.toString() + "/profile/" + userImageProfile)
                         .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
                         .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                         .into(viewBinding.userImg)
+                } else {
+                    viewBinding.userImg.setImageResource(R.drawable.user_no_img)
                 }
             } else {
                 viewBinding.userName.setTextColor(Color.parseColor("#CCCCCC"))
                 viewBinding.userName.text = "Cuenta de invitado"
+                viewBinding.userImg.setImageResource(R.drawable.user_no_img)
             }
         }
     }
