@@ -1,6 +1,12 @@
 package com.di.refaliente.shared
 
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
 import com.android.volley.RequestQueue
+import com.di.refaliente.R
+import com.di.refaliente.databinding.MyDialogBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class Utilities {
     companion object {
@@ -11,6 +17,21 @@ class Utilities {
             customAlertDialog.setMessage("Por favor asegúrate de tener una conexión a internet e intenta de nuevo.")
             customAlertDialog.setErrorDetail(null)
             customAlertDialog.show()
+        }
+
+        fun showUnconnectedMessage2(context: Context) {
+            MaterialAlertDialogBuilder(context).create().also { dialog ->
+                dialog.setCancelable(false)
+
+                dialog.setView(MyDialogBinding.inflate(LayoutInflater.from(context)).also { viewBinding ->
+                    viewBinding.icon.setImageResource(R.drawable.info_dialog)
+                    viewBinding.title.text = "Sin conexión"
+                    viewBinding.message.text = "Por favor asegúrate de tener una conexión a internet e intenta de nuevo."
+                    viewBinding.negativeButton.visibility = View.GONE
+                    viewBinding.positiveButton.text = "Aceptar"
+                    viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                }.root)
+            }.show()
         }
 
         fun showRequestError(customAlertDialog: CustomAlertDialog, errorDetail: String?) {

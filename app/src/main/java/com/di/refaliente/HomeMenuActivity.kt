@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -37,10 +39,25 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var rematesFragment: RematesFragment
     private var userImageProfile: String? = null
     private var isMenuItemSelected = true
+    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == ProfileActivity.USER_DATA_UPDATED) {
+                result.data?.let { data ->
+                    if (data.extras!!.getBoolean("user_data_updated")) {
+                        loadUserDataInTheSideMenu()
+                    }
+
+                    if (data.extras!!.getBoolean("user_image_updated")) {
+                        // TODO: refresh user image.
+                    }
+                }
+            }
+        }
 
         // Here we initialize Facebook SDK to use login with facebook feature.
         FacebookSdk.setApplicationId(resources.getString(R.string.facebook_app_id))
@@ -111,10 +128,15 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 } else {
                     viewBinding.userImg.setImageResource(R.drawable.user_no_img)
                 }
+
+                viewBinding.userImg.setOnClickListener {
+                    launcher.launch(Intent(this, ProfileActivity::class.java))
+                }
             } else {
                 viewBinding.userName.setTextColor(Color.parseColor("#CCCCCC"))
                 viewBinding.userName.text = "Cuenta de invitado"
                 viewBinding.userImg.setImageResource(R.drawable.user_no_img)
+                viewBinding.userImg.setOnClickListener { SessionHelper.showRequiredSessionMessage(this) }
             }
         }
     }

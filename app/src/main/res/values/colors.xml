@@ -22,4 +22,5 @@
     <color name="facebook_color">#1877F2</color>
     <color name="google_color">#DB4A39</color>
     <color name="login_error">#FFEB3B</color>
+    <color name="error">#DA0000</color>
 </resources>

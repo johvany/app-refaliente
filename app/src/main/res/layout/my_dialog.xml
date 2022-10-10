@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Now you can see your purchase in the Purchases menu option."
+        android:paddingHorizontal="16dp"
         android:textColor="#555555"
         android:gravity="center"
         android:textSize="16sp"

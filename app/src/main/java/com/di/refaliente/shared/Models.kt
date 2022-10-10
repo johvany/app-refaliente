@@ -69,6 +69,11 @@ data class SimpleAddress(
     val name: String
 )
 
+data class BusinessTypeItem(
+    val idBusinessType: Int,
+    val name: String
+)
+
 data class User(
     val idLocal: Int,
     val sub: Int,

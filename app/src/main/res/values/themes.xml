@@ -13,6 +13,22 @@
         <item name="errorIconTint">@color/login_error</item>
         <item name="errorTextColor">@color/login_error</item>
     </style>
+    <style name="MyNormalTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeErrorColor">@color/error</item>
+        <item name="errorIconTint">@color/error</item>
+        <item name="errorTextColor">@color/error</item>
+    </style>
+    <style name="MyDisabledTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="boxBackgroundColor">#BBBBBB</item>
+        <item name="boxStrokeErrorColor">@color/login_error</item>
+        <item name="errorIconTint">@color/login_error</item>
+        <item name="errorTextColor">@color/login_error</item>
+    </style>
     <style name="Theme.Refaliente.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
