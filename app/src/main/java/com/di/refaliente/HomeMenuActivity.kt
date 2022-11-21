@@ -128,15 +128,10 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 } else {
                     viewBinding.userImg.setImageResource(R.drawable.user_no_img)
                 }
-
-                viewBinding.userImg.setOnClickListener {
-                    launcher.launch(Intent(this, ProfileActivity::class.java))
-                }
             } else {
                 viewBinding.userName.setTextColor(Color.parseColor("#CCCCCC"))
                 viewBinding.userName.text = "Cuenta de invitado"
                 viewBinding.userImg.setImageResource(R.drawable.user_no_img)
-                viewBinding.userImg.setOnClickListener { SessionHelper.showRequiredSessionMessage(this) }
             }
         }
     }
@@ -284,6 +279,14 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         isMenuItemSelected = true
 
         when (menuItemId) {
+            R.id.nav_profile -> {
+                if (SessionHelper.userLogged()) {
+                    launcher.launch(Intent(this, ProfileActivity::class.java))
+                } else {
+                    SessionHelper.showRequiredSessionMessage(this)
+                }
+                isMenuItemSelected = false
+            }
             R.id.nav_publications -> {
                 title = "Publicaciones"
 

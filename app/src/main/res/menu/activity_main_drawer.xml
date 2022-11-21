@@ -5,6 +5,12 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_baseline_account_circle_24"
+            android:title="Perfil"
+            tools:ignore="HardcodedText" />
+
+        <item
             android:id="@+id/nav_publications"
             android:icon="@drawable/baseline_store_24"
             android:title="Publicaciones"

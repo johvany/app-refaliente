@@ -1,18 +1,29 @@
 package com.di.refaliente
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.di.refaliente.databinding.ActivityProfileBinding
 import com.di.refaliente.databinding.DialogChangePasswordBinding
+import com.di.refaliente.databinding.LoadingDialogBinding
 import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.local_database.Database
 import com.di.refaliente.local_database.UsersDetailsTable
@@ -21,6 +32,10 @@ import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.BusinessTypesAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.net.URLEncoder
 
 class ProfileActivity : AppCompatActivity() {
@@ -41,6 +56,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private val businessTypesItems = ArrayList<BusinessTypeItem>()
     private lateinit var customAlertDialog: CustomAlertDialog
+    private lateinit var takePhotoLauncher: ActivityResultLauncher<Intent>
+    private var auxFilePath = ""
 
     private var userDataUpdated = false
     private var userImageUpdated = false
@@ -50,6 +67,13 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         customAlertDialog = CustomAlertDialog(this)
+
+        // Initialize take photo launcher
+        takePhotoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                uploadProfileImg()
+            }
+        }
 
         // Initialize default values.
         setStars(0)
@@ -82,6 +106,89 @@ class ProfileActivity : AppCompatActivity() {
                 }.root)
             }.show()
         }
+
+        // set change user profile event
+        binding.userImg.setOnClickListener { takePhoto() }
+    }
+
+    private fun uploadProfileImg() {
+        // We create and show a loading window.
+        val loading = MaterialAlertDialogBuilder(this).create().also { dialog ->
+            dialog.setCancelable(false)
+            dialog.setView(LoadingDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                viewBinding.message.text = "Subiendo imagen..."
+            }.root)
+        }
+        loading.show()
+
+        object: Thread() {
+            override fun run() {
+                var responseStr: String
+                var imgUploaded = false
+                val imgFile = File(auxFilePath)
+
+                try {
+                    (URL(resources.getString(R.string.api_url) + "user/profile/image/upload-from-app?file_extension=jpg").openConnection() as HttpURLConnection).also { urlConn ->
+                        urlConn.requestMethod = "POST"
+                        urlConn.setRequestProperty("Authorization", SessionHelper.user!!.token)
+
+                        // Upload image file.
+                        urlConn.outputStream.use { connOutput ->
+                            FileInputStream(imgFile).use { imgData -> imgData.copyTo(connOutput) }
+                        }
+
+                        // Read server response after upload image file.
+                        if (urlConn.responseCode == 200) {
+                            urlConn.inputStream.use { connInput -> responseStr = connInput.readBytes().decodeToString() }
+                            imgUploaded = true
+                        } else {
+                            responseStr = urlConn.errorStream.readBytes().decodeToString()
+                        }
+                    }
+                } catch (err: Exception) {
+                    responseStr = err.toString()
+                }
+
+                if (imgUploaded) {
+                    Handler(Looper.getMainLooper()).post {
+                        binding.userImg.setImageBitmap(BitmapFactory.decodeFile(auxFilePath))
+                        imgFile.delete() // We delete image file from device because we won't need it anymore.
+                        loading.dismiss()
+
+                        // TODO: refresh user data (only the image name) in the local database ...
+                        val imgName = JSONObject(responseStr).getString("image_name")
+
+                        // Show success message to the user.
+                        MaterialAlertDialogBuilder(this@ProfileActivity).create().also { dialog ->
+                            dialog.setCancelable(false)
+                            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                viewBinding.icon.setImageResource(R.drawable.success_dialog)
+                                viewBinding.title.text = "Imagen actualizada"
+                                viewBinding.message.visibility = View.GONE
+                                viewBinding.negativeButton.visibility = View.GONE
+                                viewBinding.positiveButton.text = "Aceptar"
+                                viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                            }.root)
+                        }.show()
+                    }
+                } else {
+                    Handler(Looper.getMainLooper()).post {
+                        loading.dismiss()
+                        Utilities.showUnknownError(customAlertDialog, responseStr)
+                    }
+                }
+            }
+        }.start()
+    }
+
+    private fun takePhoto() {
+        val folder = getExternalFilesDir("profile_imgs")!!.path
+        val fileName = "image_profile_temp.jpg"
+        auxFilePath = "$folder/$fileName"
+        val file = File(auxFilePath)
+        if (!File(folder).exists()) { File(folder).mkdirs() }
+        val fileUri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        takePhotoLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, fileUri))
     }
 
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")

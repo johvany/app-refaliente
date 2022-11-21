@@ -204,11 +204,12 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="8dp">
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp">
 
             <TextView
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Nombre"
@@ -223,7 +224,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -241,7 +242,7 @@
 
             <TextView
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Apellido"
@@ -256,7 +257,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -274,7 +275,7 @@
 
             <TextView
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Email"
@@ -288,7 +289,7 @@
                 style="@style/MyDisabledTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 tools:ignore="HardcodedText">
@@ -306,7 +307,7 @@
             <TextView
                 android:id="@+id/giro_title"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Giro"
@@ -315,30 +316,11 @@
                 android:textColor="@color/white"
                 tools:ignore="HardcodedText" />
 
-            <!-- <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/giro_container"
-                android:theme="@style/MyNormalTextField"
-                style="@style/MyNormalTextField"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                app:hintEnabled="false"
-                tools:ignore="HardcodedText">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/giro"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-
-            </com.google.android.material.textfield.TextInputLayout> -->
-
             <LinearLayout
                 android:id="@+id/giro_container"
                 android:layout_gravity="center"
                 android:orientation="vertical"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/select_bg_white"
                 android:layout_height="wrap_content">
@@ -354,7 +336,7 @@
             <TextView
                 android:id="@+id/rfc_title"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="RFC"
@@ -369,7 +351,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -388,7 +370,7 @@
             <TextView
                 android:id="@+id/enterprise_name_title"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Nombre de la empresa"
@@ -403,7 +385,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -421,7 +403,7 @@
 
             <TextView
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Teléfono"
@@ -435,7 +417,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -454,7 +436,7 @@
             <TextView
                 android:id="@+id/social_reason_title"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Razón social"
@@ -469,7 +451,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 app:counterEnabled="true"
@@ -487,7 +469,7 @@
 
             <TextView
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 android:text="Acerca de mi"
@@ -501,7 +483,7 @@
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintEnabled="false"
                 tools:ignore="HardcodedText">
@@ -519,8 +501,8 @@
                 android:id="@+id/save"
                 android:layout_gravity="center"
                 android:theme="@style/SuccessButton"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="GUARDAR"
                 android:layout_marginTop="8dp"
                 tools:ignore="HardcodedText" />
@@ -528,8 +510,8 @@
             <Button
                 android:id="@+id/change_password"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="CAMBIAR CONTRASEÑA"
                 android:layout_marginTop="8dp"
                 tools:ignore="HardcodedText" />
@@ -537,8 +519,8 @@
             <Button
                 android:id="@+id/upload_business_imgs"
                 android:layout_gravity="center"
-                android:layout_width="300dp"
-                android:layout_height="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="SUBIR IMÁGENES DEL NEGOCIO"
                 android:layout_marginTop="8dp"
                 tools:ignore="HardcodedText" />
