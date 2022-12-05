@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="4dp"
+    android:background="@drawable/row_item_purchase_bg">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Producto #1/1: RIN DEPORTIVO DE ALUMINIO"
+        android:padding="8dp"
+        android:layout_margin="1dp"
+        android:background="@drawable/row_item_purchase_header"
+        tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/missing_img"
+            android:background="@drawable/borders_lightgray"
+            android:padding="4dp"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:paddingHorizontal="4dp"
+                android:textSize="11sp"
+                android:text="Vendedor"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/seller_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="4dp"
+                android:layout_marginEnd="4dp"
+                android:text="José Gomez Santos"
+                tools:ignore="HardcodedText" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginVertical="4dp"
+                android:background="#CCCCCC"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:paddingHorizontal="4dp"
+                android:textSize="11sp"
+                android:text="Precio del producto"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="4dp"
+                android:layout_marginEnd="4dp"
+                android:text="$ 10,999.00"
+                tools:ignore="HardcodedText" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginVertical="4dp"
+                android:background="#CCCCCC"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:paddingHorizontal="4dp"
+                android:textSize="11sp"
+                android:text="Cantidad"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/product_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="4dp"
+                android:layout_marginEnd="4dp"
+                android:text="1"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_gray_tone_1"
+        android:paddingHorizontal="4dp"
+        android:layout_marginHorizontal="8dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:text="Subtotal"
+            android:gravity="center|start"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/summary_subtotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:text="$ 999,999,999.99"
+            android:gravity="center|end"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_gray_tone_2"
+        android:paddingHorizontal="4dp"
+        android:layout_marginHorizontal="8dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:text="IVA"
+            android:gravity="center|start"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/summary_iva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:text="$ 999,999,999.99"
+            android:gravity="center|end"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_gray_tone_1"
+        android:paddingHorizontal="4dp"
+        android:layout_marginHorizontal="8dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:text="Descuento"
+            android:gravity="center|start"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/summary_discount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:text="$ 999,999,999.99"
+            android:gravity="center|end"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_gray_tone_2"
+        android:paddingHorizontal="4dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginHorizontal="8dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:text="Total"
+            android:gravity="center|start"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/summary_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textColor="@color/black"
+            android:text="$ 999,999,999.99"
+            android:gravity="center|end"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</LinearLayout>

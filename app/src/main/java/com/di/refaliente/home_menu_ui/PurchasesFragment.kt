@@ -1,5 +1,6 @@
 package com.di.refaliente.home_menu_ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
+import com.di.refaliente.PurchaseDetailActivity
 import com.di.refaliente.R
 import com.di.refaliente.databinding.FragmentPurchasesBinding
 import com.di.refaliente.shared.*
@@ -35,7 +37,13 @@ class PurchasesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initVars()
         binding.purchases.layoutManager = LinearLayoutManager(requireContext())
-        binding.purchases.adapter = PurchasesHeadersAdapter(purchasesHeadersItems, requireContext())
+
+        binding.purchases.adapter = PurchasesHeadersAdapter(purchasesHeadersItems, requireContext()) { itemPosition ->
+            startActivity(Intent(requireContext(), PurchaseDetailActivity::class.java)
+                .putExtra("purchase_detail", purchasesHeadersItems[itemPosition].productsDetail)
+                .putExtra("id_purchase_formatted", purchasesHeadersItems[itemPosition].idPurchaseFormatted))
+        }
+
         customAlertDialog = CustomAlertDialog(requireContext())
         binding.refresh.setOnRefreshListener { refreshPurchases() }
 
@@ -121,7 +129,9 @@ class PurchasesFragment : Fragment() {
                 if (jsonItem.getString("customer_phone") == "null") { null } else { jsonItem.getString("customer_phone") },
                 jsonItem.getString("customer_email"),
                 jsonItem.getString("customer_address"),
-                jsonItem.getString("customer_zipcode")
+                jsonItem.getString("customer_zipcode"),
+                jsonItem.getString("products_name_full"),
+                jsonItem.getString("products_detail")
             ))
         }
 

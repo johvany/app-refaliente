@@ -116,7 +116,7 @@
 
     </LinearLayout>
 
-    <!-- <LinearLayout
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -133,12 +133,13 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="Amortiguador trasero motocicleta diferentes modelo..."
             tools:ignore="HardcodedText" />
 
-    </LinearLayout> -->
+    </LinearLayout>
 
 </LinearLayout>

@@ -5,8 +5,13 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="false"
@@ -17,11 +22,13 @@
         android:theme="@style/Theme.Refaliente"
         android:usesCleartextTraffic="true"
         tools:ignore="DataExtractionRules">
-
+        <activity
+            android:name=".PurchaseDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:windowSoftInputMode="adjustPan" />
 
         <meta-data
@@ -85,12 +92,10 @@
             android:authorities="com.di.refaliente.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

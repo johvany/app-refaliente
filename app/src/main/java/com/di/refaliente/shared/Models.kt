@@ -52,7 +52,24 @@ data class PurchaseHeader(
     val customerPhone: String?,
     val customerEmail: String,
     val customerAddress: String,
-    val customerPostalCode: String
+    val customerPostalCode: String,
+    val productsNamesFull: String,
+    val productsDetail: String
+)
+
+data class PurchaseDetail(
+    val idSaleDetail: Int,
+    val productName: String,
+    val images: String?,
+    val sellerName: String,
+    val keySeller: Int,
+    val productPrice: String,
+    val quantity: String,
+    val subtotal: String,
+    val iva: String,
+    val discount: String,
+    val total: String,
+    val readyToComment: Boolean
 )
 
 data class PublicationSmall(
