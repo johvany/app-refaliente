@@ -1,9 +1,11 @@
 package com.di.refaliente
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -34,6 +36,7 @@ import org.json.JSONObject
 import java.net.URLEncoder
 import java.util.regex.Pattern
 
+@SuppressLint("SetTextI18n")
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var db: Database
@@ -93,6 +96,12 @@ class LoginActivity : AppCompatActivity() {
         // Set empty click listener to this view, to prevent the user click others views like
         // when the loadingBackground view is visible buttons.
         binding.loadingBackground.setOnClickListener { /* ... */ }
+
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
     }
 
     private fun loginWithFacebook() {
@@ -114,7 +123,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun tryToLoginWithFacebook(userFacebookToken: String, closeOtherSessions: String) {
-        Utilities.queue?.add(object: JsonObjectRequest(
+        Utilities.queue?.add(
+        object: JsonObjectRequest(
             Method.GET,
             resources.getString(R.string.api_url) + "login-with-facebook?token=" + userFacebookToken + "&session_from=app&close_other_sessions=" + closeOtherSessions,
             null,
@@ -817,10 +827,5 @@ class LoginActivity : AppCompatActivity() {
         }
 
         return validCred
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
     }
 }

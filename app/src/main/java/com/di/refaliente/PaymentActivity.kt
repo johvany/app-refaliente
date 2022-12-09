@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+@SuppressLint("SetTextI18n") // ... Delete when finish testing ...
 class PaymentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPaymentBinding
     private lateinit var loading: LoadingWindow
@@ -32,7 +33,6 @@ class PaymentActivity : AppCompatActivity() {
     private var idPublication = 0
     private var idSelectedAddress = 0
 
-    @SuppressLint("SetTextI18n") // ... Delete when finish testing ...
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPaymentBinding.inflate(layoutInflater)

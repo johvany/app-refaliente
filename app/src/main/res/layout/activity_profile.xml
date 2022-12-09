@@ -233,10 +233,11 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/name"
-                    android:maxLength="100"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:maxLength="100"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -266,10 +267,11 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/surname"
-                    android:maxLength="100"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:maxLength="100"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -296,11 +298,12 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/email"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text"
                     android:textColor="@color/black"
-                    android:inputType="text"/>
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -327,9 +330,10 @@
 
                 <Spinner
                     android:id="@+id/business_types"
-                    android:gravity="center|start"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp" />
+                    android:layout_height="50dp"
+                    android:gravity="center|start"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </LinearLayout>
 
@@ -360,10 +364,11 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/rfc"
-                    android:maxLength="15"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:maxLength="15"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -460,10 +465,11 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/social_reason"
-                    android:maxLength="100"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:maxLength="100"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -471,6 +477,39 @@
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:text="Dirección principal"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:theme="@style/MyDisabledTextField"
+                style="@style/MyDisabledTextField"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintEnabled="false"
+                tools:ignore="HardcodedText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/main_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:text="Acerca de mi"
                 android:textStyle="bold"
@@ -482,6 +521,7 @@
                 android:theme="@style/MyNormalTextField"
                 style="@style/MyNormalTextField"
                 android:layout_marginTop="8dp"
+                android:visibility="gone"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

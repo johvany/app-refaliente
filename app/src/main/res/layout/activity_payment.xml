@@ -102,8 +102,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/card_user_name_container"
                 android:layout_gravity="center"
-                android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/MyOutlinedBox"
+                style="@style/MyOutlinedBox"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -132,8 +132,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/card_number_container"
                 android:layout_gravity="center"
-                android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/MyOutlinedBox"
+                style="@style/MyOutlinedBox"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -240,8 +240,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/card_cvv_container"
                     android:layout_gravity="center"
-                    android:theme="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:theme="@style/MyOutlinedBox"
+                    style="@style/MyOutlinedBox"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"

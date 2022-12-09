@@ -12,6 +12,7 @@
         <item name="boxStrokeErrorColor">@color/login_error</item>
         <item name="errorIconTint">@color/login_error</item>
         <item name="errorTextColor">@color/login_error</item>
+        <item name="android:textAppearance">@color/white</item>
     </style>
     <style name="MyNormalTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorPrimary">@color/blue_primary</item>
@@ -20,6 +21,7 @@
         <item name="boxStrokeErrorColor">@color/error</item>
         <item name="errorIconTint">@color/error</item>
         <item name="errorTextColor">@color/error</item>
+        <item name="android:textAppearance">@color/white</item>
     </style>
     <style name="MyDisabledTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorPrimary">@color/blue_primary</item>
@@ -28,6 +30,7 @@
         <item name="boxStrokeErrorColor">@color/login_error</item>
         <item name="errorIconTint">@color/login_error</item>
         <item name="errorTextColor">@color/login_error</item>
+        <item name="android:textAppearance">@color/white</item>
     </style>
     <style name="Theme.Refaliente.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -56,5 +59,8 @@
     <style name="SecondaryButton" parent="Widget.MaterialComponents.Button">
         <item name="colorPrimary">#6C757D</item>
         <item name="colorOnPrimary">@color/white</item>
+    </style>
+    <style name="MyOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:textAppearance">@color/black</item>
     </style>
 </resources>

@@ -1,17 +1,17 @@
 package com.di.refaliente
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -38,6 +38,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 
+@SuppressLint("SetTextI18n")
 class ProfileActivity : AppCompatActivity() {
     companion object {
         // Users types
@@ -109,6 +110,19 @@ class ProfileActivity : AppCompatActivity() {
 
         // set change user profile event
         binding.userImg.setOnClickListener { takePhoto() }
+
+        // Handle on back pressed event
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (userDataUpdated || userImageUpdated) {
+                    setResult(USER_DATA_UPDATED, Intent()
+                        .putExtra("user_data_updated", userDataUpdated)
+                        .putExtra("user_image_updated", userImageUpdated))
+                }
+
+                finish()
+            }
+        })
     }
 
     private fun uploadProfileImg() {
@@ -738,15 +752,19 @@ class ProfileActivity : AppCompatActivity() {
 
         // Acerca de mi
         binding.aboutMe.setText(if (details.getString("description") == "null") "" else details.getString("description"))
-    }
 
-    override fun onBackPressed() {
-        if (userDataUpdated || userImageUpdated) {
-            setResult(USER_DATA_UPDATED, Intent()
-                .putExtra("user_data_updated", userDataUpdated)
-                .putExtra("user_image_updated", userImageUpdated))
+        // Dirección principal
+
+        if (userDataPart2.isNull("main_address")) {
+            binding.mainAddress.setText("")
+        } else {
+            userDataPart2.getJSONObject("main_address").let { item ->
+                binding.mainAddress.setText("${item.getString("street")} " +
+                        "# ${item.getString("outside_number")}, " +
+                        "CP ${item.getString("zipcode")}, " +
+                        "${item.getString("municipality_name")} " +
+                        item.getString("entity_name"))
+            }
         }
-
-        super.onBackPressed()
     }
 }

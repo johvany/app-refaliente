@@ -1,5 +1,6 @@
 package com.di.refaliente
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import com.di.refaliente.view_adapters.PurchasesDetailsAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 
+@SuppressLint("SetTextI18n")
 class PurchaseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPurchaseDetailBinding
     private val purchaseDetail = ArrayList<PurchaseDetail>()
