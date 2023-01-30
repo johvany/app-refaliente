@@ -53,7 +53,8 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     }
 
                     if (data.extras!!.getBoolean("user_image_updated")) {
-                        // TODO: refresh user image.
+                        Database(this).let { db -> UsersDetailsTable.find(db, 1)?.let { userDetail -> userImageProfile = userDetail.profileImage } }
+                        loadUserDataInTheSideMenu()
                     }
                 }
             }

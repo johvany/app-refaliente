@@ -21,6 +21,9 @@ import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityProfileBinding
 import com.di.refaliente.databinding.DialogChangePasswordBinding
 import com.di.refaliente.databinding.LoadingDialogBinding
@@ -123,6 +126,16 @@ class ProfileActivity : AppCompatActivity() {
                 finish()
             }
         })
+
+        SessionHelper.user?.userDetail?.profileImage.let { profileImage ->
+            if (profileImage != null && profileImage != "null") {
+                Glide.with(this)
+                    .load(resources.getString(R.string.api_url_storage) + SessionHelper.user!!.sub.toString() + "/profile/" + profileImage)
+                    .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                    .into(binding.userImg)
+            }
+        }
     }
 
     private fun uploadProfileImg() {
@@ -165,12 +178,33 @@ class ProfileActivity : AppCompatActivity() {
 
                 if (imgUploaded) {
                     Handler(Looper.getMainLooper()).post {
+                        userImageUpdated = true
                         binding.userImg.setImageBitmap(BitmapFactory.decodeFile(auxFilePath))
                         imgFile.delete() // We delete image file from device because we won't need it anymore.
                         loading.dismiss()
 
-                        // TODO: refresh user data (only the image name) in the local database ...
-                        val imgName = JSONObject(responseStr).getString("image_name")
+                        Database(this@ProfileActivity).let { db ->
+                            UsersDetailsTable.find(db, 1)?.let { userDetail ->
+                                UsersDetailsTable.update(db, UserDetail(
+                                    userDetail.idLocal,
+                                    userDetail.keySub,
+                                    userDetail.name,
+                                    userDetail.surname,
+                                    userDetail.email,
+                                    userDetail.description,
+                                    userDetail.keyTypeUser,
+                                    userDetail.keyBusinessType,
+                                    userDetail.telephone,
+                                    JSONObject(responseStr).getString("image_name"),
+                                    userDetail.sessionType,
+                                    userDetail.rfc,
+                                    userDetail.socialReason,
+                                    userDetail.enterpriseName
+                                ))
+                            }
+
+                            SessionHelper.user = UsersTable.find(db, 1)
+                        }
 
                         // Show success message to the user.
                         MaterialAlertDialogBuilder(this@ProfileActivity).create().also { dialog ->
