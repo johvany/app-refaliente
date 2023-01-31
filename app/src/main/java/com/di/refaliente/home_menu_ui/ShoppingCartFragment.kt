@@ -67,6 +67,7 @@ class ShoppingCartFragment : Fragment() {
         }
     }
 
+    @Suppress("CatchMayIgnoreException")
     @SuppressLint("SetTextI18n")
     private fun getShoppingCartProducts(canRepeat: Boolean) {
         if (ConnectionHelper.getConnectionType(requireContext()) == ConnectionHelper.NONE) {
@@ -142,7 +143,9 @@ class ShoppingCartFragment : Fragment() {
                     binding.total.text = "\$${response.getString("total")}"
 
                     // Get user addresses
-                    getUserAddresses(SessionHelper.user!!.sub.toString(), true)
+                    try {
+                        getUserAddresses(SessionHelper.user!!.sub.toString(), true)
+                    } catch (err: Exception) { }
                 },
                 { error ->
                     SessionHelper.handleRequestError(error, requireContext(), customAlertDialog) {

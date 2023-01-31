@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityHomeMenuBinding
+import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.databinding.NavHeaderHomeMenuBinding
 import com.di.refaliente.home_menu_ui.*
 import com.di.refaliente.local_database.Database
@@ -77,6 +80,43 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         initFragmentsAndLoadOne(savedInstanceState)
         loadUserDataInTheSideMenu()
         checkIfShouldLoadPurchases()
+
+        // Handle on back pressed event
+        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                binding.navView.checkedItem.let { menuItem ->
+                    if (menuItem == null || menuItem.itemId != R.id.nav_publications) {
+                        binding.navView.setCheckedItem(R.id.nav_publications)
+                        loadFragment(R.id.nav_publications)
+                    } else {
+                        confirmExit()
+                    }
+                }
+            }
+        })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun confirmExit() {
+        MaterialAlertDialogBuilder(this).create().also { dialog ->
+            dialog.setCancelable(true)
+
+            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                viewBinding.icon.setImageResource(R.drawable.question_dialog)
+                viewBinding.title.visibility = View.VISIBLE
+                viewBinding.title.text = "¿Desea salir de la aplicación?"
+                viewBinding.message.visibility = View.GONE
+                viewBinding.positiveButton.text = "Sí"
+                viewBinding.negativeButton.text = "No"
+
+                viewBinding.positiveButton.setOnClickListener {
+                    dialog.dismiss()
+                    finish()
+                }
+
+                viewBinding.negativeButton.setOnClickListener { dialog.dismiss() }
+            }.root)
+        }.show()
     }
 
     // This function is used to know if a new purchase was made and the user want to see it.

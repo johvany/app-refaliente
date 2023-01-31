@@ -127,14 +127,16 @@ class FavoritesFragment : Fragment() {
         Utilities.queue?.add(request)
     }
 
-    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER", "CatchMayIgnoreException")
     private fun getFavoritesList(canRepeat: Boolean) {
         val requestMethod = Request.Method.GET
         val requestURL = resources.getString(R.string.api_url) + "user/favorites-list?id_user=$idUser"
         val requestData = null
 
         val onRequestResponse = Response.Listener<JSONObject> { response ->
-            getFavoritesListData(response.getString("favorites_list"))
+            try {
+                getFavoritesListData(response.getString("favorites_list"))
+            } catch (err: Exception) { }
         }
 
         val onRequestError = Response.ErrorListener { error ->
