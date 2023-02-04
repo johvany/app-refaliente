@@ -6,4 +6,6 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="property_width_in_purchase">80dp</dimen>
+    <dimen name="price_size_small">14sp</dimen>
+    <dimen name="price_size">18sp</dimen>
 </resources>

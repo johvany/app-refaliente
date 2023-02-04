@@ -1,5 +1,6 @@
 package com.di.refaliente.view_adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,15 +23,16 @@ class PurchasesDetailsAdapter(
         return ViewHolder(RowItemPurchaseDetailBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.title.text = "Producto: #${position + 1}/${itemCount}: ${items[position].productName}"
         holder.binding.sellerName.text = items[position].sellerName
-        holder.binding.productPrice.text = numberFormatHelper.format2Decimals(items[position].productPrice)
+        holder.binding.productPrice.text = "$" + numberFormatHelper.format2Decimals(items[position].productPrice)
         holder.binding.productQuantity.text = items[position].quantity
-        holder.binding.summarySubtotal.text = numberFormatHelper.format2Decimals(items[position].subtotal)
-        holder.binding.summaryIva.text = numberFormatHelper.format2Decimals(items[position].iva)
-        holder.binding.summaryDiscount.text = numberFormatHelper.format2Decimals(items[position].discount)
-        holder.binding.summaryTotal.text = numberFormatHelper.format2Decimals(items[position].total)
+        holder.binding.summarySubtotal.text = "$" + numberFormatHelper.format2Decimals(items[position].subtotal)
+        holder.binding.summaryDiscount.text = "$" + numberFormatHelper.format2Decimals(items[position].discount)
+        holder.binding.summaryIva.text = "$" + numberFormatHelper.format2Decimals(items[position].iva)
+        holder.binding.summaryTotal.text = "$" + numberFormatHelper.format2Decimals(items[position].total)
 
         if (items[position].images == null) {
             holder.binding.image.setImageResource(R.drawable.missing_img)

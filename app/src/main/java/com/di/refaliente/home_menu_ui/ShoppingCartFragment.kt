@@ -29,6 +29,7 @@ class ShoppingCartFragment : Fragment() {
     private lateinit var binding: FragmentShoppingCartBinding
     private lateinit var customAlertDialog: CustomAlertDialog
     private val simpleAddressesItems = ArrayList<SimpleAddress>()
+    private val numberFormatHelper = NumberFormatHelper()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
@@ -121,7 +122,7 @@ class ShoppingCartFragment : Fragment() {
                             }
 
                             viewBinding.productTitle.text = item.getString("title")
-                            viewBinding.productAmount.text = "${item.getString("selected_quantity")} x \$${item.getString("price")}"
+                            viewBinding.productAmount.text = "${item.getString("selected_quantity")} x \$${numberFormatHelper.format2Decimals(item.getString("price"))}"
 
                             viewBinding.removeProduct.setOnClickListener {
                                 MaterialAlertDialogBuilder(requireContext())
@@ -137,10 +138,10 @@ class ShoppingCartFragment : Fragment() {
 
                     // Load summary amounts
 
-                    binding.subtotal.text = "\$${response.getString("subtotal")}"
-                    binding.iva.text = "\$${response.getString("iva")}"
-                    binding.discount.text = "\$${response.getString("discount")}"
-                    binding.total.text = "\$${response.getString("total")}"
+                    binding.subtotal.text = "\$${numberFormatHelper.format2Decimals(response.getString("subtotal"))}"
+                    binding.discount.text = "\$${numberFormatHelper.format2Decimals(response.getString("discount"))}"
+                    binding.iva.text = "\$${numberFormatHelper.format2Decimals(response.getString("iva"))}"
+                    binding.total.text = "\$${numberFormatHelper.format2Decimals(response.getString("total"))}"
 
                     // Get user addresses
                     try {
