@@ -3,6 +3,7 @@ package com.di.refaliente
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -97,6 +98,11 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             resources.getString(R.string.api_url) + "products/data-before-buy-it?id_publication=" + idPublication,
             null,
             { response ->
+                if (response.has("delivery_horary") && !response.isNull("delivery_horary")) {
+                    binding.message.text = response.getString("delivery_horary")
+                    binding.message.visibility = View.VISIBLE
+                }
+
                 loadProductData(response)
                 getUserAddresses(SessionHelper.user!!.sub.toString(), true)
             },

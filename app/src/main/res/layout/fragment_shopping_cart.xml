@@ -34,6 +34,16 @@
                 android:text="Aun no has agregado productos a tu carrito de compras."
                 tools:ignore="HardcodedText" />
 
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/red_700"
+                android:background="#DDDDDD"
+                android:padding="8dp"/>
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/products"
                 android:orientation="vertical"

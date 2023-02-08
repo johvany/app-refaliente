@@ -83,6 +83,11 @@ class ShoppingCartFragment : Fragment() {
                 "${resources.getString(R.string.api_url)}get-shopping-cart?key_user=${SessionHelper.user!!.sub}",
                 null,
                 { response ->
+                    if (response.has("delivery_horary") && !response.isNull("delivery_horary")) {
+                        binding.message.text = response.getString("delivery_horary")
+                        binding.message.visibility = View.VISIBLE
+                    }
+
                     // Load publications of the shopping cart
 
                     val publications = response.getJSONArray("publications")
