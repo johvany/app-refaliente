@@ -105,8 +105,7 @@ class PaymentActivity : AppCompatActivity() {
                         val card = Card()
                         card.holderName = binding.cardUserName.text.toString()
                         card.cardNumber = binding.cardNumber.text.toString()
-                        card.expirationMonth =
-                            (binding.cardExpMonths.selectedItem as CardMonth).value
+                        card.expirationMonth = (binding.cardExpMonths.selectedItem as CardMonth).value
                         card.expirationYear = (binding.cardExpYears.selectedItem as CardYear).value
                         card.cvv2 = binding.cardCvv.text.toString()
 
@@ -191,6 +190,7 @@ class PaymentActivity : AppCompatActivity() {
         return allok
     }
 
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     private fun performProductPaymentSetp2(
         idPublication: Int,
         idCustomerAddress: Int,
@@ -210,6 +210,7 @@ class PaymentActivity : AppCompatActivity() {
                 .put("id_customer_address", idCustomerAddress)
                 .put("token_id", tokenId)
                 .put("device_session_id", deviceSessionId)
+                .put("quantity", intent.extras!!.getString("selected_quantity"))
         } else {
             endpoint = resources.getString(R.string.api_url) + "buy-shopping-cart"
 
@@ -224,7 +225,7 @@ class PaymentActivity : AppCompatActivity() {
             Method.POST,
             endpoint,
             data,
-            {
+            { response ->
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Compra realizada")
                     .setMessage(HtmlCompat.fromHtml(

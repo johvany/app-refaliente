@@ -30,21 +30,59 @@ class PublicationDetailActivity : AppCompatActivity() {
     private var idPublication = ""
     private var publicationKeyUser = 0
     private var productInFavorites = false
+    private var existence = 0
+    private var selectedQuantity = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize view binding and load it in this activity.
         binding = ActivityPublicationDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize or set variables.
         customAlertDialog = CustomAlertDialog(this)
         idPublication = intent.extras!!.getInt("id_publication").toString()
+        binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
+        binding.quantity.text = selectedQuantity.toString()
+
+        // Set click listeners.
         binding.buyProduct.setOnClickListener { buyProduct() }
         binding.addToFavorites.setOnClickListener { addProductToFavorites() }
-        binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
         binding.addToShoppingCart.setOnClickListener { addProductToShoppingCart() }
         binding.backArrow.setOnClickListener { finish() }
+        binding.quantityRemove.setOnClickListener { decrementsQuantity() }
+        binding.quantityAdd.setOnClickListener { incrementsQuantity() }
 
+        // Get publication data and load it in the view.
         getPublicationById(idPublication)
+    }
+
+    /**
+     * This decrements the selected quantity in -1, only if the product existence is not zero and
+     * the selected quantity is not 1, then the quantity element in the view is refreshed.
+     */
+    private fun decrementsQuantity() {
+        if (existence != 0) {
+            if (selectedQuantity != 1) {
+                selectedQuantity -= 1
+                binding.quantity.text = selectedQuantity.toString()
+            }
+        }
+    }
+
+    /**
+     * This increments the selected quantity in +1, only if the product existence is not zero and
+     * the selected quantity is not equal to the product existence, then the quantity element in
+     * the view is refreshed.
+     */
+    private fun incrementsQuantity() {
+        if (existence != 0) {
+            if (selectedQuantity != existence) {
+                selectedQuantity += 1
+                binding.quantity.text = selectedQuantity.toString()
+            }
+        }
     }
 
     private fun buyProduct() {
@@ -57,7 +95,9 @@ class PublicationDetailActivity : AppCompatActivity() {
                     .setPositiveButton("ACEPTAR", null)
                     .show()
             } else {
-                startActivity(Intent(this, ProductBuyingPreviewActivity::class.java).putExtra("id_publication", idPublication))
+                startActivity(Intent(this, ProductBuyingPreviewActivity::class.java)
+                    .putExtra("id_publication", idPublication)
+                    .putExtra("quantity", selectedQuantity.toString()))
             }
         } else {
             SessionHelper.showRequiredSessionMessage(this)
@@ -261,6 +301,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         binding.productSold.text = productData.getString("sales_accountant") + " vendidos"
         binding.publicationDescription.text = publicationData.getString("description")
         binding.productExistence.text = productData.getString("existence")
+        existence = productData.getInt("existence")
 
         if (productData.getInt("existence") <= 0) {
             binding.productSoldOutMsg.visibility = View.VISIBLE

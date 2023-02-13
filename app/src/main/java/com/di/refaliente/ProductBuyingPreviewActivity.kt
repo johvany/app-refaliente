@@ -78,7 +78,8 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             startActivity(Intent(this, PaymentActivity::class.java)
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())
                 .putExtra("single_purchase", true)
-                .putExtra("id_selected_address", selectedAddress.idAddress))
+                .putExtra("id_selected_address", selectedAddress.idAddress)
+                .putExtra("selected_quantity", intent.extras!!.getString("quantity")!!))
         }
     }
 
@@ -87,22 +88,23 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             Utilities.showUnconnectedMessage(customAlertDialog)
         } else {
             if (SessionHelper.user != null) {
-                getProductDataBeforeBuyIt(intent.extras!!.getString("id_publication")!!, true)
+                getProductDataBeforeBuyIt(
+                    intent.extras!!.getString("id_publication")!!,
+                    intent.extras!!.getString("quantity")!!,
+                    true
+                )
             }
         }
     }
 
-    private fun getProductDataBeforeBuyIt(idPublication: String, canRepeat: Boolean) {
+    private fun getProductDataBeforeBuyIt(idPublication: String, quantity: String, canRepeat: Boolean) {
         Utilities.queue?.add(object: JsonObjectRequest(
             Method.GET,
-            resources.getString(R.string.api_url) + "products/data-before-buy-it?id_publication=" + idPublication,
+            resources.getString(R.string.api_url) + "products/data-before-buy-it?" +
+                    "id_publication=" + idPublication + "&" +
+                    "quantity=" + quantity,
             null,
             { response ->
-                if (response.has("delivery_horary") && !response.isNull("delivery_horary")) {
-                    binding.message.text = response.getString("delivery_horary")
-                    binding.message.visibility = View.VISIBLE
-                }
-
                 loadProductData(response)
                 getUserAddresses(SessionHelper.user!!.sub.toString(), true)
             },
@@ -111,7 +113,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
 
                 SessionHelper.handleRequestError(error, this, customAlertDialog) {
                     if (canRepeat) {
-                        getProductDataBeforeBuyIt(idPublication, false)
+                        getProductDataBeforeBuyIt(idPublication, quantity, false)
                     } else {
                         Utilities.showRequestError(customAlertDialog, null)
                     }
@@ -134,10 +136,15 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun loadProductData(data: JSONObject) {
+        if (data.has("delivery_horary") && !data.isNull("delivery_horary")) {
+            binding.message.text = data.getString("delivery_horary")
+            binding.message.visibility = View.VISIBLE
+        }
+
         val publicationData = data.getJSONObject("publication")
 
         binding.productTitle.text = publicationData.getString("title")
-        binding.productAmount.text = "1 x $" + numberFormatHelper.format2Decimals(publicationData.getString("product_price"))
+        binding.productAmount.text = data.getString("selected_quantity") + " x $" + numberFormatHelper.format2Decimals(publicationData.getString("product_price"))
         binding.subtotal.text = "$" + numberFormatHelper.format2Decimals(data.getString("subtotal"))
         binding.iva.text = "$" + numberFormatHelper.format2Decimals(data.getString("iva_amount"))
         binding.discount.text = "$" + numberFormatHelper.format2Decimals(data.getString("discount"))
