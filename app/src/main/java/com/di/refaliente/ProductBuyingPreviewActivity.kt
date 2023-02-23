@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityProductBuyingPreviewBinding
+import com.di.refaliente.databinding.DialogEditSelectedProductQuantityBinding
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.SimpleAddressAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -32,6 +33,9 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
     private lateinit var customAlertDialog: CustomAlertDialog
     private val numberFormatHelper = NumberFormatHelper()
     private lateinit var launcher: ActivityResultLauncher<Intent>
+    private var existence = 0
+    private var selectedQuantity = 1
+    private var selectedQuantityAux = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +50,57 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
 
         binding.productTitle.text = ""
         binding.productAmount.text = ""
+        selectedQuantity = intent.extras!!.getString("quantity")!!.toInt()
+        selectedQuantityAux = selectedQuantity
         customAlertDialog = CustomAlertDialog(this)
         binding.backArrow.setOnClickListener { finish() }
         binding.buyProduct.setOnClickListener { buyProduct() }
+        binding.editQuantity.setOnClickListener { showChangeSelectedProductQuantity() }
 
         getData()
+    }
+
+    private fun showChangeSelectedProductQuantity() {
+        MaterialAlertDialogBuilder(this).create().also { dialog ->
+            dialog.setCancelable(false)
+            dialog.setView(DialogEditSelectedProductQuantityBinding.inflate(layoutInflater).also { viewBinding ->
+                viewBinding.quantity.text = selectedQuantityAux.toString()
+
+                viewBinding.quantityRemove.setOnClickListener {
+                    if (existence != 0) {
+                        if (selectedQuantityAux != 1) {
+                            selectedQuantityAux -= 1
+                            viewBinding.quantity.text = selectedQuantityAux.toString()
+                        }
+                    }
+                }
+
+                viewBinding.quantityAdd.setOnClickListener {
+                    if (existence != 0) {
+                        if (selectedQuantityAux != existence) {
+                            selectedQuantityAux += 1
+                            viewBinding.quantity.text = selectedQuantityAux.toString()
+                        }
+                    }
+                }
+
+                viewBinding.save.setOnClickListener {
+                    selectedQuantity = selectedQuantityAux
+                    dialog.dismiss()
+
+                    getProductDataBeforeBuyIt(
+                        intent.extras!!.getString("id_publication")!!,
+                        selectedQuantity.toString(),
+                        true
+                    )
+                }
+
+                viewBinding.cancel.setOnClickListener {
+                    selectedQuantityAux = selectedQuantity
+                    dialog.dismiss()
+                }
+            }.root)
+        }.show()
     }
 
     private fun buyProduct() {
@@ -79,7 +129,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())
                 .putExtra("single_purchase", true)
                 .putExtra("id_selected_address", selectedAddress.idAddress)
-                .putExtra("selected_quantity", intent.extras!!.getString("quantity")!!))
+                .putExtra("selected_quantity", selectedQuantity.toString()))
         }
     }
 
@@ -90,7 +140,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             if (SessionHelper.user != null) {
                 getProductDataBeforeBuyIt(
                     intent.extras!!.getString("id_publication")!!,
-                    intent.extras!!.getString("quantity")!!,
+                    selectedQuantity.toString(),
                     true
                 )
             }
@@ -150,8 +200,11 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         binding.discount.text = "$" + numberFormatHelper.format2Decimals(data.getString("discount"))
         binding.total.text = "$" + numberFormatHelper.format2Decimals(data.getString("total"))
 
+        val productData = publicationData.getJSONObject("product")
+        existence = productData.getInt("existence")
+
         // Load product image
-        getPublicationImg(publicationData.getJSONObject("product").getString("images"))?.let { imgName ->
+        getPublicationImg(productData.getString("images"))?.let { imgName ->
             Glide.with(this)
                 .load(resources.getString(R.string.api_url_storage) + publicationData.getString("key_user") + "/products/" + imgName)
                 .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
@@ -199,6 +252,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
             val limit = addresses.length()
             var item: JSONObject
             var itemPostalCode: JSONObject
+            simpleAddressesItems.clear()
 
             for (i in 0 until limit) {
                 item = addresses.getJSONObject(i)

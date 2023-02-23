@@ -126,7 +126,7 @@
                             android:textSize="@dimen/price_size"
                             tools:ignore="HardcodedText,TextContrastCheck" />
 
-                        <!-- <ImageView
+                        <ImageView
                             android:id="@+id/edit_quantity"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
@@ -135,7 +135,7 @@
                             android:scaleType="centerInside"
                             android:background="@drawable/background_gray_tone_1"
                             app:tint="@color/purple_500"
-                            tools:ignore="ContentDescription" /> -->
+                            tools:ignore="ContentDescription" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
