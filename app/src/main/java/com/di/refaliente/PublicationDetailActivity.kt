@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
+import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.databinding.RowItemProductCommentBinding
 import com.di.refaliente.home_menu_ui.PublicationsFragment
 import com.di.refaliente.shared.*
@@ -173,6 +174,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     private fun performAddProductToShoppingCart(canRepeat: Boolean) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
@@ -184,7 +186,7 @@ class PublicationDetailActivity : AppCompatActivity() {
                 JSONObject()
                     .put("key_publication", idPublication)
                     .put("key_user", SessionHelper.user!!.sub)
-                    .put("quantity", 1),
+                    .put("quantity", selectedQuantity),
                 { response ->
                     MaterialAlertDialogBuilder(this)
                         .setTitle("Producto agregado")
@@ -202,7 +204,28 @@ class PublicationDetailActivity : AppCompatActivity() {
                         if (canRepeat) {
                             performAddProductToShoppingCart(false)
                         } else {
-                            Utilities.showRequestError(customAlertDialog, null)
+                            try {
+                                val jsonErr = JSONObject(error.networkResponse.data.decodeToString())
+
+                                if (jsonErr.has("error_code") && jsonErr.getInt("error_code") == 2) {
+                                    MaterialAlertDialogBuilder(this).create().also { dialog ->
+                                        dialog.setCancelable(false)
+
+                                        dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                                            viewBinding.icon.setImageResource(R.drawable.error_dialog)
+                                            viewBinding.title.visibility = View.GONE
+                                            viewBinding.message.text = "La cantidad seleccionada no es válida"
+                                            viewBinding.negativeButton.visibility = View.GONE
+                                            viewBinding.positiveButton.text = "Aceptar"
+                                            viewBinding.positiveButton.setOnClickListener { dialog.dismiss() }
+                                        }.root)
+                                    }.show()
+                                } else {
+                                    Utilities.showRequestError(customAlertDialog, null)
+                                }
+                            } catch (err: Exception) {
+                                Utilities.showRequestError(customAlertDialog, null)
+                            }
                         }
                     }
                 }

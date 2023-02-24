@@ -355,6 +355,8 @@ class SessionHelper {
                                 }.show()
                             }
                         }
+                    } else {
+                        sendRequestAgain.run()
                     }
                 }
             } catch (err: Exception) {

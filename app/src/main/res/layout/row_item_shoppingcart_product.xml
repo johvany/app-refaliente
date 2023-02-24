@@ -49,6 +49,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="HardcodedText" />
 
+            <ImageView
+                android:id="@+id/edit_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:src="@drawable/baseline_edit_24"
+                android:padding="6dp"
+                android:scaleType="centerInside"
+                android:background="@drawable/background_gray_tone_1"
+                app:tint="@color/purple_500"
+                tools:ignore="ContentDescription"
+                app:layout_constraintStart_toEndOf="@id/product_amount"
+                app:layout_constraintTop_toTopOf="@id/product_amount"
+                app:layout_constraintBottom_toBottomOf="@id/product_amount"/>
+
             <ImageButton
                 android:id="@+id/remove_product"
                 android:layout_width="40dp"

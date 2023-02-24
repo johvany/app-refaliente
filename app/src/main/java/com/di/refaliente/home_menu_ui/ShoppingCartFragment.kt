@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.PaymentActivity
 import com.di.refaliente.R
+import com.di.refaliente.databinding.DialogEditSelectedProductQuantityBinding
 import com.di.refaliente.databinding.FragmentShoppingCartBinding
 import com.di.refaliente.databinding.RowItemDividerLineBinding
 import com.di.refaliente.databinding.RowItemShoppingcartProductBinding
@@ -30,6 +31,11 @@ class ShoppingCartFragment : Fragment() {
     private lateinit var customAlertDialog: CustomAlertDialog
     private val simpleAddressesItems = ArrayList<SimpleAddress>()
     private val numberFormatHelper = NumberFormatHelper()
+
+    // Used to edit the quantity of each product item in the shopping cart
+    private var existence = 0
+    private var selectedQuantity = 1
+    private var selectedQuantityAux = 1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentShoppingCartBinding.inflate(inflater, container, false)
@@ -138,6 +144,17 @@ class ShoppingCartFragment : Fragment() {
                                     .setPositiveButton("SI") { _, _ -> removeProductFromShoppingCart(true, item.getInt("key_publication"), SessionHelper.user!!.sub) }
                                     .show()
                             }
+
+                            val aux1 = item.getInt("available_quantity")
+                            val aux2 = item.getInt("selected_quantity")
+                            val aux3 = item.getInt("key_publication")
+
+                            viewBinding.editQuantity.setOnClickListener {
+                                existence = aux1
+                                selectedQuantity = aux2
+                                selectedQuantityAux = aux2
+                                showChangeSelectedProductQuantity(aux3)
+                            }
                         }
                     }
 
@@ -174,6 +191,72 @@ class ShoppingCartFragment : Fragment() {
                 )
             })
         }
+    }
+
+    private fun showChangeSelectedProductQuantity(keyPublication: Int) {
+        MaterialAlertDialogBuilder(requireContext()).create().also { dialog ->
+            dialog.setCancelable(false)
+            dialog.setView(DialogEditSelectedProductQuantityBinding.inflate(layoutInflater).also { viewBinding ->
+                viewBinding.quantity.text = selectedQuantityAux.toString()
+
+                viewBinding.quantityRemove.setOnClickListener {
+                    if (existence != 0) {
+                        if (selectedQuantityAux != 1) {
+                            selectedQuantityAux -= 1
+                            viewBinding.quantity.text = selectedQuantityAux.toString()
+                        }
+                    }
+                }
+
+                viewBinding.quantityAdd.setOnClickListener {
+                    if (existence != 0) {
+                        if (selectedQuantityAux != existence) {
+                            selectedQuantityAux += 1
+                            viewBinding.quantity.text = selectedQuantityAux.toString()
+                        }
+                    }
+                }
+
+                viewBinding.save.setOnClickListener {
+                    selectedQuantity = selectedQuantityAux
+                    dialog.dismiss()
+                    updatePublicationInShoppingCart(keyPublication, true)
+                }
+
+                viewBinding.cancel.setOnClickListener {
+                    selectedQuantityAux = selectedQuantity
+                    dialog.dismiss()
+                }
+            }.root)
+        }.show()
+    }
+
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    private fun updatePublicationInShoppingCart(keyPublication: Int, canRepeat: Boolean) {
+        Utilities.queue?.add(object: JsonObjectRequest(
+            Method.PUT,
+            "${resources.getString(R.string.api_url)}edit-publication-in-shopping-cart",
+            JSONObject()
+                .put("key_user", SessionHelper.user!!.sub)
+                .put("key_publication", keyPublication)
+                .put("quantity", selectedQuantity),
+            { response ->
+                getShoppingCartProducts(true)
+            },
+            { error ->
+                SessionHelper.handleRequestError(error, requireContext(), customAlertDialog) {
+                    if (canRepeat) {
+                        updatePublicationInShoppingCart(keyPublication, canRepeat)
+                    } else {
+                        Utilities.showRequestError(customAlertDialog, null)
+                    }
+                }
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+            }
+        })
     }
 
     @Suppress("UNUSED_ANONYMOUS_PARAMETER")
