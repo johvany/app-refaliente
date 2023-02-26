@@ -35,11 +35,12 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     private lateinit var binding: ActivityHomeMenuBinding
 
     private lateinit var publicationsFragment: PublicationsFragment
-    private lateinit var shoppingCartFragment: ShoppingCartFragment
-    private lateinit var favoritesFragment: FavoritesFragment
-    private lateinit var purchasesFragment: PurchasesFragment
-    private lateinit var aboutFragment: AboutFragment
     private lateinit var rematesFragment: RematesFragment
+    private lateinit var shoppingCartFragment: ShoppingCartFragment
+    private lateinit var addressesFragment: AddressesFragment
+    private lateinit var purchasesFragment: PurchasesFragment
+    private lateinit var favoritesFragment: FavoritesFragment
+    private lateinit var aboutFragment: AboutFragment
     private var userImageProfile: String? = null
     private var isMenuItemSelected = true
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -188,34 +189,39 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             publicationsFragment = if (fragment == null) { PublicationsFragment() } else { fragment as PublicationsFragment }
         }
 
+        supportFragmentManager.getFragment(bundle, "remates_fragment").let { fragment ->
+            rematesFragment = if (fragment == null) { RematesFragment() } else { fragment as RematesFragment }
+        }
+
         supportFragmentManager.getFragment(bundle, "shopping_cart_fragment").let { fragment ->
             shoppingCartFragment = if (fragment == null) { ShoppingCartFragment() } else { fragment as ShoppingCartFragment }
         }
 
-        supportFragmentManager.getFragment(bundle, "favorites_fragment").let { fragment ->
-            favoritesFragment = if (fragment == null) { FavoritesFragment() } else { fragment as FavoritesFragment }
+        supportFragmentManager.getFragment(bundle, "addresses_fragment").let { fragment ->
+            addressesFragment = if (fragment == null) { AddressesFragment() } else { fragment as AddressesFragment }
         }
 
         supportFragmentManager.getFragment(bundle, "purchases_fragment").let { fragment ->
             purchasesFragment = if (fragment == null) { PurchasesFragment() } else { fragment as PurchasesFragment }
         }
 
-        supportFragmentManager.getFragment(bundle, "about_fragment").let { fragment ->
-            aboutFragment = if (fragment == null) { AboutFragment() } else { fragment as AboutFragment }
+        supportFragmentManager.getFragment(bundle, "favorites_fragment").let { fragment ->
+            favoritesFragment = if (fragment == null) { FavoritesFragment() } else { fragment as FavoritesFragment }
         }
 
-        supportFragmentManager.getFragment(bundle, "remates_fragment").let { fragment ->
-            rematesFragment = if (fragment == null) { RematesFragment() } else { fragment as RematesFragment }
+        supportFragmentManager.getFragment(bundle, "about_fragment").let { fragment ->
+            aboutFragment = if (fragment == null) { AboutFragment() } else { fragment as AboutFragment }
         }
     }
 
     private fun initFragments() {
         publicationsFragment = PublicationsFragment()
-        shoppingCartFragment = ShoppingCartFragment()
-        favoritesFragment = FavoritesFragment()
-        purchasesFragment = PurchasesFragment()
-        aboutFragment = AboutFragment()
         rematesFragment = RematesFragment()
+        shoppingCartFragment = ShoppingCartFragment()
+        addressesFragment = AddressesFragment()
+        purchasesFragment = PurchasesFragment()
+        favoritesFragment = FavoritesFragment()
+        aboutFragment = AboutFragment()
     }
 
     private fun setupMenus() {
@@ -272,11 +278,33 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (publicationsFragment.isAdded) { supportFragmentManager.putFragment(outState, "publications_fragment", publicationsFragment) }
-        if (shoppingCartFragment.isAdded) { supportFragmentManager.putFragment(outState, "shopping_cart_fragment", shoppingCartFragment) }
-        if (favoritesFragment.isAdded) { supportFragmentManager.putFragment(outState, "favorites_fragment", favoritesFragment) }
-        if (purchasesFragment.isAdded) { supportFragmentManager.putFragment(outState, "purchases_fragment", purchasesFragment) }
-        if (aboutFragment.isAdded) { supportFragmentManager.putFragment(outState, "about_fragment", aboutFragment) }
+        if (publicationsFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "publications_fragment", publicationsFragment)
+        }
+
+        if (rematesFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "remates_fragment", rematesFragment)
+        }
+
+        if (shoppingCartFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "shopping_cart_fragment", shoppingCartFragment)
+        }
+
+        if (addressesFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "addresses_fragment", addressesFragment)
+        }
+
+        if (purchasesFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "purchases_fragment", purchasesFragment)
+        }
+
+        if (favoritesFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "favorites_fragment", favoritesFragment)
+        }
+
+        if (aboutFragment.isAdded) {
+            supportFragmentManager.putFragment(outState, "about_fragment", aboutFragment)
+        }
 
         binding.navView.checkedItem.let { menuItem ->
             if (menuItem == null) {
@@ -320,6 +348,26 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         isMenuItemSelected = true
 
         when (menuItemId) {
+
+            // Publicaciones
+            R.id.nav_publications -> {
+                title = "Publicaciones"
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_home_menu, publicationsFragment)
+                    .commit()
+            }
+
+            // Remates
+            R.id.nav_remates -> {
+                title = "Remates"
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_content_home_menu, rematesFragment)
+                    .commit()
+            }
+
+            // Perfil
             R.id.nav_profile -> {
                 if (SessionHelper.userLogged()) {
                     launcher.launch(Intent(this, ProfileActivity::class.java))
@@ -328,13 +376,8 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 }
                 isMenuItemSelected = false
             }
-            R.id.nav_publications -> {
-                title = "Publicaciones"
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_home_menu, publicationsFragment)
-                    .commit()
-            }
+            // Carrito
             R.id.nav_shopping_cart -> {
                 if (SessionHelper.userLogged()) {
                     title = "Carrito de compras"
@@ -347,18 +390,22 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     SessionHelper.showRequiredSessionMessage(this)
                 }
             }
-            R.id.nav_favorites -> {
+
+            // Direcciones
+            R.id.nav_addresses -> {
                 if (SessionHelper.userLogged()) {
-                    title = "Favoritos"
+                    title = "Direcciones"
 
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_home_menu, favoritesFragment)
+                        .replace(R.id.nav_host_fragment_content_home_menu, addressesFragment)
                         .commit()
                 } else {
                     isMenuItemSelected = false
                     SessionHelper.showRequiredSessionMessage(this)
                 }
             }
+
+            // Compras
             R.id.nav_purchases -> {
                 if (SessionHelper.userLogged()) {
                     title = "Mis compras"
@@ -371,13 +418,22 @@ class HomeMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     SessionHelper.showRequiredSessionMessage(this)
                 }
             }
-            R.id.nav_remates -> {
-                title = "Remates"
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_home_menu, rematesFragment)
-                    .commit()
+            // Favoritos
+            R.id.nav_favorites -> {
+                if (SessionHelper.userLogged()) {
+                    title = "Favoritos"
+
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_home_menu, favoritesFragment)
+                        .commit()
+                } else {
+                    isMenuItemSelected = false
+                    SessionHelper.showRequiredSessionMessage(this)
+                }
             }
+
+            // Informacion
             R.id.nav_about -> {
                 title = "Información"
 

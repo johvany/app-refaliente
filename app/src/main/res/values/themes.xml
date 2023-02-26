@@ -3,6 +3,7 @@
     <style name="Theme.Refaliente" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+        <item name="android:listDivider">@color/products_text_color2</item>
     </style>
     <!-- Custom themes -->
     <style name="LoginTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
