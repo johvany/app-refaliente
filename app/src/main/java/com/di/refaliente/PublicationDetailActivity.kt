@@ -340,7 +340,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         }
 
         binding.productPrice.text = "MXN $" + numberFormatHelper.format2Decimals(publicationData.getString("product_price"))
-        binding.sellerName.text = sellerData.getString("name")
+        //binding.sellerName.text = sellerData.getString("name")
 
         // Load product image.
         getPublicationImg(productData.getString("images"))?.let { imgStr ->
