@@ -28,6 +28,7 @@ class PublicationsFragment : Fragment() {
     companion object {
         const val LOAD_SHOPPING_CART = 1
         const val FAVORITES_LIST_CHANGED = 2
+        const val LOAD_SPECIFIED_PUBLICATION = 3
     }
 
     private lateinit var binding: FragmentPublicationsBinding
@@ -89,8 +90,14 @@ class PublicationsFragment : Fragment() {
         getPublications(currentPage.toString())
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == LOAD_SHOPPING_CART) {
-                (requireActivity() as HomeMenuActivity).loadShoppingCart()
+            when (result.resultCode) {
+                LOAD_SHOPPING_CART -> {
+                    (requireActivity() as HomeMenuActivity).loadShoppingCart()
+                }
+                LOAD_SPECIFIED_PUBLICATION -> {
+                    launcher.launch(Intent(requireContext(), PublicationDetailActivity::class.java)
+                        .putExtra("id_publication", result.data!!.extras!!.getInt("id_publication")))
+                }
             }
         }
     }

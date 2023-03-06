@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityPublicationDetailBinding
 import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.databinding.RowItemProductCommentBinding
+import com.di.refaliente.databinding.RowItemRelatedProductBinding
 import com.di.refaliente.home_menu_ui.PublicationsFragment
 import com.di.refaliente.shared.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -351,6 +352,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         }
 
         getProductComments(publicationData.getString("id_publication"))
+        getRelatedProducts(productData.getString("id_product"))
     }
 
     private fun getProductComments(idPublication: String) {
@@ -363,6 +365,70 @@ class PublicationDetailActivity : AppCompatActivity() {
             },
             {
                 Utilities.showRequestError(customAlertDialog, "No se pudieron obtener los comentarios para este producto.")
+            }
+        ) {
+            // Set request headers here if you need.
+        }.apply {
+            retryPolicy = DefaultRetryPolicy(
+                ConstantValues.REQUEST_TIMEOUT,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        })
+    }
+
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER", "SetTextI18n")
+    private fun getRelatedProducts(idProduct: String) {
+        Utilities.queue?.add(
+        object: JsonObjectRequest(
+            Method.GET,
+            resources.getString(R.string.api_url) + "publications/related?id_product=" + idProduct,
+            null,
+            { response ->
+                val data = response.getJSONArray("data")
+                val dataSize = data.length()
+                var item: JSONObject
+
+                for (i in 0 until dataSize step 1) {
+                    item = data.getJSONObject(i)
+                    val idPublication = item.getInt("id_publication")
+
+                    RowItemRelatedProductBinding.inflate(layoutInflater, binding.relatedProductsContainer, true).also { viewBinding ->
+                        // Set image
+                        getPublicationImg(item.getString("images"))?.let { imgStr ->
+                            Glide.with(this)
+                                .load(resources.getString(R.string.api_url_storage) + item.getString("key_user") + "/products/" + imgStr)
+                                .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                                .into(viewBinding.publicationImg)
+                        }
+
+                        // Set title
+                        viewBinding.publicationTitle.text = item.getString("title")
+
+                        // Set price (previous)
+                        if (item.getInt("has_discount") == 1) {
+                            viewBinding.publicationPriceOld.visibility = View.VISIBLE
+                            viewBinding.publicationPriceOld.text = "MXN $" + numberFormatHelper.format2Decimals(item.getString("previous_price"))
+                            viewBinding.publicationPriceOld.paintFlags = binding.productPriceOld.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                        } else {
+                            viewBinding.publicationPriceOld.visibility = View.GONE
+                        }
+
+                        // Set price (current)
+                        viewBinding.publicationPrice.text = "MXN $" + numberFormatHelper.format2Decimals(item.getString("product_price"))
+                    }.root.setOnClickListener {
+                        setResult(PublicationsFragment.LOAD_SPECIFIED_PUBLICATION, Intent().putExtra("id_publication", idPublication))
+                        finish()
+
+                        /* startActivity(Intent(this, PublicationDetailActivity::class.java)
+                            .putExtra("id_publication", idPublication)
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)) */
+                    }
+                }
+            },
+            { error ->
+                // ...
             }
         ) {
             // Set request headers here if you need.
@@ -390,7 +456,7 @@ class PublicationDetailActivity : AppCompatActivity() {
         for (i in 0 until limit) {
             item = comments.getJSONObject(i)
 
-            RowItemProductCommentBinding.inflate(layoutInflater, binding.publicationContainer, false).let { commentItemBinding ->
+            RowItemProductCommentBinding.inflate(layoutInflater, binding.commentsContainer, false).let { commentItemBinding ->
                 commentItemBinding.productComment.text = item.getString("comment")
                 commentItemBinding.customerName.text = item.getString("customer_name") + " - " + item.getString("created_at")
                 handleCommentStars(commentItemBinding, item.getInt("qualification"))
@@ -401,7 +467,7 @@ class PublicationDetailActivity : AppCompatActivity() {
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
                     .into(commentItemBinding.customerImg)
 
-                binding.publicationContainer.addView(commentItemBinding.root)
+                binding.commentsContainer.addView(commentItemBinding.root)
             }
         }
     }

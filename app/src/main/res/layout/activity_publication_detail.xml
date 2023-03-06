@@ -400,6 +400,36 @@
                 android:textColor="@color/white"
                 tools:ignore="HardcodedText" />
 
+            <LinearLayout
+                android:id="@+id/comments_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
+
+            <TextView
+                android:id="@+id/related_products_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Productos relacionados"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                tools:ignore="HardcodedText" />
+
+            <HorizontalScrollView
+                android:id="@+id/related_products_container_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/related_products_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"/>
+
+            </HorizontalScrollView>
+
         </LinearLayout>
 
     </ScrollView>
