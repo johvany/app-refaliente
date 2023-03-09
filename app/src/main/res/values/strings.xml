@@ -12,8 +12,8 @@
     <string name="entrar_con_facebook">Entrar con facebook</string>
     <string name="entrar_con_google">Entrar con google</string>
     <string name="product_sold_out_msg">Producto agotado. <b>¿Buscar otro?</b></string>
-    <string name="google_oauth_client_id" tools:ignore="TypographyDashes">738173659796-3ooht9scqlgu95t68113q1mr89egnmmm.apps.googleusercontent.com</string>
-    <string name="facebook_app_id">1163870464433392</string>
-    <string name="fb_login_protocol_scheme">fb1163870464433392</string>
-    <string name="facebook_client_token">5b3e009d137fac5f0c02261f85c6bab0</string>
+    <string name="google_oauth_client_id" tools:ignore="TypographyDashes">848890969397-ng061t0oeltbmo6urienif88d3p2nadf.apps.googleusercontent.com</string>
+    <string name="facebook_app_id">723008596035615</string>
+    <string name="fb_login_protocol_scheme">fb723008596035615</string>
+    <string name="facebook_client_token">ad96f8339cb288835509aca62bc6626f</string>
 </resources>
