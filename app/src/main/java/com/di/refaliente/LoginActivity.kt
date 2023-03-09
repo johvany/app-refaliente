@@ -93,10 +93,6 @@ class LoginActivity : AppCompatActivity() {
         binding.googleLoginBtn.setOnClickListener { loginWithGoogle() }
         binding.startSession.setOnClickListener { startSession() }
 
-        binding.register.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
-        }
-
         // Set empty click listener to this view, to prevent the user click others views like
         // when the loadingBackground view is visible buttons.
         binding.loadingBackground.setOnClickListener { /* ... */ }
@@ -808,7 +804,6 @@ class LoginActivity : AppCompatActivity() {
         binding.userPasswordContainer.isErrorEnabled = false
     }
 
-    @Suppress("RegExpSimplifiable")
     private fun validCredentials(email: String, password: String): Boolean {
         var validCred = true
 

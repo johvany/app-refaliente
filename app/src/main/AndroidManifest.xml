@@ -22,9 +22,6 @@
         android:usesCleartextTraffic="true"
         tools:ignore="DataExtractionRules">
         <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-        <activity
             android:name=".PurchaseDetailActivity"
             android:exported="false" />
         <activity
