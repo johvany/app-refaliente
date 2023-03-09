@@ -23,4 +23,8 @@
     <color name="google_color">#DB4A39</color>
     <color name="login_error">#FFEB3B</color>
     <color name="error">#DA0000</color>
+    <color name="dark_field_background">#1F2029</color>
+    <color name="dark_field_name">#CCCCCC</color>
+    <color name="dark_field_icon">#FFEB3B</color>
+    <color name="dark_field_error">#FFEB3B</color>
 </resources>

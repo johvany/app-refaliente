@@ -24,6 +24,15 @@
         <item name="errorTextColor">@color/error</item>
         <item name="android:textAppearance">@color/white</item>
     </style>
+    <style name="DarkField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="boxBackgroundColor">@color/dark_field_background</item>
+        <item name="boxStrokeErrorColor">@color/dark_field_error</item>
+        <item name="errorIconTint">@color/dark_field_error</item>
+        <item name="errorTextColor">@color/dark_field_error</item>
+        <item name="android:textAppearance">@color/white</item>
+    </style>
     <style name="MyDisabledTextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorPrimary">@color/blue_primary</item>
         <item name="colorOnSurface">@color/white</item>
