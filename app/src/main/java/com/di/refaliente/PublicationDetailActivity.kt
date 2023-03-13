@@ -130,7 +130,7 @@ class PublicationDetailActivity : AppCompatActivity() {
             productInFavorites = !productInFavorites
 
             if (productInFavorites) {
-                binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+                binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#DA4444"))
             } else {
                 binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
             }
@@ -285,7 +285,7 @@ class PublicationDetailActivity : AppCompatActivity() {
 
                 if (itemId == idPublication) {
                     productInFavorites = true
-                    binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+                    binding.addToFavorites.imageTintList = ColorStateList.valueOf(Color.parseColor("#DA4444"))
                     break
                 }
             }
@@ -315,7 +315,7 @@ class PublicationDetailActivity : AppCompatActivity() {
     private fun fillViewsWithData(response: JSONObject) {
         val publicationData = response.getJSONObject("publication")
         val productData = publicationData.getJSONObject("product")
-        val sellerData = publicationData.getJSONObject("user")
+        // val sellerData = publicationData.getJSONObject("user")
 
         publicationKeyUser = publicationData.getInt("key_user")
         binding.publicationTitle.text = publicationData.getString("title")
@@ -394,7 +394,10 @@ class PublicationDetailActivity : AppCompatActivity() {
                     val idPublication = item.getInt("id_publication")
 
                     RowItemRelatedProductBinding.inflate(layoutInflater, binding.relatedProductsContainer, true).also { viewBinding ->
+                        // -----------------------------
                         // Set image
+                        // -----------------------------
+
                         getPublicationImg(item.getString("images"))?.let { imgStr ->
                             Glide.with(this)
                                 .load(resources.getString(R.string.api_url_storage) + item.getString("key_user") + "/products/" + imgStr)
@@ -403,19 +406,32 @@ class PublicationDetailActivity : AppCompatActivity() {
                                 .into(viewBinding.publicationImg)
                         }
 
+                        // -----------------------------
                         // Set title
+                        // -----------------------------
+
                         viewBinding.publicationTitle.text = item.getString("title")
 
+                        if (viewBinding.publicationTitle.text.length > 75) {
+                            viewBinding.publicationTitle.text = viewBinding.publicationTitle.text.substring(0, 75) + "..."
+                        }
+
+                        // -----------------------------
                         // Set price (previous)
+                        // -----------------------------
+
                         if (item.getInt("has_discount") == 1) {
                             viewBinding.publicationPriceOld.visibility = View.VISIBLE
                             viewBinding.publicationPriceOld.text = "MXN $" + numberFormatHelper.format2Decimals(item.getString("previous_price"))
                             viewBinding.publicationPriceOld.paintFlags = binding.productPriceOld.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                         } else {
-                            viewBinding.publicationPriceOld.visibility = View.GONE
+                            viewBinding.publicationPriceOld.visibility = View.INVISIBLE
                         }
 
+                        // -----------------------------
                         // Set price (current)
+                        // -----------------------------
+
                         viewBinding.publicationPrice.text = "MXN $" + numberFormatHelper.format2Decimals(item.getString("product_price"))
                     }.root.setOnClickListener {
                         setResult(PublicationsFragment.LOAD_SPECIFIED_PUBLICATION, Intent().putExtra("id_publication", idPublication))

@@ -3,29 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/row_item_purchase_bg"
+    android:background="@drawable/card_body_no_header_dark"
     android:layout_marginVertical="4dp"
     android:layout_marginHorizontal="8dp"
     android:orientation="vertical">
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_marginTop="1dp"
-        android:layout_marginHorizontal="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/row_item_purchase_header"
+        android:background="@drawable/card_header_dark"
         android:paddingHorizontal="3dp">
 
         <TextView
             android:id="@+id/id_purchase"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
             android:padding="4dp"
             android:text="Compra ID: 0000000223"
-            tools:ignore="HardcodedText" />
+            android:textColor="#FF9800"
+            tools:ignore="HardcodedText,TextSizeCheck" />
 
         <TextView
             android:id="@+id/created_at_short"
@@ -34,6 +31,7 @@
             android:padding="4dp"
             android:gravity="end"
             android:text="22/Julio/2021"
+            android:textColor="@color/white"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>
@@ -47,8 +45,7 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:textColor="#FF9800"
             android:padding="4dp"
             android:text="Recibe"
             android:gravity="end"
@@ -60,6 +57,7 @@
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:text="Alan Thomas Anderson (Tel. 6666666666)"
+            android:textColor="@color/white"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>
@@ -73,8 +71,7 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:textColor="#FF9800"
             android:padding="4dp"
             android:text="Correo"
             android:gravity="end"
@@ -85,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:textColor="@color/white"
             android:text="programadorequis@gmail.com"
             tools:ignore="HardcodedText" />
 
@@ -99,18 +97,18 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:gravity="end"
             android:padding="4dp"
             android:text="Dirección"
-            android:gravity="end"
-            tools:ignore="HardcodedText" />
+            android:textColor="#FF9800"
+            tools:ignore="HardcodedText,TextSizeCheck" />
 
         <TextView
             android:id="@+id/customer_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:textColor="@color/white"
             android:text="Culiacán, Sinaloa - Independencia Luis M. Rojas #1, CP 80190"
             tools:ignore="HardcodedText" />
 
@@ -125,18 +123,18 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:gravity="end"
             android:padding="4dp"
             android:text="Productos"
-            android:gravity="end"
-            tools:ignore="HardcodedText" />
+            android:textColor="#FF9800"
+            tools:ignore="HardcodedText,TextSizeCheck" />
 
         <TextView
             android:id="@+id/products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
+            android:textColor="@color/white"
             android:text="Amortiguador trasero motocicleta diferentes modelo..."
             tools:ignore="HardcodedText" />
 

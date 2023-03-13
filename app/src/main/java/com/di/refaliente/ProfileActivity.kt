@@ -72,6 +72,16 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         customAlertDialog = CustomAlertDialog(this)
 
+        binding.backArrow.setOnClickListener {
+            if (userDataUpdated || userImageUpdated) {
+                setResult(USER_DATA_UPDATED, Intent()
+                    .putExtra("user_data_updated", userDataUpdated)
+                    .putExtra("user_image_updated", userImageUpdated))
+            }
+
+            finish()
+        }
+
         // Initialize take photo launcher
         takePhotoLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {

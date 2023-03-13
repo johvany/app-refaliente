@@ -214,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:text="MXN $1,000.00"
-                android:textColor="#E40808"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
@@ -283,7 +283,7 @@
             <TextView
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:textColor="@color/white"
+                android:textColor="@color/dark_field_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cantidad"
@@ -310,11 +310,12 @@
                     android:gravity="center"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_marginVertical="5dp"
+                    android:layout_margin="5dp"
                     android:text="999"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:background="@drawable/disabled_field_2"
+                    android:background="@drawable/dark_field_background"
+                    android:textColor="@color/white"
                     tools:ignore="HardcodedText" />
 
                 <ImageButton
@@ -373,7 +374,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/card_header"
+                android:background="@drawable/card_header_dark"
+                android:textColor="@color/white"
                 android:padding="8dp"
                 android:text="Descripción"
                 tools:ignore="HardcodedText,TextContrastCheck" />
@@ -383,9 +385,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Espejo retrovisor para sedán"
+                android:textColor="@color/white"
                 android:padding="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@drawable/card_body"
+                android:background="@drawable/card_body_dark"
                 android:layout_marginHorizontal="8dp"
                 tools:ignore="HardcodedText" />
 

@@ -104,7 +104,14 @@ class FavoritesFragment : Fragment() {
             favoritesItems.removeAt(itemPosition)
             binding.favoritesContainer.adapter?.notifyItemRemoved(itemPosition)
             binding.favoritesContainer.adapter?.notifyItemRangeChanged(itemPosition, favoritesItems.size)
-            binding.emptyFavoritesMsg.visibility = if (favoritesItems.size > 0) { View.INVISIBLE } else { View.VISIBLE }
+            // binding.emptyFavoritesMsg.visibility = if (favoritesItems.size > 0) { View.INVISIBLE } else { View.VISIBLE }
+            if (favoritesItems.size > 0) {
+                binding.messageTitle.visibility = View.INVISIBLE
+                binding.message.visibility = View.INVISIBLE
+            } else {
+                binding.messageTitle.visibility = View.VISIBLE
+                binding.message.visibility = View.VISIBLE
+            }
         }
 
         val onRequestError = Response.ErrorListener { error ->
@@ -312,10 +319,14 @@ class FavoritesFragment : Fragment() {
         }
 
         if (favoritesItems.size > 0) {
-            binding.emptyFavoritesMsg.visibility = View.INVISIBLE
+            // binding.emptyFavoritesMsg.visibility = View.INVISIBLE
+            binding.messageTitle.visibility = View.INVISIBLE
+            binding.message.visibility = View.INVISIBLE
             binding.favoritesContainer.adapter?.notifyItemRangeInserted(0, limit)
         } else {
-            binding.emptyFavoritesMsg.visibility = View.VISIBLE
+            // binding.emptyFavoritesMsg.visibility = View.VISIBLE
+            binding.messageTitle.visibility = View.VISIBLE
+            binding.message.visibility = View.VISIBLE
         }
     }
 }

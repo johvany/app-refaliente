@@ -2,13 +2,12 @@ package com.di.refaliente.home_menu_ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -176,18 +175,24 @@ class RematesFragment : Fragment() {
     private fun loadPublications(items: JSONArray) {
         val limit = items.length()
         var jsonItem: JSONObject
+        var jsonItem2: JSONObject
         val oldSize = publicationsItems.size
 
         for (i in 0 until limit) {
             jsonItem = items.getJSONObject(i)
+            jsonItem2 = jsonItem.getJSONObject("product")
 
             publicationsItems.add(PublicationSmall(
                 jsonItem.getInt("id_publication"),
                 jsonItem.getString("title"),
                 if (jsonItem.getInt("has_discount") == 0) { null } else { jsonItem.getString("previous_price") },
                 jsonItem.getString("product_price"),
-                getPublicationImg(jsonItem.getJSONObject("product").getString("images")),
-                jsonItem.getString("key_user")
+                getPublicationImg(jsonItem2.getString("images")),
+                jsonItem.getString("key_user"),
+                jsonItem.getInt("has_discount"),
+                jsonItem2.getInt("key_condition"),
+                jsonItem2.getInt("qualification"),
+                jsonItem2.getString("qualification_avg"),
             ))
         }
 
@@ -199,9 +204,13 @@ class RematesFragment : Fragment() {
         }
 
         if (publicationsItemsCount > 0) {
-            binding.resultMsg.visibility = View.INVISIBLE
+            binding.messageTitle.visibility = View.INVISIBLE
+            binding.message.visibility = View.INVISIBLE
         } else {
-            binding.resultMsg.visibility = View.VISIBLE
+            binding.messageTitle.text = HtmlCompat.fromHtml("Sin remates", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.message.text = HtmlCompat.fromHtml("Actualmente no hay remates disponibles", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.messageTitle.visibility = View.VISIBLE
+            binding.message.visibility = View.VISIBLE
         }
 
         scrollLimitReached = false

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -188,18 +189,24 @@ class PublicationsFragment : Fragment() {
     private fun loadPublications(items: JSONArray) {
         val limit = items.length()
         var jsonItem: JSONObject
+        var jsonItem2: JSONObject
         val oldSize = publicationsItems.size
 
         for (i in 0 until limit) {
             jsonItem = items.getJSONObject(i)
+            jsonItem2 = jsonItem.getJSONObject("product")
 
             publicationsItems.add(PublicationSmall(
                 jsonItem.getInt("id_publication"),
                 jsonItem.getString("title"),
                 if (jsonItem.getInt("has_discount") == 0) { null } else { jsonItem.getString("previous_price") },
                 jsonItem.getString("product_price"),
-                getPublicationImg(jsonItem.getJSONObject("product").getString("images")),
-                jsonItem.getString("key_user")
+                getPublicationImg(jsonItem2.getString("images")),
+                jsonItem.getString("key_user"),
+                jsonItem.getInt("has_discount"),
+                jsonItem2.getInt("key_condition"),
+                jsonItem2.getInt("qualification"),
+                jsonItem2.getString("qualification_avg"),
             ))
         }
 
@@ -211,9 +218,18 @@ class PublicationsFragment : Fragment() {
         }
 
         if (publicationsItemsCount > 0) {
-            binding.resultMsg.visibility = View.INVISIBLE
+            binding.messageTitle.visibility = View.INVISIBLE
+            binding.message.visibility = View.INVISIBLE
+        } else if (!binding.searchText.text.isNullOrBlank()) {
+            binding.messageTitle.text = HtmlCompat.fromHtml("Sin resultados", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.message.text = HtmlCompat.fromHtml("No se encontraron resultados de búsqueda para \"<span style=\"color: #FFEB3B\">" + binding.searchText.text.toString() + "</span>\"", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.messageTitle.visibility = View.VISIBLE
+            binding.message.visibility = View.VISIBLE
         } else {
-            binding.resultMsg.visibility = View.VISIBLE
+            binding.messageTitle.text = HtmlCompat.fromHtml("Sin publicaciones", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.message.text = HtmlCompat.fromHtml("Actualmente no hay publicaciones activas", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.messageTitle.visibility = View.VISIBLE
+            binding.message.visibility = View.VISIBLE
         }
 
         scrollLimitReached = false

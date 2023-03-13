@@ -141,6 +141,14 @@ class PurchasesFragment : Fragment() {
         }
 
         scrollLimitReached = false
+
+        if (purchasesHeadersItems.size > 0) {
+            binding.messageTitle.visibility = View.INVISIBLE
+            binding.message.visibility = View.INVISIBLE
+        } else {
+            binding.messageTitle.visibility = View.VISIBLE
+            binding.message.visibility = View.VISIBLE
+        }
     }
 
     private fun refreshPurchases() {

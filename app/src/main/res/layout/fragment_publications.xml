@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/black"
     tools:context=".home_menu_ui.PublicationsFragment">
 
@@ -11,41 +11,41 @@
         android:id="@+id/container_search_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         android:background="@color/red_700"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/search_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="50dp"
             android:background="@drawable/search_box_bg"
+            android:inputType="text"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="50dp"
+            android:paddingBottom="8dp"
             android:textCursorDrawable="@drawable/color_cursor"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/search_btn"
-            tools:ignore="Autofill,LabelFor" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
         <ImageButton
             android:id="@+id/search_clear"
-            android:visibility="invisible"
             android:layout_width="50dp"
             android:layout_height="0dp"
             android:background="#00FFFFFF"
             android:src="@drawable/outline_close_24"
-            tools:ignore="ContentDescription"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/search_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@color/black" />
+            app:tint="@color/black"
+            tools:ignore="ContentDescription" />
 
         <ImageButton
             android:id="@+id/search_btn"
@@ -53,12 +53,12 @@
             android:layout_height="0dp"
             android:background="@drawable/search_btn_bg"
             android:src="@drawable/outline_search_24"
-            tools:ignore="ContentDescription"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/search_text"
-            app:tint="@color/white" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -67,33 +67,58 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:paddingVertical="4dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_search_items"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/container_search_items">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/publications"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             tools:itemCount="10"
             tools:listitem="@layout/row_item_publication_small" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:visibility="invisible"
-        android:id="@+id/result_msg"
+    <View
+        android:id="@+id/results_center"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:text="Sin resultados"
-        android:textColor="@color/white"
+        android:layout_height="1dp"
         app:layout_constraintStart_toStartOf="@id/refresh"
         app:layout_constraintEnd_toEndOf="@id/refresh"
         app:layout_constraintTop_toTopOf="@id/refresh"
-        app:layout_constraintBottom_toBottomOf="@id/refresh"
+        app:layout_constraintBottom_toBottomOf="@id/refresh"/>
+
+    <TextView
+        android:id="@+id/message_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#BBBBBB"
+        android:visibility="invisible"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="16dp"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintStart_toStartOf="@id/results_center"
+        app:layout_constraintEnd_toEndOf="@id/results_center"
+        app:layout_constraintBottom_toTopOf="@id/results_center"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingHorizontal="16dp"
+        android:textColor="#BBBBBB"
+        android:visibility="invisible"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintStart_toStartOf="@id/results_center"
+        app:layout_constraintEnd_toEndOf="@id/results_center"
+        app:layout_constraintTop_toBottomOf="@id/results_center"
         tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

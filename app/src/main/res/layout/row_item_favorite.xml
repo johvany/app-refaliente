@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_margin="4dp"
     android:padding="4dp"
-    android:background="@drawable/borders_lightgray">
+    android:background="@drawable/card_body_no_header_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,6 +23,8 @@
                 android:id="@+id/product_img"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
+                android:padding="4dp"
+                android:background="@drawable/publication_img_background"
                 tools:ignore="ContentDescription" />
 
             <LinearLayout
@@ -36,44 +38,45 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/outline_star_24"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/star_2"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/outline_star_24"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/star_3"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/outline_star_24"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/star_4"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/outline_star_24"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <ImageView
                     android:id="@+id/star_5"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:background="@drawable/outline_star_24"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
                 <TextView
                     android:id="@+id/product_qualification"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
-                    android:text="0.0"
-                    android:textSize="12sp"
                     android:gravity="center"
-                    tools:ignore="HardcodedText" />
+                    android:text="0.0"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText,TextSizeCheck,VisualLintBounds" />
 
             </LinearLayout>
 
@@ -88,9 +91,9 @@
             <TextView
                 android:id="@+id/publication_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:text="Espejo retrovisor derecho"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:paddingHorizontal="8dp"
                 tools:ignore="HardcodedText" />
@@ -105,7 +108,8 @@
                 <TextView
                     android:id="@+id/publication_remate_badge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22dp"
+                    android:gravity="center"
                     android:text="REMATE"
                     android:textStyle="bold"
                     android:textColor="@color/black"
@@ -119,21 +123,23 @@
                 <TextView
                     android:id="@+id/publication_new_badge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NUEVO"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="2dp"
+                    android:layout_height="22dp"
+                    android:gravity="center"
                     android:layout_marginHorizontal="2dp"
                     android:background="@drawable/badge_new"
-                    tools:ignore="HardcodedText" />
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="2dp"
+                    android:text="NUEVO"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,TextContrastCheck" />
 
                 <TextView
                     android:id="@+id/publication_seminew_badge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22dp"
+                    android:gravity="center"
                     android:text="SEMINUEVO"
                     android:textStyle="bold"
                     android:textColor="@color/white"
@@ -147,60 +153,65 @@
                 <TextView
                     android:id="@+id/publication_used_badge"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="USADO"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="4dp"
-                    android:paddingVertical="2dp"
+                    android:layout_height="22dp"
+                    android:gravity="center"
                     android:layout_marginHorizontal="2dp"
                     android:background="@drawable/badge_used"
-                    tools:ignore="HardcodedText" />
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="2dp"
+                    android:text="USADO"
+                    android:textColor="@color/white"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,TextContrastCheck" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/product_previous_price"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="$ 1,200.00 MXN"
-                android:textSize="@dimen/price_size_small"
-                android:paddingHorizontal="8dp"
+                android:layout_height="22dp"
+                android:gravity="center|start"
                 android:layout_marginTop="8dp"
-                android:textColor="#DA0000"
-                tools:ignore="HardcodedText" />
+                android:paddingHorizontal="8dp"
+                android:text="$ 1,200.00 MXN"
+                android:textColor="@color/white"
+                android:textSize="@dimen/price_size_small"
+                tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
                 android:id="@+id/product_price"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
+                android:gravity="center|start"
                 android:text="$ 960.00 MXN"
                 android:textSize="@dimen/price_size"
                 android:paddingHorizontal="8dp"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/black"
+                android:textColor="#28a745"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/product_discount_percent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="- 20% de descuento"
-                android:textSize="11sp"
-                android:paddingHorizontal="8dp"
+                android:layout_height="18dp"
+                android:gravity="center|start"
                 android:layout_marginTop="8dp"
-                android:textColor="#DA0000"
-                tools:ignore="HardcodedText" />
+                android:paddingHorizontal="8dp"
+                android:text="- 20% de descuento"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Envío gratis"
-                android:textSize="11sp"
+                android:layout_height="18dp"
+                android:gravity="center|start"
                 android:paddingHorizontal="8dp"
-                android:textColor="#218C39"
-                tools:ignore="HardcodedText" />
+                android:text="Envío gratis"
+                android:textColor="#28a745"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText,TextContrastCheck" />
 
         </LinearLayout>
 
@@ -213,10 +224,10 @@
         android:visibility="gone"
         android:layout_gravity="center"
         android:text="Ocultar descripción"
-        android:textSize="12sp"
+        android:textSize="13sp"
         android:padding="8dp"
         android:layout_marginTop="4dp"
-        android:textColor="@color/facebook_color"
+        android:textColor="#FF9800"
         tools:ignore="HardcodedText" />
 
     <TextView
@@ -226,6 +237,7 @@
         android:visibility="gone"
         android:text="Este tipo de luces de lente ahumada no son legales en la calle y están diseñadas para uso fuera de la carretera o solo en salas de exhibición. las instrucciones de instalación no están incluidas. se recomienda la instalación profesional. estas luces se envían con una firma requerida este producto es un producto del mercado de accesorios. no fabricado ni vendido por la marca de vehículo indicada."
         android:textSize="12sp"
+        android:textColor="@color/white"
         android:paddingHorizontal="8dp"
         android:justificationMode="inter_word"
         tools:ignore="HardcodedText"
@@ -237,28 +249,28 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_weight="1"
             android:id="@+id/show_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Mostrar descripción"
-            android:textSize="12sp"
-            android:padding="8dp"
             android:layout_marginTop="4dp"
-            android:textColor="@color/facebook_color"
-            tools:ignore="HardcodedText" />
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:text="Mostrar descripción"
+            android:textColor="#FF9800"
+            android:textSize="13sp"
+            tools:ignore="HardcodedText,TextContrastCheck,VisualLintBounds" />
 
         <ImageView
             android:id="@+id/remove_from_favorites"
-            android:layout_weight="0"
-            android:layout_gravity="center"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:layout_gravity="center"
             android:layout_marginTop="4dp"
+            android:layout_weight="0"
             android:background="@drawable/ic_baseline_delete_24"
-            android:backgroundTint="#DA0000"
-            tools:ignore="ContentDescription" />
+            android:backgroundTint="#DA4444"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
     </LinearLayout>
 

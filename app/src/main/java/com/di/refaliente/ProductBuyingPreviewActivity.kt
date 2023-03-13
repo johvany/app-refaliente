@@ -2,12 +2,13 @@ package com.di.refaliente
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.text.HtmlCompat
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.bumptech.glide.Glide
@@ -15,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityProductBuyingPreviewBinding
 import com.di.refaliente.databinding.DialogEditSelectedProductQuantityBinding
+import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.shared.*
 import com.di.refaliente.view_adapters.SimpleAddressAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -62,6 +64,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
 
     private fun showChangeSelectedProductQuantity() {
         MaterialAlertDialogBuilder(this).create().also { dialog ->
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setCancelable(false)
             dialog.setView(DialogEditSelectedProductQuantityBinding.inflate(layoutInflater).also { viewBinding ->
                 viewBinding.quantity.text = selectedQuantityAux.toString()
@@ -103,6 +106,7 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         }.show()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun buyProduct() {
         val selectedAddress = try {
             binding.addresses.selectedItem as SimpleAddress
@@ -111,19 +115,34 @@ class ProductBuyingPreviewActivity : AppCompatActivity() {
         }
 
         if (selectedAddress == null) {
-            // "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra. Por favor inicia sesión en <span style=\"color: #1877F2;\">www.refaliente.com</span> y agrega una dirección. Una vez agregada podrás regresar a esta pantalla y continuar con tu compra.",
-            MaterialAlertDialogBuilder(this)
-                .setTitle("Sin direcciones")
-                .setMessage(HtmlCompat.fromHtml(
-                    "No tienes ningún domicilio guardado. Es necesario que tengas por lo menos un domicilio para poder realizar una compra.",
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                ))
-                .setCancelable(false)
-                .setNegativeButton("CANCELAR", null)
-                .setPositiveButton("CREAR DIRECCIÓN") { _, _ ->
-                    launcher.launch(Intent(this, NewAddressActivity::class.java))
-                }
-                .show()
+            MaterialAlertDialogBuilder(this).create().also { dialog ->
+                dialog.setCancelable(false)
+
+                dialog.setView(MyDialogBinding.inflate(layoutInflater).also { view ->
+                    view.icon.setImageResource(R.drawable.info_dialog)
+
+                    view.title.visibility = View.VISIBLE
+                    view.title.text = "Sin direcciones"
+
+                    view.message.visibility = View.VISIBLE
+                    view.message.text = "Necesita tener al menos una dirección para poder realizar su compra"
+
+                    view.negativeButton.visibility = View.VISIBLE
+                    view.negativeButton.text = "Cancelar"
+
+                    view.negativeButton.setOnClickListener {
+                        dialog.dismiss()
+                    }
+
+                    view.positiveButton.visibility = View.VISIBLE
+                    view.positiveButton.text = "Crear dirección"
+
+                    view.positiveButton.setOnClickListener {
+                        launcher.launch(Intent(this, NewAddressActivity::class.java))
+                        dialog.dismiss()
+                    }
+                }.root)
+            }.show()
         } else {
             startActivity(Intent(this, PaymentActivity::class.java)
                 .putExtra("id_publication", intent.extras!!.getString("id_publication")!!.toInt())

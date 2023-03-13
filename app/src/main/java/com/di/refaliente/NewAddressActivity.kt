@@ -202,13 +202,23 @@ class NewAddressActivity : AppCompatActivity() {
     private fun initAddressFields() {
         // Set fields names. This set a red character ("*") that indicates the field is required.
         binding.containerCodigoPostal.errorIconDrawable = null
-        binding.coloniaError.text = HtmlCompat.fromHtml("<span style=\"color: #DA0000;\">El campo <strong>Colonia</strong> es obligatorio</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.coloniaError.text = HtmlCompat.fromHtml("<span style=\"color: #FFEB3B;\">El campo <strong>Colonia</strong> es obligatorio</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerCodigoPostal.hint = HtmlCompat.fromHtml("Código postal <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerCalle.hint = HtmlCompat.fromHtml("Calle <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerTelefonoContacto.hint = HtmlCompat.fromHtml("Teléfono de contacto <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerNumeroExterior.hint = HtmlCompat.fromHtml("Número exterior <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerEntreCalle1.hint = HtmlCompat.fromHtml("Entre calle 1 <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.containerEntreCalle2.hint = HtmlCompat.fromHtml("Entre calle 2 <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+        // This are new text views to set the title of the fields
+        binding.codigoPostalTitle.text = HtmlCompat.fromHtml("Código postal <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.estadoTitle.text = HtmlCompat.fromHtml("Estado <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.coloniaTitle.text = HtmlCompat.fromHtml("Colonia <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.calleTitle.text = HtmlCompat.fromHtml("Calle <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.telefonoTitle.text = HtmlCompat.fromHtml("Teléfono de contacto <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.numeroExteriorTitle.text = HtmlCompat.fromHtml("Número exterior <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.entreCalle1Title.text = HtmlCompat.fromHtml("Entre calle 1 <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+        binding.entreCalle2Title.text = HtmlCompat.fromHtml("Entre calle 2 <span style=\"color: #DA0000;\">*</span>", HtmlCompat.FROM_HTML_MODE_LEGACY)
 
         // Set fields to empty values
         binding.codigoPostal.setText("")
@@ -234,7 +244,7 @@ class NewAddressActivity : AppCompatActivity() {
         val colonia = try { binding.colonias.selectedItem as Zipcode } catch (err: Exception) { null }
 
         if (colonia == null || colonia.idZipcode == 0) {
-            binding.containerColonias.setBackgroundResource(R.drawable.borders_error)
+            binding.containerColonias.setBackgroundResource(R.drawable.dark_field_background_error)
             binding.coloniaError.visibility = View.VISIBLE
         }
 
@@ -275,7 +285,7 @@ class NewAddressActivity : AppCompatActivity() {
         binding.containerCodigoPostal.error = null
         binding.containerCodigoPostal.isErrorEnabled = false
 
-        binding.containerColonias.setBackgroundResource(R.drawable.borders_lightgray)
+        binding.containerColonias.setBackgroundResource(R.drawable.dark_field_background)
         binding.coloniaError.visibility = View.GONE
 
         binding.containerCalle.error = null

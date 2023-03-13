@@ -29,37 +29,174 @@
         app:layout_constraintStart_toEndOf="@id/publication_img"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/publication_price_old"
+        app:layout_constraintBottom_toTopOf="@id/stars_container"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/publication_price_old"
+    <LinearLayout
+        android:id="@+id/stars_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginVertical="8dp"
+        app:layout_constraintEnd_toEndOf="@id/condition_container"
+        app:layout_constraintBottom_toTopOf="@id/condition_container">
+
+        <ImageView
+            android:id="@+id/star_1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/star_2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/star_3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/star_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/star_5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/product_qualification"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:text="0.0"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText,TextSizeCheck,VisualLintBounds" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/condition_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="MXN $100.00"
-        android:textColor="#E40808"
-        android:gravity="center|end"
-        android:textSize="@dimen/price_size_small"
-        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        android:layout_marginVertical="8dp"
+        android:layoutDirection="rtl"
+        app:layout_constraintBottom_toTopOf="@id/publication_price_old_container"
+        app:layout_constraintStart_toStartOf="@id/publication_price_old_container"
+        app:layout_constraintEnd_toEndOf="@id/publication_price_old_container">
+
+        <TextView
+            android:id="@+id/publication_remate_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:gravity="center"
+            android:text="REMATE"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp"
+            android:layout_marginHorizontal="2dp"
+            android:background="@drawable/badge_remate"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/publication_new_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:gravity="center"
+            android:layout_marginHorizontal="2dp"
+            android:background="@drawable/badge_new"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp"
+            android:text="NUEVO"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/publication_seminew_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:gravity="center"
+            android:text="SEMINUEVO"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp"
+            android:layout_marginHorizontal="2dp"
+            android:background="@drawable/badge_seminew"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/publication_used_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginHorizontal="2dp"
+            android:background="@drawable/badge_used"
+            android:gravity="center"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp"
+            android:text="USADO"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,TextContrastCheck,TextSizeCheck,VisualLintBounds" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/publication_price_old_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/publication_price"
         app:layout_constraintEnd_toEndOf="@id/publication_price"
         app:layout_constraintBottom_toTopOf="@id/publication_price"
-        tools:ignore="HardcodedText" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/publication_price_old"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MXN $100.00"
+            android:textColor="@color/white"
+            android:gravity="center|end"
+            android:textSize="@dimen/price_size_small"
+            android:layout_marginBottom="5dp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/publication_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:gravity="center|end"
         android:text="MXN $30.00"
-        android:textSize="@dimen/price_size"
-        android:layout_margin="8dp"
         android:textColor="#4CAF50"
-        app:layout_constraintStart_toEndOf="@id/publication_img"
-        app:layout_constraintTop_toTopOf="@id/buy_product"
+        android:textSize="@dimen/price_size"
         app:layout_constraintBottom_toBottomOf="@id/buy_product"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintStart_toEndOf="@id/publication_img"
+        app:layout_constraintTop_toTopOf="@id/buy_product"
+        tools:ignore="HardcodedText,TextContrastCheck" />
 
     <Button
         android:id="@+id/buy_product"

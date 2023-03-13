@@ -30,7 +30,7 @@ class PurchasesHeadersAdapter(
             holder.binding.customerName.text = items[position].customerName
         } else {
             holder.binding.customerName.text = HtmlCompat.fromHtml(
-                "${items[position].customerName} (<span style=\"color: #334FA6;\">Tel. ${items[position].customerPhone}</span>)",
+                "${items[position].customerName} (<span style=\"color: #FFEB3B;\">Tel. ${items[position].customerPhone}</span>)",
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
         }

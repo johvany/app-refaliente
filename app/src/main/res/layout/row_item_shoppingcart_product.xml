@@ -13,7 +13,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_margin="4dp"
-        android:background="@drawable/borders_lightgray"
+        android:background="@drawable/publication_img_background"
         android:padding="4dp"
         tools:ignore="ContentDescription" />
 
@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Faros LED delanteros con protector, de la marca Spyder Auto, Negro"
+            android:textColor="@color/white"
             tools:ignore="HardcodedText" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,11 +40,12 @@
                 android:id="@+id/product_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/disabled_field"
+                android:background="@drawable/disabled_field_dark"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
                 android:text="1 x $900.00"
                 android:textSize="@dimen/price_size"
+                android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -56,8 +58,8 @@
                 android:src="@drawable/baseline_edit_24"
                 android:padding="6dp"
                 android:scaleType="centerInside"
-                android:background="@drawable/background_gray_tone_1"
-                app:tint="@color/purple_500"
+                android:background="@color/purple_500"
+                app:tint="@color/white"
                 tools:ignore="ContentDescription"
                 app:layout_constraintStart_toEndOf="@id/product_amount"
                 app:layout_constraintTop_toTopOf="@id/product_amount"

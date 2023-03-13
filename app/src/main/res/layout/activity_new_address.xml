@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".NewAddressActivity">
 
     <View
@@ -20,13 +21,13 @@
         android:id="@+id/back_arrow"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
         app:layout_constraintStart_toStartOf="@id/header_bg"
         app:layout_constraintTop_toTopOf="@id/header_bg"
-        app:layout_constraintBottom_toBottomOf="@id/header_bg"
-        android:src="@drawable/baseline_arrow_back_24"
         app:tint="#FFFFFF"
-        android:background="#00FFFFFF"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/title"
@@ -60,6 +61,16 @@
             android:padding="4dp"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/codigo_postal_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:text="Código postal"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_codigo_postal"
                 android:layout_width="match_parent"
@@ -67,9 +78,11 @@
                 android:layout_margin="4dp"
                 android:hint="Código postal"
                 app:endIconMode="custom"
-                app:endIconDrawable="@drawable/ic_baseline_send_24"
-                app:endIconTint="@color/blue_primary"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:endIconDrawable="@drawable/outline_search_24"
+                app:endIconTint="@color/white"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -77,9 +90,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:text="000000"/>
+                    android:textColor="@color/white"
+                    android:text="000000"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/estado_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Estado"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -87,7 +113,9 @@
                 android:layout_margin="4dp"
                 android:hint="Estado"
                 android:background="@drawable/disabled_field_2"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkFieldDisabled"
+                style="@style/DarkFieldDisabled"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -96,8 +124,9 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:enabled="false"
-                    android:textColor="@color/black"
-                    android:text="Sinaloa"/>
+                    android:textColor="@color/white"
+                    android:text="Sinaloa"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,12 +135,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
+                <!-- <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginTop="8dp"
                     android:text="Colonia"
+                    tools:ignore="HardcodedText" /> -->
+
+                <TextView
+                    android:id="@+id/colonia_title"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginTop="12dp"
+                    android:text="Colonia"
+                    android:textColor="@color/dark_field_name"
                     tools:ignore="HardcodedText" />
 
                 <LinearLayout
@@ -119,15 +159,20 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="4dp"
-                    android:layout_marginVertical="8dp"
-                    android:background="@drawable/borders_lightgray"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:padding="3dp"
+                    android:background="@drawable/dark_field_background"
                     android:layout_height="wrap_content">
 
                     <Spinner
                         android:id="@+id/colonias"
-                        android:gravity="center|start"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp" />
+                        android:layout_height="50dp"
+                        android:backgroundTint="@color/dark_field_name"
+                        android:foregroundTint="@color/white"
+                        android:gravity="center|start"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                 </LinearLayout>
 
@@ -141,13 +186,26 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
+            <TextView
+                android:id="@+id/calle_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Calle"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_calle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Calle"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -155,9 +213,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="Agua del arrollo limpio"/>
+                    android:textColor="@color/white"
+                    android:text="Agua del arrollo limpio"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/telefono_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Teléfono de contacto"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_telefono_contacto"
@@ -165,7 +236,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Teléfono de contacto"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -173,9 +246,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="0000000000"/>
+                    android:textColor="@color/white"
+                    android:text="0000000000"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/numero_exterior_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Número exterior"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_numero_exterior"
@@ -183,7 +269,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Número exterior"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -191,9 +279,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="15"/>
+                    android:text="15"
+                    android:textColor="@color/white"
+                    tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Número interior"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_numero_interior"
@@ -201,7 +301,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Número interior"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -209,9 +311,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="15"/>
+                    android:textColor="@color/white"
+                    android:text="15"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/entre_calle_1_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Entre calle 1"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_entre_calle_1"
@@ -219,7 +334,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Entre calle 1"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -227,9 +344,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="Piedras de los riñones"/>
+                    android:text="Piedras de los riñones"
+                    android:textColor="@color/white"
+                    tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/entre_calle_2_title"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Entre calle 2"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_entre_calle_2"
@@ -237,7 +367,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Entre calle 2"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -245,9 +377,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="Piedra de aguacates"/>
+                    android:textColor="@color/white"
+                    android:text="Piedra de aguacates"
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:layout_marginTop="12dp"
+                android:text="Información adicional"
+                android:textColor="@color/dark_field_name"
+                tools:ignore="HardcodedText" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/container_informacion_adicional"
@@ -255,7 +399,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:hint="Información adicional"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
+                app:hintEnabled="false"
                 tools:ignore="HardcodedText">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -263,7 +409,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:text="Esta direccion es inventada, no existe."/>
+                    android:textColor="@color/white"
+                    android:text="Esta direccion es inventada, no existe."
+                    tools:ignore="VisualLintTextFieldSize" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -274,7 +422,7 @@
                 android:layout_height="wrap_content"
                 android:text="GUARDAR"
                 android:layout_margin="4dp"
-                tools:ignore="HardcodedText" />
+                tools:ignore="HardcodedText,VisualLintButtonSize" />
 
         </LinearLayout>
 

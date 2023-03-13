@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PaymentActivity">
@@ -77,23 +78,26 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"
                 android:layout_width="300dp"
+                android:background="#BBBBBB"
+                android:paddingVertical="4dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/card_credit_cards"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:layout_gravity="center"
-                android:layout_marginTop="8dp"
                 android:layout_width="300dp"
+                android:background="#BBBBBB"
                 android:layout_height="wrap_content"
+                android:paddingVertical="4dp"
                 android:src="@drawable/card_debit_cards"
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:textColor="@color/black"
+                android:textColor="@color/dark_field_name"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:text="Nombre del titular"
@@ -102,8 +106,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/card_user_name_container"
                 android:layout_gravity="center"
-                android:theme="@style/MyOutlinedBox"
-                style="@style/MyOutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -115,12 +119,13 @@
                     android:id="@+id/card_user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:textColor="@color/black"
+                android:textColor="@color/dark_field_name"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
@@ -132,8 +137,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/card_number_container"
                 android:layout_gravity="center"
-                android:theme="@style/MyOutlinedBox"
-                style="@style/MyOutlinedBox"
+                android:theme="@style/DarkField"
+                style="@style/DarkField"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -144,12 +149,13 @@
                     android:id="@+id/card_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:textColor="@color/black"
+                android:textColor="@color/dark_field_name"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
@@ -169,6 +175,7 @@
                     android:layout_width="146dp"
                     android:layout_height="wrap_content"
                     android:text="Mes"
+                    android:textColor="@color/dark_field_name"
                     android:layout_marginEnd="4dp"
                     tools:ignore="HardcodedText" />
 
@@ -176,6 +183,7 @@
                     android:layout_width="146dp"
                     android:layout_height="wrap_content"
                     android:text="Año"
+                    android:textColor="@color/dark_field_name"
                     android:layout_marginStart="4dp"
                     tools:ignore="HardcodedText" />
 
@@ -191,13 +199,16 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/borders_lightgray"
+                    android:background="@drawable/dark_field_background"
+                    android:padding="3dp"
                     android:layout_marginEnd="4dp">
 
                     <Spinner
                         android:id="@+id/card_exp_months"
                         android:layout_gravity="center"
                         android:gravity="center|start"
+                        android:backgroundTint="@color/dark_field_name"
+                        android:foregroundTint="@color/white"
                         android:layout_width="146dp"
                         android:layout_height="50dp" />
 
@@ -206,13 +217,16 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/borders_lightgray"
+                    android:background="@drawable/dark_field_background"
+                    android:padding="3dp"
                     android:layout_marginStart="4dp">
 
                     <Spinner
                         android:id="@+id/card_exp_years"
                         android:layout_gravity="center"
                         android:gravity="center|start"
+                        android:backgroundTint="@color/dark_field_name"
+                        android:foregroundTint="@color/white"
                         android:layout_width="146dp"
                         android:layout_height="50dp" />
 
@@ -221,7 +235,7 @@
             </LinearLayout>
 
             <TextView
-                android:textColor="@color/black"
+                android:textColor="@color/dark_field_name"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
@@ -240,8 +254,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/card_cvv_container"
                     android:layout_gravity="center"
-                    android:theme="@style/MyOutlinedBox"
-                    style="@style/MyOutlinedBox"
+                    android:theme="@style/DarkField"
+                    style="@style/DarkField"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     app:hintEnabled="false"
@@ -252,14 +266,17 @@
                         android:id="@+id/card_cvv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/white"
                         android:inputType="number" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <ImageView
-                    android:layout_width="180dp"
+                    android:layout_width="172dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:paddingVertical="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="#333333"
                     android:src="@drawable/card_cvv"
                     tools:ignore="ContentDescription" />
 
@@ -267,7 +284,7 @@
 
             <LinearLayout
                 android:layout_gravity="center"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content">
@@ -276,7 +293,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/dark_field_name"
                     android:text="Transacciones realizadas vía:"
                     tools:ignore="HardcodedText" />
 
@@ -284,21 +301,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="fitStart"
+                    android:layout_marginTop="4dp"
+                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:background="#BBBBBB"
                     android:src="@drawable/card_openpay_icon"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
             <TextView
-                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/black"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp"
                 android:text="Tus pagos se realizan de forma segura con encriptación de 256 bits"
                 tools:ignore="HardcodedText"
                 android:drawablePadding="8dp"
+                android:background="#BBBBBB"
                 app:drawableStartCompat="@drawable/card_security_icon" />
 
             <Button

@@ -3,9 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#DDDDDD"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <!-- This is the old value used for the background of this view -->
+    <!-- android:background="#DDDDDD" -->
 
     <View
         android:id="@+id/header_bg"
@@ -56,7 +58,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:orientation="vertical"
-            android:background="@color/white"
+            android:background="#474747"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -66,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:visibility="gone"
-                android:textColor="@color/red_700"
-                android:background="#DDDDDD"
+                android:textColor="@color/dark_field_error"
+                android:background="@color/black"
                 android:padding="8dp"/>
 
             <!-- <TextView
@@ -92,7 +94,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_margin="4dp"
-                    android:background="@drawable/borders_lightgray"
+                    android:background="@drawable/publication_img_background"
                     android:padding="4dp"
                     tools:ignore="ContentDescription,ImageContrastCheck" />
 
@@ -107,6 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Faros LED delanteros con protector, de la marca Spyder Auto, Negro"
+                        android:textColor="@color/white"
                         tools:ignore="HardcodedText" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -119,11 +122,12 @@
                             android:id="@+id/product_amount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/disabled_field"
+                            android:background="@drawable/disabled_field_dark"
                             android:paddingHorizontal="8dp"
                             android:paddingVertical="4dp"
                             android:text="1 x $900.00"
                             android:textSize="@dimen/price_size"
+                            android:textColor="@color/white"
                             tools:ignore="HardcodedText,TextContrastCheck" />
 
                         <ImageView
@@ -133,8 +137,8 @@
                             android:src="@drawable/baseline_edit_24"
                             android:padding="6dp"
                             android:scaleType="centerInside"
-                            android:background="@drawable/background_gray_tone_1"
-                            app:tint="@color/purple_500"
+                            android:background="@color/purple_500"
+                            app:tint="@color/white"
                             tools:ignore="ContentDescription" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -145,24 +149,29 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:orientation="vertical"
-                android:background="#DDDDDD"
+                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <!-- This is the old value used for the background of this view -->
+                <!-- android:background="#DDDDDD" -->
 
                 <TextView
-                    android:layout_margin="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/dark_field_name"
                     android:text="Detalle"
                     tools:ignore="HardcodedText" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:orientation="vertical"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/card_body_no_header"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="4dp"
+                    android:background="@drawable/card_body_no_header_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -172,13 +181,15 @@
                         android:layout_marginHorizontal="8dp"
                         android:layout_marginTop="8dp"
                         android:text="Enviar todo a"
+                        android:textColor="@color/white"
                         tools:ignore="HardcodedText" />
 
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_margin="8dp"
-                        android:background="@drawable/borders_lightgray"
+                        android:padding="3dp"
+                        android:background="@drawable/dark_field_background"
                         android:layout_height="wrap_content">
 
                         <Spinner
@@ -186,6 +197,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:gravity="center|start"
+                            android:backgroundTint="@color/white"
+                            android:foregroundTint="@color/white"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                     </LinearLayout>
@@ -194,9 +207,10 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:orientation="vertical"
-                    android:layout_margin="8dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginVertical="4dp"
                     android:padding="8dp"
-                    android:background="@drawable/card_body_no_header"
+                    android:background="@drawable/card_body_no_header_dark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -211,6 +225,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="Subtotal"
                             android:textStyle="bold"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -222,6 +237,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="$0.00"
                             android:textSize="@dimen/price_size"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -238,6 +254,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="Descuento"
                             android:textStyle="bold"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -249,6 +266,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="$0.00"
                             android:textSize="@dimen/price_size"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -265,6 +283,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="IVA"
                             android:textStyle="bold"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -276,6 +295,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="$0.00"
                             android:textSize="@dimen/price_size"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -285,7 +305,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="8dp"
-                        android:background="#DDDDDD"/>
+                        android:background="@color/dark_field_name"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -298,6 +318,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="Total"
                             android:textStyle="bold"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 
@@ -309,6 +330,7 @@
                             app:layout_constraintTop_toTopOf="parent"
                             android:text="$0.00"
                             android:textSize="@dimen/price_size"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             tools:ignore="HardcodedText" />
 

@@ -34,7 +34,7 @@ class FavoritesAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.publicationTitle.text = items[position].title
+        holder.binding.publicationTitle.text = if (items[position].title.length > 90) { items[position].title.substring(0, 90) + "..." } else { items[position].title }
         holder.binding.publicationRemateBadge.visibility = if (items[position].hasDiscount == 1) { View.VISIBLE } else { View.GONE }
         holder.binding.publicationNewBadge.visibility = if (items[position].product.keyCondition == 1) { View.VISIBLE } else { View.GONE }
         holder.binding.publicationUsedBadge.visibility = if (items[position].product.keyCondition == 2) { View.VISIBLE } else { View.GONE }

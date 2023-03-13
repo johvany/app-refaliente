@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/dark_field_background">
 
     <TextView
         android:id="@+id/year_value"
@@ -12,6 +13,7 @@
         android:layout_height="34dp"
         android:text="22"
         android:gravity="center|start"
+        android:textColor="@color/white"
         android:layout_margin="8dp"
         tools:ignore="HardcodedText" />
 

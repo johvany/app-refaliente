@@ -78,7 +78,11 @@ data class PublicationSmall(
     val priceOld: String?,
     val price: String,
     val img: String?,
-    val keyUserOwner: String
+    val keyUserOwner: String,
+    val hasDiscount: Int,
+    val productKeyCondition: Int,
+    val productQualification: Int,
+    val productQualificationAvg: String
 )
 
 data class SimpleAddress(

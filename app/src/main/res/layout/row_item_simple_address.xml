@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/dark_field_background">
 
     <TextView
         android:id="@+id/simple_address_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Eje 140, AV. Central #445, San Luis Potosí, S.L.P."
+        android:textColor="@color/white"
         android:layout_margin="8dp"
         android:paddingVertical="8dp"
         tools:ignore="HardcodedText" />

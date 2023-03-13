@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".PurchaseDetailActivity">
 
     <View
@@ -19,29 +20,29 @@
         android:id="@+id/back_arrow"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:layout_constraintBottom_toBottomOf="@id/header_bg"
         app:layout_constraintStart_toStartOf="@id/header_bg"
         app:layout_constraintTop_toTopOf="@id/header_bg"
-        app:layout_constraintBottom_toBottomOf="@id/header_bg"
-        android:src="@drawable/baseline_arrow_back_24"
         app:tint="#FFFFFF"
-        android:background="#00FFFFFF"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Compra ID: 0000000001"
-        android:paddingHorizontal="8dp"
         android:gravity="center|start"
+        android:paddingHorizontal="8dp"
+        android:text="Compra ID: 0000000001"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@id/back_arrow"
-        app:layout_constraintEnd_toEndOf="@id/header_bg"
-        app:layout_constraintTop_toTopOf="@id/header_bg"
         app:layout_constraintBottom_toBottomOf="@id/header_bg"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintEnd_toEndOf="@id/header_bg"
+        app:layout_constraintStart_toEndOf="@id/back_arrow"
+        app:layout_constraintTop_toTopOf="@id/header_bg"
+        tools:ignore="HardcodedText,TextContrastCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/purchases_details"

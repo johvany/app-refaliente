@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="4dp"
     android:background="@drawable/publication_card_small"
     android:orientation="vertical"
     android:layout_width="180dp"
-    android:layout_height="310dp">
+    android:layout_height="320dp">
 
     <ImageView
         android:layout_gravity="center"
@@ -20,36 +19,36 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:layout_gravity="center"
         android:id="@+id/publication_title"
         android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:text="FAROS LED DELANTEROS CON PROTECTORES, DE LA MARCA SPYDER AUTO, NEGRO asd asd asd asdad"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="6dp"
+        android:text="FAROS LED DELANTEROS CON PROTECTORES, DE LA MARCA SPYDER AUTO, NEGRO"
         android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <TextView
-        android:layout_gravity="center"
         android:id="@+id/publication_price_old"
         android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:text="MXN $100.00"
-        android:textColor="#E40808"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
         android:gravity="center|end"
+        android:text="MXN $25.00"
+        android:textColor="@color/white"
         android:textSize="@dimen/price_size_small"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,TextSizeCheck" />
 
     <TextView
-        android:layout_gravity="center"
         android:id="@+id/publication_price"
         android:layout_width="170dp"
-        android:layout_height="wrap_content"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
         android:gravity="center|end"
         android:text="MXN $30.00"
-        android:textSize="@dimen/price_size"
-        android:layout_marginBottom="8dp"
         android:textColor="#4CAF50"
-        tools:ignore="HardcodedText" />
+        android:textSize="@dimen/price_size"
+        tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
 </LinearLayout>
