@@ -501,6 +501,14 @@ class ProfileActivity : AppCompatActivity() {
             .put("enterprise_name", if (binding.enterpriseName.text.isNullOrBlank()) JSONObject.NULL else binding.enterpriseName.text.toString())
             .put("telephone", if (binding.telephone.text.isNullOrBlank()) JSONObject.NULL else binding.telephone.text.toString())
 
+        if (!binding.myCarModel.text.isNullOrBlank()) {
+            data.put("car_model", binding.myCarModel.text.toString())
+        }
+
+        if (!binding.myCarYear.text.isNullOrBlank()) {
+            data.put("car_year", binding.myCarYear.text.toString())
+        }
+
         Volley.newRequestQueue(this).add(object: JsonObjectRequest(
             Method.PUT,
             resources.getString(R.string.api_url) + "user/update",
@@ -810,5 +818,11 @@ class ProfileActivity : AppCompatActivity() {
                         item.getString("entity_name"))
             }
         }
+
+        // Modelo de mi auto
+        binding.myCarModel.setText(if (userDataPart2.isNull("car_model")) { "" } else { userDataPart2.getString("car_model") })
+
+        // Año de mi auto
+        binding.myCarYear.setText(if (userDataPart2.isNull("car_year")) { "" } else { userDataPart2.getString("car_year") })
     }
 }
