@@ -69,7 +69,13 @@ data class PurchaseDetail(
     val iva: String,
     val discount: String,
     val total: String,
-    val readyToComment: Boolean
+    val readyToComment: Boolean,
+    var showCommentArea: Boolean,
+    var qualificationStars: Int,
+    var idComment: Int?,
+    var comment: String?,
+    var commentQualification: Int?,
+    var commentDate: String?
 )
 
 data class PublicationSmall(

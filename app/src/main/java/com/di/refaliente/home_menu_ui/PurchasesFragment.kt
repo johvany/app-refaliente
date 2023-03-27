@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class PurchasesFragment : Fragment() {
+    companion object {
+        const val NEW_PRODUCT_COMMENT = 1
+    }
+
     private lateinit var binding: FragmentPurchasesBinding
     private val purchasesHeadersItems = ArrayList<PurchaseHeader>()
     private var currentPage = 1
@@ -27,6 +33,7 @@ class PurchasesFragment : Fragment() {
     private var itemsRemoved = 0
     private var scrollLimitReached = false
     private lateinit var customAlertDialog: CustomAlertDialog
+    private lateinit var launcher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPurchasesBinding.inflate(inflater, container, false)
@@ -36,10 +43,17 @@ class PurchasesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars()
+
+        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { activityResult ->
+            if (activityResult.resultCode == NEW_PRODUCT_COMMENT) {
+                refreshPurchases()
+            }
+        }
+
         binding.purchases.layoutManager = LinearLayoutManager(requireContext())
 
         binding.purchases.adapter = PurchasesHeadersAdapter(purchasesHeadersItems, requireContext()) { itemPosition ->
-            startActivity(Intent(requireContext(), PurchaseDetailActivity::class.java)
+            launcher.launch(Intent(requireContext(), PurchaseDetailActivity::class.java)
                 .putExtra("purchase_detail", purchasesHeadersItems[itemPosition].productsDetail)
                 .putExtra("id_purchase_formatted", purchasesHeadersItems[itemPosition].idPurchaseFormatted))
         }

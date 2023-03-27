@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="4dp"
     android:background="@drawable/card_body_no_header_dark">
@@ -239,5 +240,183 @@
             tools:ignore="HardcodedText" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/show_or_hide_comment_area"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="Agregar comentario"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/comment_field_title"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="8dp"
+        android:layout_height="wrap_content"
+        android:text="Comentario"
+        android:textColor="@color/dark_field_name"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/comment_field_container"
+        android:theme="@style/DarkField"
+        style="@style/DarkField"
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        tools:ignore="HardcodedText">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/comment_field"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="start"
+            android:inputType="textMultiLine"
+            android:textColor="@color/white"
+            tools:ignore="SpeakableTextPresentCheck,VisualLintTextFieldSize" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/comment_qualification_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calificación"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/dark_field_name"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/comment_qualification_star_1"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification_star_2"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification_star_3"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification_star_4"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification_star_5"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/comment_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="Guardar"
+        android:theme="@style/SuccessButton"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+    <LinearLayout
+        android:id="@+id/comment_qualification2_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/comment_qualification2_star_1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification2_star_2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification2_star_3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification2_star_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <ImageView
+            android:id="@+id/comment_qualification2_star_5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/outline_star_24"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:text="Excelente producto, llevo 1 mes usándolo sin ningún problema."
+        android:textColor="@color/white"
+        tools:ignore="HardcodedText" />
+
+    <View
+        android:id="@+id/comment_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/white"/>
+
+    <TextView
+        android:id="@+id/comment_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:text="Programador - 26/03/2023"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        tools:ignore="HardcodedText" />
 
 </LinearLayout>
