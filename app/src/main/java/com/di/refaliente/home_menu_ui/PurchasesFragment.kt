@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
+import com.di.refaliente.DeliveryTrackingDataActivity
 import com.di.refaliente.PurchaseDetailActivity
 import com.di.refaliente.R
 import com.di.refaliente.databinding.FragmentPurchasesBinding
@@ -52,10 +53,18 @@ class PurchasesFragment : Fragment() {
 
         binding.purchases.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.purchases.adapter = PurchasesHeadersAdapter(purchasesHeadersItems, requireContext()) { itemPosition ->
-            launcher.launch(Intent(requireContext(), PurchaseDetailActivity::class.java)
-                .putExtra("purchase_detail", purchasesHeadersItems[itemPosition].productsDetail)
-                .putExtra("id_purchase_formatted", purchasesHeadersItems[itemPosition].idPurchaseFormatted))
+        binding.purchases.adapter = PurchasesHeadersAdapter(purchasesHeadersItems, requireContext()) { itemPosition, eventType ->
+            when (eventType) {
+                PurchasesHeadersAdapter.SHOW_PURCHASE_DETAIL -> {
+                    launcher.launch(Intent(requireContext(), PurchaseDetailActivity::class.java)
+                        .putExtra("purchase_detail", purchasesHeadersItems[itemPosition].productsDetail)
+                        .putExtra("id_purchase_formatted", purchasesHeadersItems[itemPosition].idPurchaseFormatted))
+                }
+                PurchasesHeadersAdapter.SHOW_DELIVERY_TRACKING_DATA -> {
+                    startActivity(Intent(requireContext(), DeliveryTrackingDataActivity::class.java)
+                        .putExtra("id_purchase", purchasesHeadersItems[itemPosition].idPurchase.toString()))
+                }
+            }
         }
 
         customAlertDialog = CustomAlertDialog(requireContext())

@@ -12,8 +12,12 @@ import com.di.refaliente.shared.PurchaseHeader
 class PurchasesHeadersAdapter(
     private val items: ArrayList<PurchaseHeader>,
     private val context: Context,
-    private val onClick: (itemPosition: Int) -> Unit
+    private val onClick: (itemPosition: Int, eventType: Int) -> Unit
 ) : RecyclerView.Adapter<PurchasesHeadersAdapter.ViewHolder>() {
+    companion object {
+        const val SHOW_PURCHASE_DETAIL = 1
+        const val SHOW_DELIVERY_TRACKING_DATA = 2
+    }
 
     class ViewHolder(val binding: RowItemPurchaseBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -38,7 +42,14 @@ class PurchasesHeadersAdapter(
         holder.binding.customerEmail.text = items[position].customerEmail
         holder.binding.customerAddress.text = items[position].customerAddress + ", " + items[position].customerPostalCode
         holder.binding.products.text = items[position].productsNamesFull
-        holder.binding.root.setOnClickListener { onClick(position) }
+
+        holder.binding.root.setOnClickListener {
+            onClick(position, SHOW_PURCHASE_DETAIL)
+        }
+
+        holder.binding.deliveryTracking.setOnClickListener {
+            onClick(position, SHOW_DELIVERY_TRACKING_DATA)
+        }
     }
 
     override fun getItemCount(): Int { return items.size }

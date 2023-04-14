@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/card_body_no_header_dark"
     android:layout_marginVertical="4dp"
     android:layout_marginHorizontal="8dp"
@@ -45,11 +46,11 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="#FF9800"
+            android:gravity="end"
             android:padding="4dp"
             android:text="Recibe"
-            android:gravity="end"
-            tools:ignore="HardcodedText" />
+            android:textColor="#FF9800"
+            tools:ignore="HardcodedText,TextContrastCheck" />
 
         <TextView
             android:id="@+id/customer_name"
@@ -71,11 +72,11 @@
         <TextView
             android:layout_width="@dimen/property_width_in_purchase"
             android:layout_height="wrap_content"
-            android:textColor="#FF9800"
+            android:gravity="end"
             android:padding="4dp"
             android:text="Correo"
-            android:gravity="end"
-            tools:ignore="HardcodedText" />
+            android:textColor="#FF9800"
+            tools:ignore="HardcodedText,TextContrastCheck" />
 
         <TextView
             android:id="@+id/customer_email"
@@ -101,7 +102,7 @@
             android:padding="4dp"
             android:text="Dirección"
             android:textColor="#FF9800"
-            tools:ignore="HardcodedText,TextSizeCheck" />
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
         <TextView
             android:id="@+id/customer_address"
@@ -127,16 +128,39 @@
             android:padding="4dp"
             android:text="Productos"
             android:textColor="#FF9800"
-            tools:ignore="HardcodedText,TextSizeCheck" />
+            tools:ignore="HardcodedText,TextSizeCheck,TextContrastCheck" />
 
-        <TextView
-            android:id="@+id/products"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:textColor="@color/white"
-            android:text="Amortiguador trasero motocicleta diferentes modelo..."
-            tools:ignore="HardcodedText" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/products"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="Amortiguador trasero motocicleta diferentes modelo..."
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/delivery_tracking"
+                tools:ignore="HardcodedText" />
+
+            <ImageView
+                android:id="@+id/delivery_tracking"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_baseline_send_24"
+                android:rotation="-45"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#5aaaff"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 

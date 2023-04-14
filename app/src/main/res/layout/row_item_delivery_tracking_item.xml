@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="85dp"
+    android:background="#474747"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/complement_top"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:background="@drawable/delivery_tracking_item_complement_normal_bg"
+        android:layout_marginBottom="-5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/status_icon"
+        app:layout_constraintStart_toStartOf="@id/status_icon"
+        app:layout_constraintEnd_toEndOf="@id/status_icon"/>
+
+    <View
+        android:id="@+id/complement_bottom"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="-5dp"
+        android:background="@drawable/delivery_tracking_item_complement_normal_bg"
+        app:layout_constraintTop_toBottomOf="@id/status_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/status_icon"
+        app:layout_constraintEnd_toEndOf="@id/status_icon"/>
+
+    <ImageView
+        android:id="@+id/status_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:padding="10dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/baseline_watch_later_24"
+        android:background="@drawable/delivery_tracking_item_normal_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
+        app:tint="@color/black" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Envio pendiente"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:paddingHorizontal="16dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/status_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Marzo 29, 2023, 15:39:28"
+        android:textSize="14sp"
+        android:textColor="#DDDDDD"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toEndOf="@id/status_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

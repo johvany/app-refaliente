@@ -162,3 +162,26 @@ data class SessionAux(
     val idUser: Int,
     val tokenId: Int
 )
+
+data class DeliveryTrackingItem(
+    var key_deliveries_tracking_status: Int,
+    var in_process: Int,
+    var done: Int,
+    var name: String,
+    var date: String,
+    var description: String,
+    var images: String,
+    var key_delivery_man: String
+)
+
+data class DeliveryTrackingFinallyItem(
+    var name: String,
+    var date: String,
+    var complementTagCssClass: String,
+    var iconTagCssClass: String,
+    var description: String,
+    var images: String?,
+    var deliveryManId: String?,
+    var statusId: Int,
+    var colorId: Int
+)
