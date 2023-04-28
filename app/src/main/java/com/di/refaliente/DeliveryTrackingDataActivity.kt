@@ -105,9 +105,9 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
                     var deliveryTrackingsItemsSize: Int
                     var deliveryTrackingSingleItem: JSONObject
                     val deliveryTrackingsAllParsed = ArrayList<ArrayList<DeliveryTrackingItem>>()
-                    val deliveryTrackingsItemsParsed = ArrayList<DeliveryTrackingItem>()
 
                     for (i in 0 until deliveryTrackingsAllSize) {
+                        val deliveryTrackingsItemsParsed = ArrayList<DeliveryTrackingItem>()
                         deliveryTrackingsItems = deliveryTrackingsAll.getJSONArray(i)
                         deliveryTrackingsItemsSize = deliveryTrackingsItems.length()
 
@@ -125,9 +125,9 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
                                 deliveryTrackingSingleItem.getString("key_delivery_man")
                             ))
                         }
-                    }
 
-                    deliveryTrackingsAllParsed.add(deliveryTrackingsItemsParsed)
+                        deliveryTrackingsAllParsed.add(deliveryTrackingsItemsParsed)
+                    }
 
                     // Step 2/3
                     // Use result arrays to generate the finally array which will be used to load
