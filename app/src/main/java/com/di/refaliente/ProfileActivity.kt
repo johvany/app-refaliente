@@ -146,6 +146,10 @@ class ProfileActivity : AppCompatActivity() {
                     .into(binding.userImg)
             }
         }
+
+        binding.uploadBusinessImgs.setOnClickListener {
+            startActivity(Intent(this, BusinessImagesActivity::class.java))
+        }
     }
 
     private fun uploadProfileImg() {

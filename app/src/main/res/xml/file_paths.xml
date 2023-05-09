@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <external-files-path name="profile_imgs" path="profile_imgs"/>
+    <external-files-path name="business_imgs" path="business_imgs"/>
 </paths>

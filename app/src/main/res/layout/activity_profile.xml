@@ -44,21 +44,6 @@
         app:layout_constraintBottom_toBottomOf="@id/header_bg"
         tools:ignore="HardcodedText" />
 
-    <!-- <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mi perfil"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:paddingHorizontal="8dp"
-        android:paddingVertical="4dp"
-        android:background="@drawable/profile_title_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" /> -->
-
     <LinearLayout
         android:id="@+id/profile_img"
         android:orientation="vertical"
@@ -230,6 +215,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/another_fields"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
