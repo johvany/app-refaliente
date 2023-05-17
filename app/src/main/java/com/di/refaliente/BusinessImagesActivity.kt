@@ -516,7 +516,7 @@ class BusinessImagesActivity : AppCompatActivity() {
                             binding.showImg1.setColorFilter(Color.parseColor("#1877F2"))
 
                             binding.removeImg1.setOnClickListener {
-                                // ... show confirm dialog to remove image ...
+                                showConfirmRemoveBusinessImg(imageNumberStr)
                             }
 
                             binding.removeImg1.isEnabled = true
@@ -537,7 +537,7 @@ class BusinessImagesActivity : AppCompatActivity() {
                             binding.showImg2.setColorFilter(Color.parseColor("#1877F2"))
 
                             binding.removeImg2.setOnClickListener {
-                                // ... show confirm dialog to remove image ...
+                                showConfirmRemoveBusinessImg(imageNumberStr)
                             }
 
                             binding.removeImg2.isEnabled = true
@@ -558,7 +558,7 @@ class BusinessImagesActivity : AppCompatActivity() {
                             binding.showImg3.setColorFilter(Color.parseColor("#1877F2"))
 
                             binding.removeImg3.setOnClickListener {
-                                // ... show confirm dialog to remove image ...
+                                showConfirmRemoveBusinessImg(imageNumberStr)
                             }
 
                             binding.removeImg3.isEnabled = true
@@ -579,7 +579,7 @@ class BusinessImagesActivity : AppCompatActivity() {
                             binding.showImg4.setColorFilter(Color.parseColor("#1877F2"))
 
                             binding.removeImg4.setOnClickListener {
-                                // ... show confirm dialog to remove image ...
+                                showConfirmRemoveBusinessImg(imageNumberStr)
                             }
 
                             binding.removeImg4.isEnabled = true
@@ -603,5 +603,76 @@ class BusinessImagesActivity : AppCompatActivity() {
                 }
             }
         ) { })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showConfirmRemoveBusinessImg(imageNumber: String) {
+        MaterialAlertDialogBuilder(this).create().also { dialog ->
+            dialog.setCancelable(true)
+
+            dialog.setView(MyDialogBinding.inflate(layoutInflater).also { viewBinding ->
+                viewBinding.icon.setImageResource(R.drawable.question_dialog)
+                viewBinding.title.visibility = View.GONE
+                viewBinding.message.text = "Se borrará la imagen $imageNumber ¿Desea continuar?"
+
+                viewBinding.positiveButton.visibility = View.VISIBLE
+                viewBinding.positiveButton.text = "Sí"
+
+                viewBinding.positiveButton.setOnClickListener {
+                    dialog.dismiss()
+                    removeBusinessImg(imageNumber, true)
+                }
+
+                viewBinding.negativeButton.visibility = View.VISIBLE
+                viewBinding.negativeButton.text = "No"
+                viewBinding.negativeButton.setBackgroundResource(R.drawable.dialog_secondary_button)
+
+                viewBinding.negativeButton.setOnClickListener {
+                    dialog.dismiss()
+                }
+            }.root)
+        }.show()
+    }
+
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    private fun removeBusinessImg(imageNumber: String, canRepeat: Boolean) {
+        if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
+            showMessage(
+                "Sin conexión",
+                "Por favor asegúrate de tener una conexión a internet e intenta de nuevo.",
+                R.drawable.warning_dialog
+            )
+        } else {
+            val data = JSONObject()
+                .put("key_user", SessionHelper.user!!.sub)
+                .put("image_number", imageNumber)
+
+            Utilities.queue?.add(object: JsonObjectRequest(
+                Method.PUT,
+                resources.getString(R.string.api_url) + "delete-business-image",
+                data,
+                { response ->
+                    setDefaultViewConfig()
+                    getCurrentBusinessImages(true)
+                },
+                { error ->
+                    SessionHelper.handleRequestError(error, this, customAlertDialog) {
+                        if (canRepeat) {
+                            removeBusinessImg(imageNumber, false)
+                        } else {
+                            showMessage(
+                                "Operación fallida",
+                                "No se pudo realizar la operación solicitada. Por favor asegúrate de tener una conexión a internet e intenta de nuevo.",
+                                R.drawable.error_dialog
+                            )
+                        }
+                    }
+                }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    return mutableMapOf(Pair("Authorization", SessionHelper.user!!.token))
+                }
+            })
+        }
     }
 }
