@@ -170,8 +170,8 @@ data class DeliveryTrackingItem(
     var name: String,
     var date: String,
     var description: String,
-    var images: String,
-    var key_delivery_man: String
+    var images: String?,
+    var key_delivery_man: String?
 )
 
 data class DeliveryTrackingFinallyItem(

@@ -1,11 +1,15 @@
 package com.di.refaliente
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.toolbox.JsonObjectRequest
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.di.refaliente.databinding.ActivityDeliveryTrackingDataBinding
 import com.di.refaliente.databinding.MyDialogBinding
 import com.di.refaliente.databinding.RowItemDeliveryTrackingItemBinding
@@ -79,6 +83,19 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    @Suppress("SameParameterValue", "CatchMayIgnoreException")
+    private fun getDeliveryTrackingIncidenceImg(data: JSONObject, propertyName: String): String? {
+        var imgStr: String? = null
+
+        if (data.has(propertyName) && data.has(propertyName)) {
+            try {
+                imgStr = data.getJSONArray(propertyName).getString(0)
+            } catch (err: Exception) { }
+        }
+
+        return imgStr
+    }
+
     private fun getDeliveryTrackingInitialData(canRepeat: Boolean) {
         if (ConnectionHelper.getConnectionType(this) == ConnectionHelper.NONE) {
             binding.refresh.isRefreshing = false
@@ -89,7 +106,8 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
                 R.drawable.warning_dialog
             )
         } else {
-            Utilities.queue?.add(object: JsonObjectRequest(
+            Utilities.queue?.add(@SuppressLint("SetTextI18n")
+            object: JsonObjectRequest(
                 Method.GET,
                 resources.getString(R.string.api_url) + "get-purchase-delivery-trackings-by-id?" +
                         "key_user=" + SessionHelper.user!!.sub.toString() + "&" +
@@ -121,8 +139,8 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
                                 deliveryTrackingSingleItem.getString("name"),
                                 deliveryTrackingSingleItem.getString("date"),
                                 deliveryTrackingSingleItem.getString("description"),
-                                deliveryTrackingSingleItem.getString("images"),
-                                deliveryTrackingSingleItem.getString("key_delivery_man")
+                                getDeliveryTrackingIncidenceImg(deliveryTrackingSingleItem, "images"),
+                                if (deliveryTrackingSingleItem.isNull("key_delivery_man")) { null } else { deliveryTrackingSingleItem.getString("key_delivery_man") }
                             ))
                         }
 
@@ -277,6 +295,38 @@ class DeliveryTrackingDataActivity : AppCompatActivity() {
 
                             viewBinding.title.text = deliveryTrackingFinallyItem[i].name
                             viewBinding.message.text = deliveryTrackingFinallyItem[i].date
+
+                            // Show incidence image and description
+                            if (deliveryTrackingFinallyItem[i].statusId == 7) {
+                                viewBinding.infoText.text = "- \"" + deliveryTrackingFinallyItem[i].description + "\" -"
+
+                                viewBinding.infoTitle.visibility = View.VISIBLE
+                                viewBinding.infoText.visibility = View.GONE
+                                viewBinding.infoImg.visibility = View.GONE
+
+                                val incidenceImgUrl = resources.getString(R.string.api_url_storage) + deliveryTrackingFinallyItem[i].deliveryManId + "/deliveries/failed/" + deliveryTrackingFinallyItem[i].images
+
+                                Glide.with(this)
+                                    .load(incidenceImgUrl)
+                                    .apply(RequestOptions.skipMemoryCacheOf(true)) // Uncomment if you want to always refresh the image
+                                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.NONE)) // Uncomment if you want to always refresh the image
+                                    .into(viewBinding.infoImg)
+
+                                viewBinding.infoImg.setOnClickListener {
+                                    startActivity(Intent(this, DeliveryTrackingIncidenceImgViewerActivity::class.java)
+                                        .putExtra("image_url", incidenceImgUrl))
+                                }
+
+                                viewBinding.infoTitle.setOnClickListener {
+                                    if (viewBinding.infoText.visibility == View.VISIBLE) {
+                                        viewBinding.infoText.visibility = View.GONE
+                                        viewBinding.infoImg.visibility = View.GONE
+                                    } else {
+                                        viewBinding.infoText.visibility = View.VISIBLE
+                                        viewBinding.infoImg.visibility = View.VISIBLE
+                                    }
+                                }
+                            }
                         }
                     }
                 },
