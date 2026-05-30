@@ -20,7 +20,14 @@ import com.di.refaliente.local_database.Database
 import com.di.refaliente.local_database.SessionsAuxTable
 import com.di.refaliente.local_database.UsersDetailsTable
 import com.di.refaliente.local_database.UsersTable
-import com.di.refaliente.shared.*
+import com.di.refaliente.shared.ConnectionHelper
+import com.di.refaliente.shared.ConstantValues
+import com.di.refaliente.shared.CustomAlertDialog
+import com.di.refaliente.shared.SessionAux
+import com.di.refaliente.shared.User
+import com.di.refaliente.shared.UserDetail
+import com.di.refaliente.shared.UserTypeItem
+import com.di.refaliente.shared.Utilities
 import com.di.refaliente.view_adapters.UserTypesAdapter
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
